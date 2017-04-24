@@ -13,7 +13,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="javascript:void(0)">Inventory Dashboard</a></li>
                   <li><a href="<?php echo base_url();?>add_student_target">Add Student Target</a></li>
-                  <li><a href="#">Something else here</a></li>
+                  <li><a href="<?php echo base_url();?>listing-table">Listing Table</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="#">Separated link</a></li>
                   <li role="separator" class="divider"></li>

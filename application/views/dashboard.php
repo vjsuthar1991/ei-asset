@@ -14,6 +14,7 @@
 
   <!-- plugins -->
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/font-awesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/datatables.bootstrap.min.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/simple-line-icons.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/mediaelementplayer.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/animate.min.css"/>
@@ -53,8 +54,12 @@
           <ng-view></ng-view>
           <!-- start: Javascript -->
    <footer>
-    
-    
-    </footer>
+    <script src="<?php echo base_url();?>asset/js/jquery.min.js"></script>
+    <script src="<?php echo base_url();?>asset/js/jquery.ui.min.js"></script>
+    <script src="<?php echo base_url();?>asset/js/bootstrap.min.js"></script>
+   </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="asset/js/general.js"></script>
 </body>
 </html>

@@ -9,19 +9,12 @@ var ASSET = {
         });
 
 
-        app.controller('DashboardController', function($scope,$http){
-            $scope.$on('$locationChangeStart', function(event) {
-                alert()
-            });
+        
             //$scope.pools = [];
    
-        });
+        
 
-        app.controller('AddStudentTargetController', function($scope,$http){
-         
-          //$scope.pools = [];
-           
-        });
+       
         ASSET.dashboard();
 
     },

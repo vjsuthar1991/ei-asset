@@ -8,12 +8,25 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
             when('/', {
 
-
                 templateUrl: 'templates/dashboard.html',
 
-                controller: 'DashboardController'
-        
+                controller: 'DashboardController',
 
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.select',
+         // add UI select css / js for this state
+                            files: [
+                                
+                                'asset/js/plugins/jquery.vmap.min.js',
+                                'asset/js/plugins/jquery.vmap.world.js',
+                                'asset/js/plugins/jquery.vmap.sampledata.js',
+                                'asset/js/plugins/chart.min.js',
+                            ] 
+                        }]);
+                    }]
+                }
             }).
 
             when('/add_student_target', {
@@ -22,7 +35,31 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
                 controller: 'AddStudentTargetController'
 
+            }).
+
+            when('/listing_table', {
+                templateUrl: 'templates/listing_table.html',
+
+                controller: 'ListingTableController',
+
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.datatables',
+         // add UI select css / js for this state
+                            files: [
+
+                                'asset/js/plugins/moment.min.js',
+                                'asset/js/plugins/datatables.bootstrap.min.js',
+                                'asset/js/plugins/jquery.datatables.min.js',
+                                'asset/js/plugins/jquery.nicescroll.js',
+                                
+                            ] 
+                        }]);
+                    }]
+                }
             });
+
 
             // use the HTML5 History API
         $locationProvider.html5Mode(true);

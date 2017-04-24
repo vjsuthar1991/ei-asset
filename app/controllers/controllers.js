@@ -2,15 +2,7 @@ app.controller('DashboardController', function($scope,$http,$ocLazyLoad){
  
   //$scope.pools = [];
          // start: Chart =============
-        // $ocLazyLoad.load('asset/js/plugins/moment.min.js');
-        // $ocLazyLoad.load('asset/js/plugins/fullcalendar.min.js');
-        // $ocLazyLoad.load('asset/js/plugins/jquery.nicescroll.js');
-        // $ocLazyLoad.load('asset/js/plugins/jquery.vmap.min.js');
-        // $ocLazyLoad.load('asset/js/plugins/jquery.vmap.world.js');
-        // $ocLazyLoad.load('asset/js/plugins/jquery.vmap.sampledata.js');
-        // $ocLazyLoad.load('asset/js/plugins/chart.min.js');
-        // $ocLazyLoad.load('asset/js/main.js');
-       
+        
         Chart.defaults.global.pointHitDetectionRadius = 1;
         Chart.defaults.global.customTooltips = function(tooltip) {
 
@@ -164,7 +156,7 @@ app.controller('DashboardController', function($scope,$http,$ocLazyLoad){
                     }
                 ]
             };
-            setTimeout(function(){
+            // setTimeout(function(){
                 var ctx2 = $(".line-chart")[0].getContext("2d");
                 window.myLine = new Chart(ctx2).Line(lineChartData, {
                      responsive: true,
@@ -185,11 +177,16 @@ app.controller('DashboardController', function($scope,$http,$ocLazyLoad){
                     showTooltips: true
                 });
                 
-            },1000);  
+           // },1000);  
 });
 
 app.controller('AddStudentTargetController', function($scope,$http){
  
-  
-
 });
+
+app.controller('ListingTableController', function($scope,$http){
+     
+  
+});
+
+
