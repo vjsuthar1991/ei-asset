@@ -186,6 +186,32 @@ app.controller('AddStudentTargetController', function($scope,$http){
 
 app.controller('ListingTableController', function($scope,$http){
      
+    var employees = [];
+            
+            for(var i = 0; i < 1000; i++)
+                employees.push({
+                    firstName: "John " + i,
+                    lastName: "Doe " + i,
+                    classname: "Class " + i
+                });
+            
+            $scope.grid = {
+                    data: employees,
+                    columnDefs: [
+                    {
+                        field: "firstName",
+                        displayName: "First Name"
+                    },
+                    {
+                        field: "lastName",
+                        displayName: "Last Name"
+                    },
+                    {
+                        field: "classname",
+                        displayName: "Class Name"
+                    }
+                    ]
+            };
   
 });
 

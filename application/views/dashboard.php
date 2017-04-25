@@ -8,12 +8,21 @@
 	<meta name="keyword" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ASSET Automation System</title>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<!-- Angular JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.min.js"></script>
+  <script src="asset/js/plugins/jquery.datatables.min.js"></script>
+  <script src="http://fb.me/react-0.12.1.js"></script>
+  <script src="asset/js/ngReactGrid.js"></script>
+  <script src="asset/js/plugins/datatables.bootstrap.min.js"></script>
+  
   <!-- start: Css -->
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/bootstrap.min.css">
 
   <!-- plugins -->
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/font-awesome.min.css"/>
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/ngReactGrid.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/datatables.bootstrap.min.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/simple-line-icons.css"/>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>asset/css/plugins/mediaelementplayer.css"/>
@@ -28,10 +37,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
       <![endif]-->
 
-   <!-- Angular JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>  
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.min.js"></script>
-
+   
   <!-- MY App -->
   <script src="<?php echo base_url();?>app/packages/dirPagination.js"></script>
   <script src="<?php echo base_url();?>app/routes.js"></script>
@@ -59,7 +65,7 @@
     <script src="<?php echo base_url();?>asset/js/bootstrap.min.js"></script>
    </footer>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    
     <script src="asset/js/general.js"></script>
 </body>
 </html>

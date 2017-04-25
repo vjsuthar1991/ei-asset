@@ -2,8 +2,8 @@
         <nav class="navbar navbar-default header navbar-fixed-top">
           <div class="col-md-12 nav-wrapper">
             <div class="navbar-header" style="width:100%;">
-                <a href="<?php echo base_url();?>dashboard" class="navbar-brand"> 
-                 <b>MIMIN</b>
+                <a href="<?php echo base_url();?>" class="navbar-brand"> 
+                 <b>ASSET</b>
                 </a>
 
               <ul class="nav navbar-nav search-nav">
@@ -13,7 +13,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="javascript:void(0)">Inventory Dashboard</a></li>
                   <li><a href="<?php echo base_url();?>add_student_target">Add Student Target</a></li>
-                  <li><a href="<?php echo base_url();?>listing-table">Listing Table</a></li>
+                  <li><a href="<?php echo base_url();?>listing_table">Listing Table</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="#">Separated link</a></li>
                   <li role="separator" class="divider"></li>

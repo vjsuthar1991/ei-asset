@@ -55,8 +55,10 @@ select{
   border-radius: 0px !important;
   border:1px solid #ddd;
   padding: 7px;
-  padding-left: 20px;
-  padding-right: 20px;
+  width: 75px;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  background: #fff;
 }
 
 label{ font-weight:400; }

@@ -1,4 +1,4 @@
-var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad']);
+var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad','ngReactGrid']);
 
 app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
@@ -42,22 +42,7 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
                 controller: 'ListingTableController',
 
-                resolve: {
-                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            name: 'ui.datatables',
-         // add UI select css / js for this state
-                            files: [
-
-                                'asset/js/plugins/moment.min.js',
-                                'asset/js/plugins/datatables.bootstrap.min.js',
-                                'asset/js/plugins/jquery.datatables.min.js',
-                                'asset/js/plugins/jquery.nicescroll.js',
-                                
-                            ] 
-                        }]);
-                    }]
-                }
+                
             });
 
 
