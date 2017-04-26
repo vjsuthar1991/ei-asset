@@ -11,13 +11,13 @@
                 <li class="dropdown">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Inventory System <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="javascript:void(0)">Inventory Dashboard</a></li>
                   <li><a href="<?php echo base_url();?>add_student_target">Add Student Target</a></li>
+                  <li role="separator" class="divider"></li>
                   <li><a href="<?php echo base_url();?>listing_table">Listing Table</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
+                  <li><a href="<?php echo base_url();?>add_user">Add User</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>
+                  <li><a href="<?php echo base_url();?>view_user">View Users</a></li>
                 </ul>
               </li>
               

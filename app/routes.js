@@ -43,6 +43,10 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                 controller: 'ListingTableController',
 
                 
+            }).
+            when('/add_user',{
+                 templateUrl: 'templates/add_user.html',
+                 controller: 'AddUserController',  
             });
 
 

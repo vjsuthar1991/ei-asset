@@ -188,7 +188,7 @@ app.controller('ListingTableController', function($scope,$http){
      
     var employees = [];
             
-            for(var i = 0; i < 1000; i++)
+            for(var i = 0; i < 100000; i++)
                 employees.push({
                     firstName: "John " + i,
                     lastName: "Doe " + i,
@@ -216,3 +216,6 @@ app.controller('ListingTableController', function($scope,$http){
 });
 
 
+app.controller('AddUserController', function($scope,$http){
+ 
+});
