@@ -8,7 +8,7 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
             when('/', {
 
-                templateUrl: 'templates/dashboard.html',
+                templateUrl: 'views/dashboard.html',
 
                 controller: 'DashboardController',
 
@@ -31,21 +31,21 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
             when('/add_student_target', {
 
-                templateUrl: 'templates/add_student_target.html',
+                templateUrl: 'views/add_student_target.html',
 
                 controller: 'AddStudentTargetController'
 
             }).
 
             when('/listing_table', {
-                templateUrl: 'templates/listing_table.html',
+                templateUrl: 'views/listing_table.html',
 
                 controller: 'ListingTableController',
 
                 
             }).
             when('/add_user',{
-                 templateUrl: 'templates/add_user.html',
+                 templateUrl: 'views/add_user.html',
                  controller: 'AddUserController',  
             });
 
