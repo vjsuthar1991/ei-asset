@@ -251,12 +251,9 @@ app.controller('AddUserController', function($scope,$http){
           }
         });
 
-    $(document).on('submit','#adduserform',function(event){
+    $(document).on('submit','#adduserform',function(){
             // code
-jQuery('#adduserbtn').attr('disabled','disabled');
-            event.stopImmediatePropagation();
-       
-          //disable the default form submission
+            //disable the default form submission
           event.preventDefault();
           var jsonData = {};
 
@@ -304,7 +301,6 @@ jQuery('#adduserbtn').attr('disabled','disabled');
                         $('#add_user_message_box').removeClass('alert-danger');
                     }
                     $('#add_user_message_box').addClass('alert-success');
-                    $('#add_user_message_box').text('');
                     $('#add_user_message_box').append(response.message);
                     $('#add_user_message_box').removeClass('hide');
                     $(window).scrollTop($('#add_user_message_box').offset().top);
@@ -324,7 +320,7 @@ jQuery('#adduserbtn').attr('disabled','disabled');
 });
 
 app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder){
-
+    
     $scope.users = [];
     var flag = 0;
     var userData = [];
@@ -351,29 +347,7 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
 
                           });
                     });
-                   console.log($scope.users);
-                    // $scope.columns = [{
-                    //     id: "column2",
-                    //     title: "Last Name",
-                    //     directive: "secondcolumn",
-                    //     visible: true
-                    //   }, {
-                    //     id: "column1",
-                    //     title: "First Name",
-                    //     directive: "firstcolumn",
-                    //     visible: true
-                    //   }, {
-                    //     id: "column3",
-                    //     title: "Email",
-                    //     directive: "thirdcolumn",
-                    //     visible: true
-                    //   },{
-                    //     id: "column4",
-                    //     title: "Action",
-                    //     directive: "fourthcolumn",
-                    //     visible: true
-                    //   }, ];
-                    
+                   
                     
                     // $scope.grid = {
                     //         data: users,
@@ -405,147 +379,9 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
 
  //},500);
 
-
 });
 
-app.controller('EditUserController', function($scope,$http,$routeParams,$location,$window,$route){
-    
-    var data = {user_id : $routeParams.user_id};
-    $scope.userDetails = [];
-
-    data = JSON.stringify(data);
-    $.ajax({
-            url: './api/user/get_user',
-            type: 'POST',
-            data: data,
-            dataType : 'json', // data type
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    userDetails = response.data[0];
-                    jQuery('#user_id').val(userDetails.user_id);
-                    jQuery('#user_firstname').val(userDetails.user_name);
-                    jQuery('#user_lastname').val(userDetails.user_lastname);
-                    jQuery('#user_email').val(userDetails.user_email);
-                    jQuery('#user_password').val(userDetails.user_password);
-
-                }
-              
-            }
-          });
-
-     $("#edituserform").validate({
-          errorElement: "em",
-          errorPlacement: function(error, element) {
-            $(element.parent("div").addClass("form-animate-error"));
-            error.appendTo(element.parent("div"));
-          },
-          success: function(label) {
-            $(label.parent("div").removeClass("form-animate-error"));
-          },
-          rules: {
-            user_firstname: "required",
-            user_lastname: "required",
-            user_password: {
-              required: true,
-              minlength: 5
-            },
-            user_email: {
-              required: true,
-              email: true
-            }
-          },
-          messages: {
-            user_firstname: "Please enter your firstname",
-            user_lastname: "Please enter your lastname",
-            user_password: {
-              required: "Please provide a password",
-              minlength: "Your password must be at least 5 characters long"
-            },
-            user_email: "Please enter a valid email address"
-            
-          }
-        });
-    
-    $(document).on('submit','#edituserform',function(event){
-            // code
-          //event.preventDefault();
-          jQuery('#edituserbtn').attr('disabled','disabled');
-          var jsonData = {};
-
-         
-          //grab all form data  
-          var formData = jQuery('form#edituserform').serializeArray();
-          jQuery.each(formData, function() {
-
-             if (jsonData[this.name]) {
-
-             if (!jsonData[this.name].push) {
-
-             jsonData[this.name] = [jsonData[this.name]];
-
-             }
-
-             jsonData[this.name].push(this.value || '');
-             } else {
-
-             jsonData[this.name] = this.value || '';
-
-             }
-
-             
-             });
-
-            jsonData = JSON.stringify(jsonData);
-
-          //console.log(JSON.parse(JSON.stringify(jsonData)));  
-          $.ajax({
-            url: './api/user/edit_user',
-            type: 'POST',
-            dataType : 'json', // data type
-            data: jsonData,
-            async: true,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    if($('#edit_user_message_box').hasClass('alert-danger')){
-                        $('#edit_user_message_box').removeClass('alert-danger');
-                    }
-                    $('#edit_user_message_box').addClass('alert-success');
-                    $('#edit_user_message_box').text('');
-                    $('#edit_user_message_box').append(response.message);
-                    $('#edit_user_message_box').removeClass('hide');
-                    $(window).scrollTop($('#edit_user_message_box').offset().top);
-
-                    setTimeout(function(){ $location.search('user_id', null);$location.path('/view_user');$scope.$apply();$route.reload(); }, 3000);
-                    
-                    
-                }
-              //window.location="#/portfolio/view-portfolio-cat"
-              
-            }
-          });
-        
-          return false;
-            
-        });
-    
- //setTimeout(function() {
-
-     
-
- //},500);
-
-
+app.controller('EditUserController', function($scope,$http,$routeParams){
+    var param1 = $routeParams.param1;
+    console.log(param1);
 });
