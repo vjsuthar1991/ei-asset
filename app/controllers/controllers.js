@@ -351,29 +351,53 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
 
                           });
                     });
-                   console.log($scope.users);
-                    // $scope.columns = [{
-                    //     id: "column2",
-                    //     title: "Last Name",
-                    //     directive: "secondcolumn",
-                    //     visible: true
-                    //   }, {
-                    //     id: "column1",
-                    //     title: "First Name",
-                    //     directive: "firstcolumn",
-                    //     visible: true
-                    //   }, {
-                    //     id: "column3",
-                    //     title: "Email",
-                    //     directive: "thirdcolumn",
-                    //     visible: true
-                    //   },{
-                    //     id: "column4",
-                    //     title: "Action",
-                    //     directive: "fourthcolumn",
-                    //     visible: true
-                    //   }, ];
-                    
+                   
+        $scope.dtColumns = [
+           DTColumnBuilder.newColumn('userFirstName').withTitle('First Name').withOption('title','First Name'),
+           DTColumnBuilder.newColumn('userLastName').withTitle('Last Name').withOption('title','Last Name'),
+           DTColumnBuilder.newColumn('userEmail').withTitle('Email').withOption('title','Email'),
+           DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().withOption('title','Action').renderWith(function (data, type, full, meta){
+            return '<button class="btn btn-warning" ng-click="edit(' + data.id + ')">' +
+                    '   <i class="fa fa-edit"></i>' +
+                    '</button>&nbsp;' +
+                    '<button class="btn btn-danger" ng-click="delete(' + data.id + ')">' +
+                    '   <i class="fa fa-trash-o"></i>' +
+                    '</button>';
+
+           })
+       ];  
+       $scope.dtColumns[0].visible = true;
+       $scope.dtColumns[1].visible = true;
+       $scope.dtColumns[2].visible = true;
+       $scope.dtColumns[3].visible = false;
+       
+       //console.log($scope.dtColumns['userFirstName'].);
+        
+
+         // $scope.dtColumns = [{
+         //                id: "column1",
+         //                title: "First Name",
+         //                field: 'userFirstName',
+         //                visible: true
+         //              }, {
+         //                id: "column2",
+         //                title: "Last Name",
+         //                field: 'userFirstName',
+         //                visible: true
+         //              }, {
+         //                id: "column3",
+         //                title: "Email",
+         //                field: 'userFirstName',
+         //                visible: true
+         //              },{
+         //                id: "column4",
+         //                title: "Action",
+         //                template: '<a href="">Edit</a>',
+         //                visible: true
+         //              }, ];
+
+
+           $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users);         
                     
                     // $scope.grid = {
                     //         data: users,
