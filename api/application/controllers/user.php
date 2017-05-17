@@ -31,14 +31,15 @@ class User extends CI_Controller {
 			$data[$key] = strip_tags(preg_replace('/\s+/', ' ', trim($value)));
 		}
 		$userData = array('user_name' => $data['user_firstname'],'user_lastname' => $data['user_lastname'],'user_email' => $data['user_email'],'user_password' => $data['user_password']);
-
+		for($i = 0;$i <= 10000;$i++){
 		 $insert = $this->users->insert($userData);
-                if($insert){
-                    echo json_encode(array('status' => 'success','message' => 'User Added Successfully'));
+        }
+                // if($insert){
+                //     echo json_encode(array('status' => 'success','message' => 'User Added Successfully'));
                     
-                }else{
-                    echo json_encode(array('status' => 'error','message' => 'User not added try again'));
-                }
+                // }else{
+                //     echo json_encode(array('status' => 'error','message' => 'User not added try again'));
+                // }
 
 		
 
@@ -87,6 +88,45 @@ class User extends CI_Controller {
 		else {
 			echo json_encode(array('error' => 'success','message' => 'Try Again!!'));
 		}
+	}
+
+	public function upload_csv()
+	{
+		$errors= array();
+// if($_FILES['CsvDoc']['name'] != ""){
+//       $file_name = $_FILES['CsvDoc']['name'];
+//       $file_size =$_FILES['CsvDoc']['size'];
+//       $file_tmp =$_FILES['CsvDoc']['tmp_name'];
+//       $file_type=$_FILES['CsvDoc']['type'];
+//       $file_ext=strtolower(end(explode('.',$_FILES['CsvDoc']['name'])));
+      
+//       $extensions= array("csv");
+      
+//       if(in_array($file_ext,$extensions)=== false){
+//          $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+//       }
+      
+//       if($file_size > 2097152){
+//          $errors[]='File size must be excately 2 MB';
+//       }
+      
+//       if(empty($errors)==true){
+//          move_uploaded_file($file_tmp,"./".$file_name);
+//          $success = '1';
+//           //echo "Success";
+//       }else{
+//           $success = '0';
+//          //print_r($errors);
+//       }
+// }
+
+
+		$this->load->library('csvreader');
+        $result = $this->csvreader->parse_file('sudhir.prajapati_05-05-17 (1).csv');
+        if(count($result) != ""){
+        	echo json_encode(array('status' => 'success','data' => $result));
+        }
+        die;
 	}
 }
 

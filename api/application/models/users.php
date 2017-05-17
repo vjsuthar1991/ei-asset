@@ -62,4 +62,8 @@ class Users extends CI_Model{
        
     }
 
+    public function upload_csv($data = array()){
+        
+    }
+
 }

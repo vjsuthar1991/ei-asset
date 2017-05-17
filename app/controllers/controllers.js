@@ -1,289 +1,289 @@
 app.controller('DashboardController', function($scope,$http,$ocLazyLoad) {
- 
+
   //$scope.pools = [];
          // start: Chart =============
-        
-        Chart.defaults.global.pointHitDetectionRadius = 1;
-        Chart.defaults.global.customTooltips = function(tooltip) {
 
-            var tooltipEl = $('#chartjs-tooltip');
+         Chart.defaults.global.pointHitDetectionRadius = 1;
+         Chart.defaults.global.customTooltips = function(tooltip) {
 
-            if (!tooltip) {
-                tooltipEl.css({
-                    opacity: 0
-                });
-                return;
-            }
+          var tooltipEl = $('#chartjs-tooltip');
 
-            tooltipEl.removeClass('above below');
-            tooltipEl.addClass(tooltip.yAlign);
-
-            var innerHtml = '';
-            if (undefined !== tooltip.labels && tooltip.labels.length) {
-                for (var i = tooltip.labels.length - 1; i >= 0; i--) {
-                    innerHtml += [
-                        '<div class="chartjs-tooltip-section">',
-                        '   <span class="chartjs-tooltip-key" style="background-color:' + tooltip.legendColors[i].fill + '"></span>',
-                        '   <span class="chartjs-tooltip-value">' + tooltip.labels[i] + '</span>',
-                        '</div>'
-                    ].join('');
-                }
-                tooltipEl.html(innerHtml);
-            }
-
+          if (!tooltip) {
             tooltipEl.css({
-                opacity: 1,
-                left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
-                top: tooltip.chart.canvas.offsetTop + tooltip.y + 'px',
-                fontFamily: tooltip.fontFamily,
-                fontSize: tooltip.fontSize,
-                fontStyle: tooltip.fontStyle
+              opacity: 0
             });
+            return;
+          }
+
+          tooltipEl.removeClass('above below');
+          tooltipEl.addClass(tooltip.yAlign);
+
+          var innerHtml = '';
+          if (undefined !== tooltip.labels && tooltip.labels.length) {
+            for (var i = tooltip.labels.length - 1; i >= 0; i--) {
+              innerHtml += [
+              '<div class="chartjs-tooltip-section">',
+              '   <span class="chartjs-tooltip-key" style="background-color:' + tooltip.legendColors[i].fill + '"></span>',
+              '   <span class="chartjs-tooltip-value">' + tooltip.labels[i] + '</span>',
+              '</div>'
+              ].join('');
+            }
+            tooltipEl.html(innerHtml);
+          }
+
+          tooltipEl.css({
+            opacity: 1,
+            left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
+            top: tooltip.chart.canvas.offsetTop + tooltip.y + 'px',
+            fontFamily: tooltip.fontFamily,
+            fontSize: tooltip.fontSize,
+            fontStyle: tooltip.fontStyle
+          });
         };
         var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100);
+          return Math.round(Math.random() * 100);
         };
         var lineChartData = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [{
-                label: "My First dataset",
-                fillColor: "rgba(21,186,103,0.4)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(66,69,67,0.3)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                 data: [18,9,5,7,4.5,4,5,4.5,6,5.6,7.5]
-            }, {
-                label: "My Second dataset",
-                fillColor: "rgba(21,113,186,0.5)",
-                strokeColor: "rgba(151,187,205,1)",
-                pointColor: "rgba(151,187,205,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(151,187,205,1)",
-                data: [4,7,5,7,4.5,4,5,4.5,6,5.6,7.5]
-            }]
+          labels: ["January", "February", "March", "April", "May", "June", "July"],
+          datasets: [{
+            label: "My First dataset",
+            fillColor: "rgba(21,186,103,0.4)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(66,69,67,0.3)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [18,9,5,7,4.5,4,5,4.5,6,5.6,7.5]
+          }, {
+            label: "My Second dataset",
+            fillColor: "rgba(21,113,186,0.5)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: [4,7,5,7,4.5,4,5,4.5,6,5.6,7.5]
+          }]
         };
 
         var doughnutData = [
-                {
-                    value: 300,
-                    color:"#129352",
-                    highlight: "#15BA67",
-                    label: "Alfa"
-                },
-                {
-                    value: 50,
-                    color: "#1AD576",
-                    highlight: "#15BA67",
-                    label: "Beta"
-                },
-                {
-                    value: 100,
-                    color: "#FDB45C",
-                    highlight: "#15BA67",
-                    label: "Gamma"
-                },
-                {
-                    value: 40,
-                    color: "#0F5E36",
-                    highlight: "#15BA67",
-                    label: "Peta"
-                },
-                {
-                    value: 120,
-                    color: "#15A65D",
-                    highlight: "#15BA67",
-                    label: "X"
-                }
+        {
+          value: 300,
+          color:"#129352",
+          highlight: "#15BA67",
+          label: "Alfa"
+        },
+        {
+          value: 50,
+          color: "#1AD576",
+          highlight: "#15BA67",
+          label: "Beta"
+        },
+        {
+          value: 100,
+          color: "#FDB45C",
+          highlight: "#15BA67",
+          label: "Gamma"
+        },
+        {
+          value: 40,
+          color: "#0F5E36",
+          highlight: "#15BA67",
+          label: "Peta"
+        },
+        {
+          value: 120,
+          color: "#15A65D",
+          highlight: "#15BA67",
+          label: "X"
+        }
 
-            ];
+        ];
 
 
         var doughnutData2 = [
-                {
-                    value: 100,
-                    color:"#129352",
-                    highlight: "#15BA67",
-                    label: "Alfa"
-                },
-                {
-                    value: 250,
-                    color: "#FF6656",
-                    highlight: "#FF6656",
-                    label: "Beta"
-                },
-                {
-                    value: 100,
-                    color: "#FDB45C",
-                    highlight: "#15BA67",
-                    label: "Gamma"
-                },
-                {
-                    value: 40,
-                    color: "#FD786A",
-                    highlight: "#15BA67",
-                    label: "Peta"
-                },
-                {
-                    value: 120,
-                    color: "#15A65D",
-                    highlight: "#15BA67",
-                    label: "X"
-                }
+        {
+          value: 100,
+          color:"#129352",
+          highlight: "#15BA67",
+          label: "Alfa"
+        },
+        {
+          value: 250,
+          color: "#FF6656",
+          highlight: "#FF6656",
+          label: "Beta"
+        },
+        {
+          value: 100,
+          color: "#FDB45C",
+          highlight: "#15BA67",
+          label: "Gamma"
+        },
+        {
+          value: 40,
+          color: "#FD786A",
+          highlight: "#15BA67",
+          label: "Peta"
+        },
+        {
+          value: 120,
+          color: "#15A65D",
+          highlight: "#15BA67",
+          label: "X"
+        }
 
-            ];
+        ];
 
         var barChartData = {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
-                datasets: [
-                    {
-                        label: "My First dataset",
-                        fillColor: "rgba(21,186,103,0.4)",
-                        strokeColor: "rgba(220,220,220,0.8)",
-                        highlightFill: "rgba(21,186,103,0.2)",
-                        highlightStroke: "rgba(21,186,103,0.2)",
-                        data: [65, 59, 80, 81, 56, 55, 40]
-                    },
-                    {
-                        label: "My Second dataset",
-                        fillColor: "rgba(21,113,186,0.5)",
-                        strokeColor: "rgba(151,187,205,0.8)",
-                        highlightFill: "rgba(21,113,186,0.2)",
-                        highlightStroke: "rgba(21,113,186,0.2)",
-                        data: [28, 48, 40, 19, 86, 27, 90]
-                    }
-                ]
-            };
-            
-                var ctx2 = $(".line-chart")[0].getContext("2d");
-                window.myLine = new Chart(ctx2).Line(lineChartData, {
-                     responsive: true,
-                        showTooltips: true,
-                        multiTooltipTemplate: "<%= value %>",
-                     maintainAspectRatio: false
-                });
+          labels: ["January", "February", "March", "April", "May", "June", "July"],
+          datasets: [
+          {
+            label: "My First dataset",
+            fillColor: "rgba(21,186,103,0.4)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(21,186,103,0.2)",
+            highlightStroke: "rgba(21,186,103,0.2)",
+            data: [65, 59, 80, 81, 56, 55, 40]
+          },
+          {
+            label: "My Second dataset",
+            fillColor: "rgba(21,113,186,0.5)",
+            strokeColor: "rgba(151,187,205,0.8)",
+            highlightFill: "rgba(21,113,186,0.2)",
+            highlightStroke: "rgba(21,113,186,0.2)",
+            data: [28, 48, 40, 19, 86, 27, 90]
+          }
+          ]
+        };
 
-                var ctx3 = $(".bar-chart")[0].getContext("2d");
-                window.myLine = new Chart(ctx3).Bar(barChartData, {
-                     responsive: true,
-                        showTooltips: true
-                });
+        var ctx2 = $(".line-chart")[0].getContext("2d");
+        window.myLine = new Chart(ctx2).Line(lineChartData, {
+         responsive: true,
+         showTooltips: true,
+         multiTooltipTemplate: "<%= value %>",
+         maintainAspectRatio: false
+       });
 
-                var ctx4 = $(".doughnut-chart2")[0].getContext("2d");
-                window.myDoughnut2 = new Chart(ctx4).Doughnut(doughnutData2, {
-                    responsive : true,
-                    showTooltips: true
-                });
-                
-           
-});
+        var ctx3 = $(".bar-chart")[0].getContext("2d");
+        window.myLine = new Chart(ctx3).Bar(barChartData, {
+         responsive: true,
+         showTooltips: true
+       });
+
+        var ctx4 = $(".doughnut-chart2")[0].getContext("2d");
+        window.myDoughnut2 = new Chart(ctx4).Doughnut(doughnutData2, {
+          responsive : true,
+          showTooltips: true
+        });
+
+
+      });
 
 app.controller('AddStudentTargetController', function($scope,$http){
- 
+
 });
 
 app.controller('ListingTableController', function($scope,$http){
 
-    var employees = [];
-            
-            for(var i = 0; i < 100000; i++)
-                employees.push({
-                    firstName: "John " + i,
-                    lastName: "Doe " + i,
-                    classname: "Class " + i
-                });
-            
-            $scope.grid = {
-                    data: employees,
-                    columnDefs: [
-                    {
-                        field: "firstName",
-                        displayName: "First Name"
-                    },
-                    {
-                        field: "lastName",
-                        displayName: "Last Name"
-                    },
-                    {
-                        field: "classname",
-                        displayName: "Class Name"
-                    }
-                    ]
-            };
+  var employees = [];
+
+  for(var i = 0; i < 100000; i++)
+    employees.push({
+      firstName: "John " + i,
+      lastName: "Doe " + i,
+      classname: "Class " + i
+    });
+
+  $scope.grid = {
+    data: employees,
+    columnDefs: [
+    {
+      field: "firstName",
+      displayName: "First Name"
+    },
+    {
+      field: "lastName",
+      displayName: "Last Name"
+    },
+    {
+      field: "classname",
+      displayName: "Class Name"
+    }
+    ]
+  };
   
 });
 
 
 app.controller('AddUserController', function($scope,$http){
 
-    $("#adduserform").validate({
-          errorElement: "em",
-          errorPlacement: function(error, element) {
-            $(element.parent("div").addClass("form-animate-error"));
-            error.appendTo(element.parent("div"));
-          },
-          success: function(label) {
-            $(label.parent("div").removeClass("form-animate-error"));
-          },
-          rules: {
-            user_firstname: "required",
-            user_lastname: "required",
-            user_password: {
-              required: true,
-              minlength: 5
-            },
-            user_email: {
-              required: true,
-              email: true
-            }
-          },
-          messages: {
-            user_firstname: "Please enter your firstname",
-            user_lastname: "Please enter your lastname",
-            user_password: {
-              required: "Please provide a password",
-              minlength: "Your password must be at least 5 characters long"
-            },
-            user_email: "Please enter a valid email address"
-            
-          }
-        });
+  $("#adduserform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      $(element.parent("div").addClass("form-animate-error"));
+      error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+      $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      user_firstname: "required",
+      user_lastname: "required",
+      user_password: {
+        required: true,
+        minlength: 5
+      },
+      user_email: {
+        required: true,
+        email: true
+      }
+    },
+    messages: {
+      user_firstname: "Please enter your firstname",
+      user_lastname: "Please enter your lastname",
+      user_password: {
+        required: "Please provide a password",
+        minlength: "Your password must be at least 5 characters long"
+      },
+      user_email: "Please enter a valid email address"
 
-    $(document).on('submit','#adduserform',function(event){
+    }
+  });
+
+  $(document).on('submit','#adduserform',function(event){
             // code
-jQuery('#adduserbtn').attr('disabled','disabled');
+            jQuery('#adduserbtn').attr('disabled','disabled');
             event.stopImmediatePropagation();
-       
+
           //disable the default form submission
           event.preventDefault();
           var jsonData = {};
 
-         
+
           //grab all form data  
           var formData = jQuery('form#adduserform').serializeArray();
           jQuery.each(formData, function() {
 
-             if (jsonData[this.name]) {
+           if (jsonData[this.name]) {
 
              if (!jsonData[this.name].push) {
 
-             jsonData[this.name] = [jsonData[this.name]];
+               jsonData[this.name] = [jsonData[this.name]];
 
              }
 
              jsonData[this.name].push(this.value || '');
-             } else {
+           } else {
 
              jsonData[this.name] = this.value || '';
 
-             }
+           }
 
-             
-             });
 
-            jsonData = JSON.stringify(jsonData);
+         });
+
+          jsonData = JSON.stringify(jsonData);
 
           //console.log(JSON.parse(JSON.stringify(jsonData)));  
           $.ajax({
@@ -296,83 +296,83 @@ jQuery('#adduserbtn').attr('disabled','disabled');
             contentType: false,
             processData: false,
             success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    if($('#add_user_message_box').hasClass('alert-danger')){
-                        $('#add_user_message_box').removeClass('alert-danger');
-                    }
-                    $('#add_user_message_box').addClass('alert-success');
-                    $('#add_user_message_box').text('');
-                    $('#add_user_message_box').append(response.message);
-                    $('#add_user_message_box').removeClass('hide');
-                    $(window).scrollTop($('#add_user_message_box').offset().top);
+              var response = JSON.parse(JSON.stringify(returndata));
 
-                    setTimeout(function(){ window.location.reload(); }, 3000);
-                    
+              if(response.status == "success"){
+
+                if($('#add_user_message_box').hasClass('alert-danger')){
+                  $('#add_user_message_box').removeClass('alert-danger');
                 }
+                $('#add_user_message_box').addClass('alert-success');
+                $('#add_user_message_box').text('');
+                $('#add_user_message_box').append(response.message);
+                $('#add_user_message_box').removeClass('hide');
+                $(window).scrollTop($('#add_user_message_box').offset().top);
+
+                setTimeout(function(){ window.location.reload(); }, 3000);
+
+              }
               //window.location="#/portfolio/view-portfolio-cat"
               
             }
           });
 
-          return false;
-            
-        });
+return false;
+
+});
 
 });
 
 app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder){
 
-    $scope.users = [];
-    var flag = 0;
-    var userData = [];
-    $.ajax({
-            url: './api/user/list_users',
-            type: 'POST',
+  $scope.users = [];
+  var flag = 0;
+  var userData = [];
+  $.ajax({
+    url: './api/user/list_users',
+    type: 'POST',
             dataType : 'json', // data type
             async: false,
             cache: false,
             contentType: false,
             processData: false,
             success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    
-                    jQuery.each( response.data, function( i, val ) {
-                        $scope.users.push({
-                            userId: val.user_id,
-                            userFirstName: val.user_name,
-                            userLastName: val.user_lastname,
-                            userEmail: val.user_email
+              var response = JSON.parse(JSON.stringify(returndata));
 
-                          });
-                    });
-                   
-        $scope.dtColumns = [
-           DTColumnBuilder.newColumn('userFirstName').withTitle('First Name').withOption('title','First Name'),
-           DTColumnBuilder.newColumn('userLastName').withTitle('Last Name').withOption('title','Last Name'),
-           DTColumnBuilder.newColumn('userEmail').withTitle('Email').withOption('title','Email'),
-           DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().withOption('title','Action').renderWith(function (data, type, full, meta){
-            return '<button class="btn btn-warning" ng-click="edit(' + data.id + ')">' +
-                    '   <i class="fa fa-edit"></i>' +
-                    '</button>&nbsp;' +
-                    '<button class="btn btn-danger" ng-click="delete(' + data.id + ')">' +
-                    '   <i class="fa fa-trash-o"></i>' +
-                    '</button>';
+              if(response.status == "success"){
 
-           })
-       ];  
-       $scope.dtColumns[0].visible = true;
-       $scope.dtColumns[1].visible = true;
-       $scope.dtColumns[2].visible = true;
-       $scope.dtColumns[3].visible = false;
-       
+
+                jQuery.each( response.data, function( i, val ) {
+                  $scope.users.push({
+                    userId: val.user_id,
+                    userFirstName: val.user_name,
+                    userLastName: val.user_lastname,
+                    userEmail: val.user_email
+
+                  });
+                });
+
+                $scope.dtColumns = [
+                DTColumnBuilder.newColumn('userFirstName').withTitle('First Name').withOption('title','First Name'),
+                DTColumnBuilder.newColumn('userLastName').withTitle('Last Name').withOption('title','Last Name'),
+                DTColumnBuilder.newColumn('userEmail').withTitle('Email').withOption('title','Email'),
+                DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().withOption('title','Action').renderWith(function (data, type, full, meta){
+                  return '<button class="btn btn-warning" ng-click="edit(' + data.id + ')">' +
+                  '   <i class="fa fa-edit"></i>' +
+                  '</button>&nbsp;' +
+                  '<button class="btn btn-danger" ng-click="delete(' + data.id + ')">' +
+                  '   <i class="fa fa-trash-o"></i>' +
+                  '</button>';
+
+                })
+                ];  
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = false;
+
        //console.log($scope.dtColumns['userFirstName'].);
-        
+
 
          // $scope.dtColumns = [{
          //                id: "column1",
@@ -397,8 +397,8 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
          //              }, ];
 
 
-           $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users);         
-                    
+         $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users);         
+
                     // $scope.grid = {
                     //         data: users,
                     //         columnDefs: [
@@ -418,14 +418,14 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
                     //         ]
                     // };
 
+                  }
+
                 }
-              
-            }
-          });
-    
+              });
+
  //setTimeout(function() {
 
-     
+
 
  //},500);
 
@@ -433,100 +433,100 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
 });
 
 app.controller('EditUserController', function($scope,$http,$routeParams,$location,$window,$route){
-    
-    var data = {user_id : $routeParams.user_id};
-    $scope.userDetails = [];
 
-    data = JSON.stringify(data);
-    $.ajax({
-            url: './api/user/get_user',
-            type: 'POST',
-            data: data,
+  var data = {user_id : $routeParams.user_id};
+  $scope.userDetails = [];
+
+  data = JSON.stringify(data);
+  $.ajax({
+    url: './api/user/get_user',
+    type: 'POST',
+    data: data,
             dataType : 'json', // data type
             async: false,
             cache: false,
             contentType: false,
             processData: false,
             success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    userDetails = response.data[0];
-                    jQuery('#user_id').val(userDetails.user_id);
-                    jQuery('#user_firstname').val(userDetails.user_name);
-                    jQuery('#user_lastname').val(userDetails.user_lastname);
-                    jQuery('#user_email').val(userDetails.user_email);
-                    jQuery('#user_password').val(userDetails.user_password);
+              var response = JSON.parse(JSON.stringify(returndata));
 
-                }
+              if(response.status == "success"){
+
+                userDetails = response.data[0];
+                jQuery('#user_id').val(userDetails.user_id);
+                jQuery('#user_firstname').val(userDetails.user_name);
+                jQuery('#user_lastname').val(userDetails.user_lastname);
+                jQuery('#user_email').val(userDetails.user_email);
+                jQuery('#user_password').val(userDetails.user_password);
+
+              }
               
             }
           });
 
-     $("#edituserform").validate({
-          errorElement: "em",
-          errorPlacement: function(error, element) {
-            $(element.parent("div").addClass("form-animate-error"));
-            error.appendTo(element.parent("div"));
-          },
-          success: function(label) {
-            $(label.parent("div").removeClass("form-animate-error"));
-          },
-          rules: {
-            user_firstname: "required",
-            user_lastname: "required",
-            user_password: {
-              required: true,
-              minlength: 5
-            },
-            user_email: {
-              required: true,
-              email: true
-            }
-          },
-          messages: {
-            user_firstname: "Please enter your firstname",
-            user_lastname: "Please enter your lastname",
-            user_password: {
-              required: "Please provide a password",
-              minlength: "Your password must be at least 5 characters long"
-            },
-            user_email: "Please enter a valid email address"
-            
-          }
-        });
-    
-    $(document).on('submit','#edituserform',function(event){
+  $("#edituserform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      $(element.parent("div").addClass("form-animate-error"));
+      error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+      $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      user_firstname: "required",
+      user_lastname: "required",
+      user_password: {
+        required: true,
+        minlength: 5
+      },
+      user_email: {
+        required: true,
+        email: true
+      }
+    },
+    messages: {
+      user_firstname: "Please enter your firstname",
+      user_lastname: "Please enter your lastname",
+      user_password: {
+        required: "Please provide a password",
+        minlength: "Your password must be at least 5 characters long"
+      },
+      user_email: "Please enter a valid email address"
+
+    }
+  });
+
+  $(document).on('submit','#edituserform',function(event){
             // code
           //event.preventDefault();
           jQuery('#edituserbtn').attr('disabled','disabled');
           var jsonData = {};
 
-         
+
           //grab all form data  
           var formData = jQuery('form#edituserform').serializeArray();
           jQuery.each(formData, function() {
 
-             if (jsonData[this.name]) {
+           if (jsonData[this.name]) {
 
              if (!jsonData[this.name].push) {
 
-             jsonData[this.name] = [jsonData[this.name]];
+               jsonData[this.name] = [jsonData[this.name]];
 
              }
 
              jsonData[this.name].push(this.value || '');
-             } else {
+           } else {
 
              jsonData[this.name] = this.value || '';
 
-             }
+           }
 
-             
-             });
 
-            jsonData = JSON.stringify(jsonData);
+         });
+
+          jsonData = JSON.stringify(jsonData);
 
           //console.log(JSON.parse(JSON.stringify(jsonData)));  
           $.ajax({
@@ -539,37 +539,450 @@ app.controller('EditUserController', function($scope,$http,$routeParams,$locatio
             contentType: false,
             processData: false,
             success: function (returndata) {
-                var response = JSON.parse(JSON.stringify(returndata));
-               
-                if(response.status == "success"){
-                    
-                    if($('#edit_user_message_box').hasClass('alert-danger')){
-                        $('#edit_user_message_box').removeClass('alert-danger');
-                    }
-                    $('#edit_user_message_box').addClass('alert-success');
-                    $('#edit_user_message_box').text('');
-                    $('#edit_user_message_box').append(response.message);
-                    $('#edit_user_message_box').removeClass('hide');
-                    $(window).scrollTop($('#edit_user_message_box').offset().top);
+              var response = JSON.parse(JSON.stringify(returndata));
 
-                    setTimeout(function(){ $location.search('user_id', null);$location.path('/view_user');$scope.$apply();$route.reload(); }, 3000);
-                    
-                    
+              if(response.status == "success"){
+
+                if($('#edit_user_message_box').hasClass('alert-danger')){
+                  $('#edit_user_message_box').removeClass('alert-danger');
                 }
+                $('#edit_user_message_box').addClass('alert-success');
+                $('#edit_user_message_box').text('');
+                $('#edit_user_message_box').append(response.message);
+                $('#edit_user_message_box').removeClass('hide');
+                $(window).scrollTop($('#edit_user_message_box').offset().top);
+
+                setTimeout(function(){ $location.search('user_id', null);$location.path('/view_user');$scope.$apply();$route.reload(); }, 3000);
+
+
+              }
               //window.location="#/portfolio/view-portfolio-cat"
               
             }
           });
-        
-          return false;
-            
-        });
-    
+
+return false;
+
+});
+
  //setTimeout(function() {
 
-     
+
 
  //},500);
+
+
+});
+
+app.controller('UploadCSVController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder){
+  $(document).on('submit','#uploadcsvform',function(event){
+    var fileUpload = document.getElementById("user_csvfile");
+    event.preventDefault();
+
+    if (fileUpload .value != null) {
+
+      var uploadFile = new FormData();
+      var files = $("#user_csvfile").get(0).files;
+      $scope.csvdata = [];
+        // Add the uploaded file content to the form data collection
+        if (files.length > 0) {
+
+          uploadFile.append("CsvDoc", files[0]);
+
+          $.ajax({
+            url: "./api/user/upload_csv",
+            contentType: false,
+            processData: false,
+            data: uploadFile,
+            type: 'POST',
+            success: function (returndata) {
+             var response = JSON.parse(returndata);
+             console.log(response.status);
+             if(response.status == "success"){
+
+              jQuery.each( response.data, function( i, val ) {
+                $scope.csvdata.push({
+                  taskId: val.age,
+                  Category: val.Category,
+                  Age: val.Age,
+                  Product: val.Product
+
+                });
+              });
+
+
+
+                   // jQuery('#uploadedcsvdata').append('<table id="datatables-example1" datatable="" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped table-bordered" width="100%" cellspacing="0" ></table></div><div ng-repeat="column in dtColumns">{{column.title}} visible: <input type="checkbox" ng-model="column.visible" /></div>');
+                   //                     $scope.dtColumns = [
+                   //     DTColumnBuilder.newColumn('taskId').withTitle('Task Id').withOption('title','Task Id'),
+                   //     DTColumnBuilder.newColumn('Category').withTitle('Category').withOption('title','Category'),
+                   //     DTColumnBuilder.newColumn('Age').withTitle('Age').withOption('title','Age'),
+                   //     DTColumnBuilder.newColumn('Product').withTitle('Product').withOption('title','Product')
+                   // ];
+
+                   // $scope.dtColumns[0].visible = true;
+                   // $scope.dtColumns[1].visible = true;
+                   // $scope.dtColumns[2].visible = true;
+                   // $scope.dtColumns[3].visible = false;
+
+                   // $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.csvdata);
+                 }
+
+               }
+             });
+}
+}
+
+});
+
+});
+
+app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  $scope.packingslipsschools = [];
+  
+  $scope.rounds = [];
+  $scope.country = [];
+  var flag = 0;
+  var userData = [];
+  $.ajax({
+    url: './api/packingslip/list_schools',
+    type: 'POST',
+            dataType : 'json', // data type
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+
+                jQuery.each( response.data, function( i, val ) {
+                  $scope.packingslipsschools.push({
+
+                    schoolCode: val.school_code,
+                    schoolName: val.schoolname,
+                    city: val.city,
+                    region: val.region,
+                    numberofStudents: val.no_of_students,
+                    amountPayable: val.amount_payable,
+                    amountPaid: val.paid,
+                    percentagePaid: val.advance_per_paid
+
+                  });
+                });
+
+
+                $scope.rounds = response.rounds;
+
+                $scope.country = response.country;
+
+                
+
+
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "700px");   
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn("Selected")
+                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
+                .notSortable().withOption('title','Checkbox',"searchable", false)
+                .renderWith(function (data, type, full, meta) {
+
+                  if ($scope.packingslipsschools) {
+                    return '<input type="checkbox" class="checkboxes"  value=""/>';
+                  } else {
+                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
+                  }
+                }).withClass("text-center"),
+
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
+                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
+
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = true;
+                $scope.dtColumns[6].visible = true;
+                $scope.dtColumns[7].visible = true;
+                $scope.dtColumns[8].visible = true;
+                $scope.dtColumns[9].visible = true;
+
+
+
+                $(document).on('click','#example-select-all',function(e){
+
+                  // Check/uncheck all checkboxes in the table
+                  $('tbody tr td input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+                
+                });
+
+              }
+              
+            }
+          });
+
+    
+    
+
+    $scope.filterschools = function(e) {
+      $scope.filteredPackingslipsschools = [];
+      console.log('1');
+        var round = $('#roundfilter').val();
+        var paidPercentage = $('#paidpercentagefilter').val();
+        var country = $('#countryfilter').val();
+        var vendor = $('#vendorfilter').val();
+        var data = {round:round,paidPercentage:paidPercentage,country:country,vendor:vendor};
+        data = JSON.stringify(data);
+
+        $.ajax({
+            url: "./api/packingslip/schoolfilter",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
+              
+             var response = returndata;
+             
+                if(response.status == "success"){
+
+                    jQuery.each( response.data, function( i, val ) {
+                        $scope.filteredPackingslipsschools.push({
+
+                          schoolCode: val.school_code,
+                          schoolName: val.schoolname,
+                          city: val.city,
+                          region: val.region,
+                          numberofStudents: val.no_of_students,
+                          amountPayable: val.amount_payable,
+                          amountPaid: val.paid,
+                          percentagePaid: val.advance_per_paid
+
+                        });
+                    });
+
+                   
+                   
+                    console.log('2');
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "700px"); 
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn("Selected")
+                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
+                .notSortable().withOption('title','Checkbox',"searchable", false)
+                .renderWith(function (data, type, full, meta) {
+
+                  if ($scope.packingslipsschools) {
+                    return '<input type="checkbox" class="checkboxes"  value=""/>';
+                  } else {
+                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
+                  }
+                }).withClass("text-center"),
+
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
+                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
+
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = true;
+                $scope.dtColumns[6].visible = true;
+                $scope.dtColumns[7].visible = true;
+                $scope.dtColumns[8].visible = true;
+                $scope.dtColumns[9].visible = true;
+
+                $scope.dtInstance.rerender();
+
+                }
+                else{
+                  console.log('3');
+                  
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "700px"); 
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn("Selected")
+                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
+                .notSortable().withOption('title','Checkbox',"searchable", false)
+                .renderWith(function (data, type, full, meta) {
+
+                  if ($scope.packingslipsschools) {
+                    return '<input type="checkbox" class="checkboxes"  value=""/>';
+                  } else {
+                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
+                  }
+                }).withClass("text-center"),
+
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
+                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
+
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = true;
+                $scope.dtColumns[6].visible = true;
+                $scope.dtColumns[7].visible = true;
+                $scope.dtColumns[8].visible = true;
+                $scope.dtColumns[9].visible = true;
+
+                $scope.dtInstance.rerender();
+                
+
+                }
+
+               }
+             });
+
+    };
+
+    // $(document).on('click','#searchfilterpackingslip',function(e){
+        
+        // $scope.filteredPackingslipsschools = [];
+        // var round = $('#roundfilter').val();
+        // var paidPercentage = $('#paidpercentagefilter').val();
+        // var country = $('#countryfilter').val();
+        // var vendor = $('#vendorfilter').val();
+        // var data = {round:round,paidPercentage:paidPercentage,country:country,vendor:vendor};
+        // data = JSON.stringify(data);
+        
+        
+        
+        // $.ajax({
+        //     url: "./api/packingslip/schoolfilter",
+        //     contentType: false,
+        //     processData: false,
+        //     data: data,
+        //     type: 'POST',
+        //     dataType : 'json',
+        //     success: function (returndata2) {
+              
+        //      var response = returndata2;
+             
+        //         if(response.status == "success"){
+
+        //             jQuery.each( response.data, function( i, val ) {
+        //                 $scope.filteredPackingslipsschools.push({
+
+        //                   schoolCode: val.school_code,
+        //                   schoolName: val.schoolname,
+        //                   city: val.city,
+        //                   region: val.region,
+        //                   numberofStudents: val.no_of_students,
+        //                   amountPayable: val.amount_payable,
+        //                   amountPaid: val.paid,
+        //                   percentagePaid: val.advance_per_paid
+
+        //                 });
+        //             });
+                
+        //             $scope.reload = function() {
+        //               $scope.dtOptions.reloadData();
+        //             };
+                    
+                    
+
+        //             $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+        //           $("td:first", nRow).html(iDisplayIndex +1);
+        //           return nRow;
+        //         }).withOption('paging', false).withOption('scrollY', "700px");   
+
+        //         $scope.dtColumns = [
+
+        //         DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+        //         DTColumnBuilder.newColumn("Selected")
+        //         .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
+        //         .notSortable().withOption('title','Checkbox',"searchable", false)
+        //         .renderWith(function (data, type, full, meta) {
+
+        //           if ($scope.filteredPackingslipsschools) {
+        //             return '<input type="checkbox" class="checkboxes"  value=""/>';
+        //           } else {
+        //             return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
+        //           }
+        //         }).withClass("text-center"),
+
+        //         DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
+        //         DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+        //         DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
+        //         DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
+        //         DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
+        //         DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+        //         DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+        //         DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
+
+        //         ];  
+                
+        //         $scope.dtColumns[0].visible = true;
+        //         $scope.dtColumns[1].visible = true;
+        //         $scope.dtColumns[2].visible = true;
+        //         $scope.dtColumns[3].visible = true;
+        //         $scope.dtColumns[4].visible = true;
+        //         $scope.dtColumns[5].visible = true;
+        //         $scope.dtColumns[6].visible = true;
+        //         $scope.dtColumns[7].visible = true;
+        //         $scope.dtColumns[8].visible = true;
+        //         $scope.dtColumns[9].visible = true;
+
+                
+                
+
+        //         }
+
+        //        }
+        //      });
+
+
+    //});
 
 
 });
