@@ -397,7 +397,7 @@ app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTC
          //              }, ];
 
 
-         $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users);         
+         $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users).withOption('processing',true);         
 
                     // $scope.grid = {
                     //         data: users,
@@ -687,7 +687,8 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px");   
+                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true);   
+
 
                 $scope.dtColumns = [
 
@@ -745,7 +746,8 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
     $scope.filterschools = function(e) {
       $scope.filteredPackingslipsschools = [];
-      console.log('1');
+     
+      
         var round = $('#roundfilter').val();
         var paidPercentage = $('#paidpercentagefilter').val();
         var country = $('#countryfilter').val();
@@ -784,96 +786,25 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
                    
                    
-                    console.log('2');
+                    
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px"); 
-
-                $scope.dtColumns = [
-
-                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
-                DTColumnBuilder.newColumn("Selected")
-                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
-                .notSortable().withOption('title','Checkbox',"searchable", false)
-                .renderWith(function (data, type, full, meta) {
-
-                  if ($scope.packingslipsschools) {
-                    return '<input type="checkbox" class="checkboxes"  value=""/>';
-                  } else {
-                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
-                  }
-                }).withClass("text-center"),
-
-                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
-                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
-                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
-                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
-                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
-                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
-                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
-                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
-
-                ];  
-                
-                $scope.dtColumns[0].visible = true;
-                $scope.dtColumns[1].visible = true;
-                $scope.dtColumns[2].visible = true;
-                $scope.dtColumns[3].visible = true;
-                $scope.dtColumns[4].visible = true;
-                $scope.dtColumns[5].visible = true;
-                $scope.dtColumns[6].visible = true;
-                $scope.dtColumns[7].visible = true;
-                $scope.dtColumns[8].visible = true;
-                $scope.dtColumns[9].visible = true;
+                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true); 
 
                 $scope.dtInstance.rerender();
+                
 
                 }
                 else{
-                  console.log('3');
                   
+                 
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px"); 
+                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
 
-                $scope.dtColumns = [
-
-                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
-                DTColumnBuilder.newColumn("Selected")
-                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
-                .notSortable().withOption('title','Checkbox',"searchable", false)
-                .renderWith(function (data, type, full, meta) {
-
-                  if ($scope.packingslipsschools) {
-                    return '<input type="checkbox" class="checkboxes"  value=""/>';
-                  } else {
-                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
-                  }
-                }).withClass("text-center"),
-
-                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
-                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
-                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
-                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
-                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
-                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
-                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
-                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
-
-                ];  
                 
-                $scope.dtColumns[0].visible = true;
-                $scope.dtColumns[1].visible = true;
-                $scope.dtColumns[2].visible = true;
-                $scope.dtColumns[3].visible = true;
-                $scope.dtColumns[4].visible = true;
-                $scope.dtColumns[5].visible = true;
-                $scope.dtColumns[6].visible = true;
-                $scope.dtColumns[7].visible = true;
-                $scope.dtColumns[8].visible = true;
-                $scope.dtColumns[9].visible = true;
 
                 $scope.dtInstance.rerender();
                 
