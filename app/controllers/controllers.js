@@ -597,7 +597,7 @@ app.controller('UploadCSVController', function($scope,$http,DTOptionsBuilder, DT
             type: 'POST',
             success: function (returndata) {
              var response = JSON.parse(returndata);
-             console.log(response.status);
+             
              if(response.status == "success"){
 
               jQuery.each( response.data, function( i, val ) {
@@ -687,7 +687,7 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true);   
+                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true);   
 
 
                 $scope.dtColumns = [
@@ -697,12 +697,10 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
                 .notSortable().withOption('title','Checkbox',"searchable", false)
                 .renderWith(function (data, type, full, meta) {
-
-                  if ($scope.packingslipsschools) {
-                    return '<input type="checkbox" class="checkboxes"  value=""/>';
-                  } else {
-                    return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
-                  }
+                  
+                  if (full.schoolCode) {
+                    return '<input type="checkbox" class="checkboxes"  value="'+full.schoolCode+'"/>';
+                  } 
                 }).withClass("text-center"),
 
                 DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
@@ -742,7 +740,11 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
           });
 
     
-    
+    /*
+      Function Name: filterschools
+      Description: this function is used to filter the school list according to the filter parameters
+      Date Modified: 17-5-2017
+    */
 
     $scope.filterschools = function(e) {
       $scope.filteredPackingslipsschools = [];
@@ -790,19 +792,19 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true); 
+                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true); 
 
                 $scope.dtInstance.rerender();
                 
 
                 }
-                else{
+                else
+                {
                   
-                 
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "700px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
 
                 
 
@@ -816,104 +818,76 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
     };
 
-    // $(document).on('click','#searchfilterpackingslip',function(e){
-        
-        // $scope.filteredPackingslipsschools = [];
-        // var round = $('#roundfilter').val();
-        // var paidPercentage = $('#paidpercentagefilter').val();
-        // var country = $('#countryfilter').val();
-        // var vendor = $('#vendorfilter').val();
-        // var data = {round:round,paidPercentage:paidPercentage,country:country,vendor:vendor};
-        // data = JSON.stringify(data);
-        
-        
-        
-        // $.ajax({
-        //     url: "./api/packingslip/schoolfilter",
-        //     contentType: false,
-        //     processData: false,
-        //     data: data,
-        //     type: 'POST',
-        //     dataType : 'json',
-        //     success: function (returndata2) {
+    /*
+      Function Name: generate_packing_slip
+      Description: this function is used to generate packing slip CSV file for the schools selected
+      Date Modified: 18-5-2017
+    */
+
+    $scope.generate_packing_slip = function(e) { 
+
+      var arrayOfValues = [];
+      var tableControl= document.getElementById('school_packingslip_list');
+        $('input:checkbox:checked', tableControl).map(function() {
+            
+            arrayOfValues.push($(this).attr('value'));
+        });
+
+        if(arrayOfValues.length > 0){
+
+        data = JSON.stringify(arrayOfValues);
+
+        $.ajax({
+            url: "./api/packingslip/generatepackingslip",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
               
-        //      var response = returndata2;
+             var response = returndata;
              
-        //         if(response.status == "success"){
+                if(response.status == "success"){
 
-        //             jQuery.each( response.data, function( i, val ) {
-        //                 $scope.filteredPackingslipsschools.push({
+                  if($('#add_packingslip_message_box').hasClass('alert-danger')){
+                    $('#add_packingslip_message_box').removeClass('alert-danger');
+                  }
+                  $('#add_packingslip_message_box').addClass('alert-success');
+                  $('#add_packingslip_message_box').text('');
+                  $('#add_packingslip_message_box').append(response.message);
+                  $('#add_packingslip_message_box').removeClass('hide');
+                  $(window).scrollTop($('#add_packingslip_message_box').offset().top);
+                  setTimeout(function(){ window.location.reload(); }, 3000);
+                                      
+                }
+                else {
+                  if($('#add_packingslip_message_box').hasClass('alert-success')){
+                    $('#add_packingslip_message_box').removeClass('alert-success');
+                  }
+                  $('#add_packingslip_message_box').addClass('alert-danger');
+                  $('#add_packingslip_message_box').text('');
+                  $('#add_packingslip_message_box').append(response.message);
+                  $('#add_packingslip_message_box').removeClass('hide');
+                  $(window).scrollTop($('#add_packingslip_message_box').offset().top);
+                  setTimeout(function(){ window.location.reload(); }, 3000);
+                }
 
-        //                   schoolCode: val.school_code,
-        //                   schoolName: val.schoolname,
-        //                   city: val.city,
-        //                   region: val.region,
-        //                   numberofStudents: val.no_of_students,
-        //                   amountPayable: val.amount_payable,
-        //                   amountPaid: val.paid,
-        //                   percentagePaid: val.advance_per_paid
+               }
+             });
 
-        //                 });
-        //             });
-                
-        //             $scope.reload = function() {
-        //               $scope.dtOptions.reloadData();
-        //             };
-                    
-                    
-
-        //             $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
-        //           $("td:first", nRow).html(iDisplayIndex +1);
-        //           return nRow;
-        //         }).withOption('paging', false).withOption('scrollY', "700px");   
-
-        //         $scope.dtColumns = [
-
-        //         DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
-        //         DTColumnBuilder.newColumn("Selected")
-        //         .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
-        //         .notSortable().withOption('title','Checkbox',"searchable", false)
-        //         .renderWith(function (data, type, full, meta) {
-
-        //           if ($scope.filteredPackingslipsschools) {
-        //             return '<input type="checkbox" class="checkboxes"  value=""/>';
-        //           } else {
-        //             return "<input type='checkbox' class='checkboxes' name='Id' value=''/>";
-        //           }
-        //         }).withClass("text-center"),
-
-        //         DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
-        //         DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
-        //         DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
-        //         DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
-        //         DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
-        //         DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
-        //         DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
-        //         DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
-
-        //         ];  
-                
-        //         $scope.dtColumns[0].visible = true;
-        //         $scope.dtColumns[1].visible = true;
-        //         $scope.dtColumns[2].visible = true;
-        //         $scope.dtColumns[3].visible = true;
-        //         $scope.dtColumns[4].visible = true;
-        //         $scope.dtColumns[5].visible = true;
-        //         $scope.dtColumns[6].visible = true;
-        //         $scope.dtColumns[7].visible = true;
-        //         $scope.dtColumns[8].visible = true;
-        //         $scope.dtColumns[9].visible = true;
-
-                
-                
-
-        //         }
-
-        //        }
-        //      });
+        }
+        else {
+          alert("Please Select At Least One School To Proceed Ahead");
+          return false;
+        }
 
 
-    //});
+    };
 
+});
+
+app.controller('CreateVendorController', function($scope,$http){
 
 });

@@ -1,6 +1,13 @@
 'use strict';
 var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad','datatables']);
 
+app.run(function($rootScope, $templateCache) {
+
+   $rootScope.$on('$viewContentLoaded', function() {
+      $templateCache.removeAll();
+   });
+
+});
 app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
     function($routeProvider,$locationProvider,$controllerProvider,$location,) {
@@ -68,6 +75,10 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
             }).when('/packing_slips',{
                  templateUrl: 'views/packing_slips.html',
                  controller: 'PackingSlipsController',  
+                 
+            }).when('/create_vendor',{
+                 templateUrl: 'views/create_vendor.html',
+                 controller: 'CreateVendorController',  
                  
             });
 
