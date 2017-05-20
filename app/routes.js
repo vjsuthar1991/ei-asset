@@ -80,6 +80,15 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                  templateUrl: 'views/create_vendor.html',
                  controller: 'CreateVendorController',  
                  
+            }).when('/vendor_list',{
+                 templateUrl: 'views/vendor_list.html',
+                 controller: 'VendorListController',  
+                 
+            })
+            .when('/edit_vendor',{
+                 templateUrl: 'views/edit_vendor.html',
+                 controller: 'EditVendorController',  
+                 
             });
 
 

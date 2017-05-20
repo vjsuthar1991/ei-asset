@@ -890,4 +890,312 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
 app.controller('CreateVendorController', function($scope,$http){
 
+  $.ajax({
+    url: './api/vendor/get_zones',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        $scope.zones = response.zones;
+
+      }
+      
+    
+    }
+  });
+
+  $("#addvendorform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      $(element.parent("div").addClass("form-animate-error"));
+      error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+      $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      vendor_name: "required",
+      vendor_address: "required",
+      vendor_zone: "required",
+      vendor_username: "required",
+      vendor_password: {
+        required: true,
+        minlength: 5
+      },
+      vendor_phone: {required: true,number: true},
+      vendor_contact_person_1_name: "required",
+      vendor_contact_person_1_email: {required: true,email: true},
+      vendor_contact_person_1_contact_no: {required: true,number: true},
+      vendor_coo_name: "required",
+      vendor_coo_email: {required: true,email:true},
+      vendor_coo_contactno: {required: true,number: true},
+      vendor_ceo_name: "required",
+      vendor_ceo_email: {required: true,email: true},
+      vendor_ceo_contact_no: {required: true,number: true},
+
+    },
+    messages: {
+    
+    }
+  });
+
+$(document).on('submit','#addvendorform',function(event){
+            // code
+          jQuery('#addvendorbtn').attr('disabled','disabled');
+          event.stopImmediatePropagation();
+
+          //disable the default form submission
+          event.preventDefault();
+          var jsonData = {};
+
+
+          //grab all form data  
+          var formData = jQuery('form#addvendorform').serializeArray();
+          jQuery.each(formData, function() {
+
+           if (jsonData[this.name]) {
+
+             if (!jsonData[this.name].push) {
+
+               jsonData[this.name] = [jsonData[this.name]];
+
+             }
+
+             jsonData[this.name].push(this.value || '');
+           } else {
+
+             jsonData[this.name] = this.value || '';
+
+           }
+
+
+         });
+
+          jsonData = JSON.stringify(jsonData);
+
+          //console.log(JSON.parse(JSON.stringify(jsonData)));  
+          $.ajax({
+            url: './api/vendor/add_vendor',
+            type: 'POST',
+            dataType : 'json', // data type
+            data: jsonData,
+            async: true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+                if($('#add_vendor_message_box').hasClass('alert-danger')){
+                  $('#add_vendor_message_box').removeClass('alert-danger');
+                }
+                $('#add_vendor_message_box').addClass('alert-success');
+                $('#add_vendor_message_box').text('');
+                $('#add_vendor_message_box').append(response.message);
+                $('#add_vendor_message_box').removeClass('hide');
+                $(window).scrollTop($('#add_vendor_message_box').offset().top);
+
+                setTimeout(function(){ window.location.reload(); }, 3000);
+
+              }
+              
+            }
+          });
+
+return false;
+
+});
+
+});
+
+app.controller('VendorListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+    //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  $scope.vendorlist = [];
+  
+  $.ajax({
+    url: './api/vendor/list_vendors',
+    type: 'POST',
+            dataType : 'json', // data type
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+
+                jQuery.each( response.vendors, function( i, val ) {
+                  $scope.vendorlist.push({
+                    vendorId: val.vendor_id,
+                    vendorName: val.vendor_name,
+                    vendorAddress: val.vendor_address,
+                    vendorZone: val.vendor_zone,
+                    vendorUsername: val.vendor_username,
+                    vendorPassword: val.vendor_password,
+                    vendorPhone: val.vendor_phone,
+                    vendorContactPerson_1_Name: val.vendor_contact_person_1_name,
+                    vendorContactPerson_1_Email: val.vendor_contact_person_1_email,
+                    vendorContactPerson_1_Contactno: val.vendor_contact_person_1_contactno,
+                    vendorCooName: val.vendor_coo_name,
+                    vendorCooEmail: val.vendor_coo_email,
+                    vendorCooContactno: val.vendor_coo_contactno,
+                    vendorCeoName: val.vendor_ceo_name,
+                    vendorCeoEmail: val.vendor_ceo_email,
+                    vendorCeoContactno: val.vendor_ceo_contactno,
+                    vendorDateCreated: val.vendor_added_date
+
+                  });
+                });
+                
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn("Selected")
+                .withTitle('Select All <br><input type="checkbox" id="example-select-all"/>')
+                .notSortable().withOption('title','Checkbox',"searchable", false)
+                .renderWith(function (data, type, full, meta) {
+                  
+                  if (full.vendorId) {
+                    return '<input type="checkbox" class="checkboxes"  value="'+full.vendorId+'"/>';
+                  } 
+                }).withClass("text-center"),
+
+                DTColumnBuilder.newColumn('vendorName').withTitle('Vendor Name').withOption('title','Vendor Name'),
+                DTColumnBuilder.newColumn('vendorZone').withTitle('Zone').withOption('title','Zone'),
+                DTColumnBuilder.newColumn('vendorDateCreated').withTitle('Date Created').withOption('title','Date Created'),
+                DTColumnBuilder.newColumn('vendorAddress').withTitle('Address').withOption('title','Address'),
+                DTColumnBuilder.newColumn('vendorUsername').withTitle('Username').withOption('title','Username'),
+                DTColumnBuilder.newColumn('vendorPhone').withTitle('Phone').withOption('title','Phone'),
+                DTColumnBuilder.newColumn('vendorContactPerson_1_Name').withTitle('Contact Person 1 Name').withOption('title','Contact Person 1 Name'),
+                DTColumnBuilder.newColumn('vendorContactPerson_1_Email').withTitle('Contact Person 1 Email').withOption('title','Contact Person 1 Email'),
+                DTColumnBuilder.newColumn('vendorContactPerson_1_Contactno').withTitle('Contact Person 1 Contact No.').withOption('title','Contact Person 1 Contact No.'),
+                DTColumnBuilder.newColumn('vendorCooName').withTitle('COO Name').withOption('title','COO Name'),
+                DTColumnBuilder.newColumn('vendorCooEmail').withTitle('COO Email').withOption('title','COO Email'),
+                DTColumnBuilder.newColumn('vendorCooContactno').withTitle('COO Contact No.').withOption('title','COO Contact No.'),
+                DTColumnBuilder.newColumn('vendorCeoName').withTitle('CEO Name').withOption('title','CEO Name'),
+                DTColumnBuilder.newColumn('vendorCeoEmail').withTitle('CEO Email').withOption('title','CEO Email'),
+                DTColumnBuilder.newColumn('vendorCeoContactno').withTitle('CEO Contact No.').withOption('title','CEO Contact No.'),
+                DTColumnBuilder.newColumn('null').withTitle('Action').withOption('title','Action').notSortable()
+                .renderWith(function (data, type, full, meta){
+                  if(full.vendorId){
+                    return '<a href="edit_vendor?vendor_id='+full.vendorId+'" style="cursor:pointer;" title="Edit '+full.vendorName+'">Edit</a> | <a href="" style="cursor:pointer;" title="Delete '+full.vendorName+'">Delete</a>';
+                  }
+                })
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = false;
+                $scope.dtColumns[6].visible = false;
+                $scope.dtColumns[7].visible = false;
+                $scope.dtColumns[8].visible = false;
+                $scope.dtColumns[9].visible = false;
+                $scope.dtColumns[10].visible = false;
+                $scope.dtColumns[11].visible = false;
+                $scope.dtColumns[12].visible = false;
+                $scope.dtColumns[13].visible = false;
+                $scope.dtColumns[14].visible = false;
+                $scope.dtColumns[15].visible = false;
+                $scope.dtColumns[16].visible = false;
+                $scope.dtColumns[17].visible = true;
+
+
+
+                $(document).on('click','#example-select-all',function(e){
+
+                  // Check/uncheck all checkboxes in the table
+                  $('tbody tr td input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+                
+                });
+
+              }
+              
+            }
+          });
+}); 
+
+app.controller('EditVendorController', function($scope,$http,$routeParams,$location,$window,$route){
+  
+  $.ajax({
+    url: './api/vendor/get_zones',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        $scope.zones = response.zones;
+
+      }
+      
+    
+    }
+  });
+
+  var data = {vendor_id : $routeParams.vendor_id};
+  $scope.vendorDetails = [];
+
+  data = JSON.stringify(data);
+  $.ajax({
+    url: './api/vendor/get_vendor',
+    type: 'POST',
+    data: data,
+            dataType : 'json', // data type
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+                $scope.vendorDetails = response.data[0];
+                // jQuery('#vendor_id').val(vendorDetails.vendor_id);
+                // //jQuery('#vendor_name').val(vendorDetails.vendor_name);
+                // jQuery('#vendor_zone option[value='+vendorDetails.vendor_zone+']').attr('selected','selected');
+                // jQuery('#vendor_password').val(vendorDetails.vendor_password);
+                // jQuery('#vendor_contact_person_1_name').val(vendorDetails.vendor_contact_person_1_name);
+                // jQuery('#vendor_contact_person_1_contact_no').val(vendorDetails.vendor_contact_person_1_contactno);
+                // jQuery('#vendor_coo_email').val(vendorDetails.vendor_coo_email);
+                // jQuery('#vendor_ceo_name').val(vendorDetails.vendor_ceo_name);
+                // jQuery('#vendor_ceo_contact_no').val(vendorDetails.vendor_ceo_contactno);
+                // jQuery('#vendor_address').val(vendorDetails.vendor_address);
+                // jQuery('#vendor_username').val(vendorDetails.vendor_username);
+                // jQuery('#vendor_phone').val(vendorDetails.vendor_phone);
+                // jQuery('#vendor_contact_person_1_email').val(vendorDetails.vendor_contact_person_1_email);
+                // jQuery('#vendor_coo_name').val(vendorDetails.vendor_coo_name);
+                // jQuery('#vendor_coo_contactno').val(vendorDetails.vendor_coo_contactno);
+                // jQuery('#vendor_ceo_email').val(vendorDetails.vendor_ceo_email);
+
+              }
+              
+            }
+          });
 });

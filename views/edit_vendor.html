@@ -1,0 +1,158 @@
+<div class="panel box-shadow-none content-header">
+                  
+                    <div class="col-md-12">
+                        <h3 class="animated fadeInLeft">Edit Vendor Details</h3>
+                        <p class="animated fadeInDown">
+                          Home <span class="fa-angle-right fa"></span> Edit Vendor Details
+                        </p>
+                    </div>
+                  
+                </div>
+                <div class="form-element">
+                <div class="col-md-12 padding-0">
+                  
+                <div class="col-md-12">
+                  <div class="col-md-12 panel">
+                    
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                      <div class="col-md-12">
+                        <form class="cmxform" id="editvendorform" method="post" action="" autocomplete="off">
+                          <input type="hidden" id="vendor_id" name="vendor_id">
+                          <div class="col-md-6">
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="1" type="text" class="form-text" id="vendor_name" name="vendor_name" value="{{vendorDetails.vendor_name}}" >
+                              <span class="bar"></span>
+                              <label>Vendor Name</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;margin-bottom: 57px;">
+                              <select tabindex="3" id="vendor_zone" name="vendor_zone" class="form-control">
+                                <option value="">Select Zone</option>
+                                <option ng-repeat="zone in zones" ng-selected="{{zone.region == vendorDetails.vendor_zone}}" value="{{zone.region}}">{{zone.region}}</option>
+                              </select>
+                              <span class="bar"></span>
+                              
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="5" type="password" class="form-text" id="vendor_password" name="vendor_password" value="{{vendorDetails.vendor_password}}"  autocomplete="off">
+                              <span class="bar"></span>
+                              <label>Vendor Password</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="7" type="text" class="form-text" id="vendor_contact_person_1_name" name="vendor_contact_person_1_name" value="{{vendorDetails.vendor_contact_person_1_name}}" >
+                              <span class="bar"></span>
+                              <label>Vendor Contact Person 1 Name</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="9" type="text" class="form-text" id="vendor_contact_person_1_contact_no" name="vendor_contact_person_1_contact_no" value="{{vendorDetails.vendor_contact_person_1_contactno}}" >
+                              <span class="bar"></span>
+                              <label>Vendor Contact Person 1 Contact No.</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="11" type="text" class="form-text" id="vendor_coo_email" name="vendor_coo_email" >
+                              <span class="bar"></span>
+                              <label>Vendor COO Email</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="13" type="text" class="form-text" id="vendor_ceo_name" name="vendor_ceo_name" >
+                              <span class="bar"></span>
+                              <label>Vendor CEO/Owner Name</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="15" type="text" class="form-text" id="vendor_ceo_contact_no" name="vendor_ceo_contact_no" >
+                              <span class="bar"></span>
+                              <label>Vendor CEO/Owner Contact No.</label>
+                            </div>
+
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="2" type="text" class="form-text" id="vendor_address" name="vendor_address">
+                              <span class="bar"></span>
+                              <label>Vendor Address</label>
+                            </div>
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="4" type="text" class="form-text" id="vendor_username" name="vendor_username"  autocomplete="off" >
+                              <span class="bar"></span>
+                              <label>Vendor Username</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="6" type="text" class="form-text" id="vendor_phone" name="vendor_phone"  autocomplete="off">
+                              <span class="bar"></span>
+                              <label>Vendor Phone</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="8" type="text" class="form-text" id="vendor_contact_person_1_email" name="vendor_contact_person_1_email" >
+                              <span class="bar"></span>
+                              <label>Vendor Contact Person 1 Email</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="10" type="text" class="form-text" id="vendor_coo_name" name="vendor_coo_name" >
+                              <span class="bar"></span>
+                              <label>Vendor COO Name</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="12" type="text" class="form-text" id="vendor_coo_contactno" name="vendor_coo_contactno" >
+                              <span class="bar"></span>
+                              <label>Vendor COO Contact No.</label>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input tabindex="14" type="text" class="form-text" id="vendor_ceo_email" name="vendor_ceo_email" >
+                              <span class="bar"></span>
+                              <label>Vendor CEO/Owner Email</label>
+                            </div>
+
+                            
+                          </div>
+
+                          <div class="col-md-12" style="padding: 0;">
+                            <div class="col-md-3">
+                              <button tabindex="16" id="addvendorbtn" type="submit" class="btn ripple btn-raised btn-info">
+                                      <div>
+                                        <span>SAVE</span>
+                                      </div>
+                                    </button>
+                            </div>
+
+                              
+                          </div>
+                          <div class="col-md-12" style="padding: 0;margin-top: 45px;">
+                            <div class="col-md-9">
+                              <div id="add_vendor_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                              
+                            </div>
+                            </div>
+                            
+                              
+                          </div>
+                      </form>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+              </div>
+            </div>
+          <!-- end: content -->
+         
+
+     <!-- start: Mobile -->
+      <div data-ng-include=" 'mobile_menu.html' "></div>
+     <!-- end: Mobile -->
+
+
+<!-- end: Javascript -->

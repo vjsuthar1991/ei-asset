@@ -31,9 +31,9 @@ class User extends CI_Controller {
 			$data[$key] = strip_tags(preg_replace('/\s+/', ' ', trim($value)));
 		}
 		$userData = array('user_name' => $data['user_firstname'],'user_lastname' => $data['user_lastname'],'user_email' => $data['user_email'],'user_password' => $data['user_password']);
-		for($i = 0;$i <= 10000;$i++){
+		//for($i = 0;$i <= 10000;$i++){
 		 $insert = $this->users->insert($userData);
-        }
+        //}
                 // if($insert){
                 //     echo json_encode(array('status' => 'success','message' => 'User Added Successfully'));
                     

@@ -56,7 +56,6 @@ class Packingslips extends CI_Model{
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');
         $this->db->where("t1.ssf_number !=","");
-        $this->db->where("t2.asset_taken","Y");
         $this->db->where("t1.status !=","cancelled");
         
         if($round != '')
