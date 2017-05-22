@@ -17,7 +17,7 @@
                     <div class="col-md-12 panel-body" style="padding-bottom:30px;">
                       <div class="col-md-12">
                         <form class="cmxform" id="editvendorform" method="post" action="" autocomplete="off">
-                          <input type="hidden" id="vendor_id" name="vendor_id">
+                          <input type="hidden" id="vendor_id" name="vendor_id" value="{{vendorDetails.vendor_id}}">
                           <div class="col-md-6">
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
                               <input tabindex="1" type="text" class="form-text" id="vendor_name" name="vendor_name" value="{{vendorDetails.vendor_name}}" >
@@ -53,19 +53,19 @@
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="11" type="text" class="form-text" id="vendor_coo_email" name="vendor_coo_email" >
+                              <input tabindex="11" type="text" class="form-text" id="vendor_coo_email" name="vendor_coo_email" value="{{vendorDetails.vendor_coo_email}}" >
                               <span class="bar"></span>
                               <label>Vendor COO Email</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="13" type="text" class="form-text" id="vendor_ceo_name" name="vendor_ceo_name" >
+                              <input tabindex="13" type="text" class="form-text" id="vendor_ceo_name" name="vendor_ceo_name" value="{{vendorDetails.vendor_ceo_name}}" >
                               <span class="bar"></span>
                               <label>Vendor CEO/Owner Name</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="15" type="text" class="form-text" id="vendor_ceo_contact_no" name="vendor_ceo_contact_no" >
+                              <input tabindex="15" type="text" class="form-text" id="vendor_ceo_contact_no" name="vendor_ceo_contact_no" value="{{vendorDetails.vendor_ceo_contactno}}" >
                               <span class="bar"></span>
                               <label>Vendor CEO/Owner Contact No.</label>
                             </div>
@@ -73,42 +73,42 @@
                           </div>
                           <div class="col-md-6">
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="2" type="text" class="form-text" id="vendor_address" name="vendor_address">
+                              <input tabindex="2" type="text" class="form-text" id="vendor_address" name="vendor_address" value="{{vendorDetails.vendor_address}}">
                               <span class="bar"></span>
                               <label>Vendor Address</label>
                             </div>
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="4" type="text" class="form-text" id="vendor_username" name="vendor_username"  autocomplete="off" >
+                              <input tabindex="4" type="text" class="form-text" id="vendor_username" name="vendor_username" value="{{vendorDetails.vendor_username}}"  autocomplete="off" >
                               <span class="bar"></span>
                               <label>Vendor Username</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="6" type="text" class="form-text" id="vendor_phone" name="vendor_phone"  autocomplete="off">
+                              <input tabindex="6" type="text" class="form-text" id="vendor_phone" name="vendor_phone" value="{{vendorDetails.vendor_phone}}"  autocomplete="off">
                               <span class="bar"></span>
                               <label>Vendor Phone</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="8" type="text" class="form-text" id="vendor_contact_person_1_email" name="vendor_contact_person_1_email" >
+                              <input tabindex="8" type="text" class="form-text" id="vendor_contact_person_1_email" value="{{vendorDetails.vendor_contact_person_1_email}}" name="vendor_contact_person_1_email" >
                               <span class="bar"></span>
                               <label>Vendor Contact Person 1 Email</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="10" type="text" class="form-text" id="vendor_coo_name" name="vendor_coo_name" >
+                              <input tabindex="10" type="text" value="{{vendorDetails.vendor_coo_name}}" class="form-text" id="vendor_coo_name" name="vendor_coo_name" >
                               <span class="bar"></span>
                               <label>Vendor COO Name</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="12" type="text" class="form-text" id="vendor_coo_contactno" name="vendor_coo_contactno" >
+                              <input tabindex="12" type="text" value="{{vendorDetails.vendor_coo_contactno}}" class="form-text" id="vendor_coo_contactno" name="vendor_coo_contactno" >
                               <span class="bar"></span>
                               <label>Vendor COO Contact No.</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
-                              <input tabindex="14" type="text" class="form-text" id="vendor_ceo_email" name="vendor_ceo_email" >
+                              <input tabindex="14" type="text" value="{{vendorDetails.vendor_ceo_email}}" class="form-text" id="vendor_ceo_email" name="vendor_ceo_email" >
                               <span class="bar"></span>
                               <label>Vendor CEO/Owner Email</label>
                             </div>
@@ -118,7 +118,7 @@
 
                           <div class="col-md-12" style="padding: 0;">
                             <div class="col-md-3">
-                              <button tabindex="16" id="addvendorbtn" type="submit" class="btn ripple btn-raised btn-info">
+                              <button tabindex="16" id="editvendorbtn" type="submit" class="btn ripple btn-raised btn-info">
                                       <div>
                                         <span>SAVE</span>
                                       </div>
@@ -129,7 +129,7 @@
                           </div>
                           <div class="col-md-12" style="padding: 0;margin-top: 45px;">
                             <div class="col-md-9">
-                              <div id="add_vendor_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
+                              <div id="edit_vendor_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
                               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                               
                             </div>

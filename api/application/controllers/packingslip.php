@@ -19,6 +19,7 @@ class Packingslip extends CI_Controller {
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 		$data['schools'] = $this->packingslips->getSchools();
 		$data['rounds'] = $this->packingslips->getRounds();
+		
 		$data['country'] = $this->packingslips->getCountry();
 
 		if(count($data['schools']) > 0)

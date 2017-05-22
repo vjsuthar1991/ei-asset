@@ -27,7 +27,7 @@ class Packingslips extends CI_Model{
      * get round from the test_edition_details table
      */
     function getRounds($params = array()){
-        $this->db->select('test_edition');
+        $this->db->select('test_edition, description');
         $this->db->from($this->testEditionTbl);
         $this->db->order_by("test_edition","desc");
         $query = $this->db->get(); 

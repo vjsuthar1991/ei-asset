@@ -80,4 +80,34 @@ class Vendor extends CI_Controller {
 		die;
 	}
 
+	/*
+		Function Name: edit_vendor
+		Description: Action function to edit vendor details
+		Date Modified: 22-5-2017
+	*/
+
+	public function edit_vendor()
+	{
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		foreach ($inputRequest as $key => $value) {
+			$data[$key] = strip_tags(preg_replace('/\s+/', ' ', trim($value)));
+		}
+
+		$vendorData = array('vendor_id' => $data['vendor_id'],'vendor_name' => $data['vendor_name'],'vendor_address' => $data['vendor_address'],'vendor_zone' => $data['vendor_zone'],'vendor_username' => $data['vendor_username'],'vendor_password' => $data['vendor_password'],'vendor_phone' => $data['vendor_phone'],'vendor_contact_person_1_name' => $data['vendor_contact_person_1_name'],'vendor_contact_person_1_email' => $data['vendor_contact_person_1_email'],'vendor_contact_person_1_contactno' => $data['vendor_contact_person_1_contact_no'],'vendor_coo_name' => $data['vendor_coo_name'],'vendor_coo_email' => $data['vendor_coo_email'],'vendor_coo_contactno' => $data['vendor_coo_contactno'],'vendor_ceo_name' => $data['vendor_ceo_name'],'vendor_ceo_email' => $data['vendor_ceo_email'],'vendor_ceo_contactno' => $data['vendor_ceo_contact_no'],'vendor_status' => '1');
+		
+		$update = $this->vendors->editVendor($vendorData);
+
+		if($update)
+		{
+			echo json_encode(array('status' => 'success','message' => 'Vendor Details Edited Successfully'));
+		}
+		else
+		{
+			echo json_encode(array('status' => 'error','message' => 'There Is Some Error Please Try Again..!!'));	
+		}
+		die;
+
+	}
+
 }

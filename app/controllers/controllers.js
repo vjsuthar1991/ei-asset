@@ -1152,6 +1152,7 @@ app.controller('EditVendorController', function($scope,$http,$routeParams,$locat
 
         $scope.zones = response.zones;
 
+
       }
       
     
@@ -1198,4 +1199,111 @@ app.controller('EditVendorController', function($scope,$http,$routeParams,$locat
               
             }
           });
+
+$("#editvendorform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      $(element.parent("div").addClass("form-animate-error"));
+      error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+      $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      vendor_name: "required",
+      vendor_address: "required",
+      vendor_zone: "required",
+      vendor_username: "required",
+      vendor_password: {
+        required: true,
+        minlength: 5
+      },
+      vendor_phone: {required: true,number: true},
+      vendor_contact_person_1_name: "required",
+      vendor_contact_person_1_email: {required: true,email: true},
+      vendor_contact_person_1_contact_no: {required: true,number: true},
+      vendor_coo_name: "required",
+      vendor_coo_email: {required: true,email:true},
+      vendor_coo_contactno: {required: true,number: true},
+      vendor_ceo_name: "required",
+      vendor_ceo_email: {required: true,email: true},
+      vendor_ceo_contact_no: {required: true,number: true},
+
+    },
+    messages: {
+    
+    }
+  });
+
+$(document).on('submit','#editvendorform',function(event){
+
+          // code
+          jQuery('#editvendorbtn').attr('disabled','disabled');
+          event.stopImmediatePropagation();
+
+          //disable the default form submission
+          event.preventDefault();
+          var jsonData = {};
+
+
+          //grab all form data  
+          var formData = jQuery('form#editvendorform').serializeArray();
+          jQuery.each(formData, function() {
+
+           if (jsonData[this.name]) {
+
+             if (!jsonData[this.name].push) {
+
+               jsonData[this.name] = [jsonData[this.name]];
+
+             }
+
+             jsonData[this.name].push(this.value || '');
+           } else {
+
+             jsonData[this.name] = this.value || '';
+
+           }
+
+
+         });
+
+          jsonData = JSON.stringify(jsonData);
+
+          //console.log(JSON.parse(JSON.stringify(jsonData)));  
+          $.ajax({
+            url: './api/vendor/edit_vendor',
+            type: 'POST',
+            dataType : 'json', // data type
+            data: jsonData,
+            async: true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+                if($('#edit_vendor_message_box').hasClass('alert-danger')){
+                  $('#edit_vendor_message_box').removeClass('alert-danger');
+                }
+                $('#edit_vendor_message_box').addClass('alert-success');
+                $('#edit_vendor_message_box').text('');
+                $('#edit_vendor_message_box').append(response.message);
+                $('#edit_vendor_message_box').removeClass('hide');
+                $(window).scrollTop($('#edit_vendor_message_box').offset().top);
+
+                setTimeout(function(){ $location.search('vendor_id', null);$location.path('/vendor_list');$scope.$apply();$route.reload(); }, 3000);
+
+              }
+              
+            }
+          });
+
+return false;
+
+});
+
+
 });
