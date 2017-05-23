@@ -751,10 +751,10 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
      
       
         var round = $('#roundfilter').val();
-        var paidPercentage = $('#paidpercentagefilter').val();
+        
         var country = $('#countryfilter').val();
-        var vendor = $('#vendorfilter').val();
-        var data = {round:round,paidPercentage:paidPercentage,country:country,vendor:vendor};
+        
+        var data = {round:round,country:country};
         data = JSON.stringify(data);
 
         $.ajax({
@@ -887,6 +887,8 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
     };
 
 });
+
+
 
 app.controller('CreateVendorController', function($scope,$http){
 

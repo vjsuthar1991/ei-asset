@@ -26,6 +26,12 @@ class Packingslips extends CI_Model{
         $schools = $query->result();
         $schools = json_decode(json_encode($schools),true);
         
+        return $this->filterClasses($schools);
+        
+        die;
+    }
+
+    function filterClasses($schools){
         $classArray = array('3','4','5','6','7','8','9','10');
 
         $selectedFinalSchools = array();
@@ -33,7 +39,7 @@ class Packingslips extends CI_Model{
         $selectedschool = array();
 
         foreach ($schools as $key => $school) {
-            //checkforAD($school); 
+            
               
             if($school['dynamic_class'] != "" && $school['dynamic_class'] != NULL)
             {
@@ -101,8 +107,6 @@ class Packingslips extends CI_Model{
         
         return $selectedFinalSchools;
 
-        
-        die;
     }
 
     /*
@@ -131,38 +135,40 @@ class Packingslips extends CI_Model{
     /*
      * get rows from the schools_status table based on the filters
      */
-    function getFilteredSchools($round,$paidpercentage,$country,$vendor){
+    function getFilteredSchools($round,$country){
         
        
-        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid,t2.schoolname, t2.city, t2.region');
+        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');
+        $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t1.advance_per_paid < 90", 'LEFT');
         $this->db->where("t1.ssf_number !=","");
         $this->db->where("t1.status !=","cancelled");
+        $this->db->where("(t1.advance_per_paid >= 90 OR (t3.test_edition = 'V' AND t3.exception_type_id = 5 AND t3.status = 'approved'))");
+        $this->db->where("t1.test_edition","V");
+        
         
         if($round != '')
         {
             $this->db->where("t1.test_edition",$round);    
         }
         
-        if($paidpercentage != ""){
-            $percentbar = explode("-",$paidpercentage);
-            
-            $this->db->where("t1.advance_per_paid BETWEEN $percentbar[0] AND $percentbar[1]",NULL,FALSE);    
-        }
-
         if($country != ""){
             $this->db->where("t2.country",$country);       
-        }
-
-        if($vendor != ""){
-            
         }
 
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get(); 
         //echo $this->db->last_query();
-        return $query->result();
+        $schools = $query->result();
+        $schools = json_decode(json_encode($schools),true);
+        
+        return $this->filterClasses($schools);
+        
+        die;
+        
+
+
     }
 
     function getPackingSlipSchoolList($schools)

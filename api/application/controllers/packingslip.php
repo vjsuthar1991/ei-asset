@@ -19,7 +19,7 @@ class Packingslip extends CI_Controller {
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 		$data['schools'] = $this->packingslips->getSchools();
 		$data['rounds'] = $this->packingslips->getRounds();
-		
+
 		$data['country'] = $this->packingslips->getCountry();
 
 		if(count($data['schools']) > 0)
@@ -42,7 +42,7 @@ class Packingslip extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		$data['filteredschools'] = $this->packingslips->getFilteredSchools($inputRequest['round'],$inputRequest['paidPercentage'],$inputRequest['country'],$inputRequest['vendor']);
+		$data['filteredschools'] = $this->packingslips->getFilteredSchools($inputRequest['round'],$inputRequest['country']);
 		
 		if(count($data['filteredschools']) > 0) {
 			echo json_encode(array('status' => 'success','data'=> $data['filteredschools']));
