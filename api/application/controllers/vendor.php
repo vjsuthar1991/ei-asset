@@ -110,4 +110,31 @@ class Vendor extends CI_Controller {
 
 	}
 
+	/*
+		Function Name: delete_vendor
+		Description: Action function to delete vendor
+		Date Modified: 22-5-2017
+	*/
+
+	public function delete_vendor()
+	{
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$delete = $this->vendors->deleteVendor($inputRequest);
+		//$delete = 1;
+		
+		$data['vendors'] = $this->vendors->getVendors();
+
+		if($delete)
+		{
+			echo json_encode(array('status' => 'success','message' => 'Vendor Deleted Successfully','vendors' => $data['vendors']));
+		}
+		else
+		{
+			echo json_encode(array('status' => 'success','message' => 'There Is Some Error Please Try Again..!!'));
+		}
+
+
+	}
+
 }

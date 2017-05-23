@@ -61,5 +61,13 @@ class Vendors extends CI_Model{
         return $data['vendor_id'];            
     }
 
+    function deleteVendor($vendor_id)
+    {
+        $this->db->where('vendor_id', $vendor_id);
+        $this->db->delete($this->vendorTbl);
+        
+        return $vendor_id;
+    }
+
     
 }

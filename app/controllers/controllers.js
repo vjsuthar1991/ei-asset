@@ -687,7 +687,7 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true);   
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true);   
 
 
                 $scope.dtColumns = [
@@ -792,7 +792,7 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true); 
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true); 
 
                 $scope.dtInstance.rerender();
                 
@@ -804,12 +804,12 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "200px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
 
                 
 
                 $scope.dtInstance.rerender();
-                
+                  
 
                 }
 
@@ -1019,6 +1019,7 @@ return false;
 
 app.controller('VendorListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
     //script code to list all the schools of current round with rounds and country
+  
   $scope.dtInstance = {};
   $scope.vendorlist = [];
   
@@ -1096,7 +1097,7 @@ app.controller('VendorListController', function($scope,$http,DTOptionsBuilder, D
                 DTColumnBuilder.newColumn('null').withTitle('Action').withOption('title','Action').notSortable()
                 .renderWith(function (data, type, full, meta){
                   if(full.vendorId){
-                    return '<a href="edit_vendor?vendor_id='+full.vendorId+'" style="cursor:pointer;" title="Edit '+full.vendorName+'">Edit</a> | <a href="" style="cursor:pointer;" title="Delete '+full.vendorName+'">Delete</a>';
+                    return '<a href="edit_vendor?vendor_id='+full.vendorId+'" style="cursor:pointer;" title="Edit '+full.vendorName+'">Edit</a> | <img style="width: 30px;height: 25px;cursor:pointer;" data-toggle="modal" data-target="#vendordeleteModal" class="vendor-delete" vendor-id="'+full.vendorId+'" src="asset/img/trash-can.png">';
                   }
                 })
                 ];  
@@ -1129,10 +1130,78 @@ app.controller('VendorListController', function($scope,$http,DTOptionsBuilder, D
                 
                 });
 
+                $(document).on('click','.vendor-delete',function(e){
+                  
+                  
+                  console.log($(this).attr('vendor-id'));
+
+                  var vendor_id = $(this).attr('vendor-id');
+                  
+                  $scope.vendorlist = [];
+
+                  $scope.deleteVendor = function(e){
+                      $.ajax({
+                    url: './api/vendor/delete_vendor',
+                    type: 'POST',
+                    dataType : 'json', // data type
+                    async: false,
+                    data: vendor_id,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (returndata) {
+                      var response = JSON.parse(JSON.stringify(returndata));
+                      if(response.status == 'success')
+                      {
+                        
+                        jQuery.each( response.vendors, function( i, val ) {
+                          $scope.vendorlist.push({
+                            vendorId: val.vendor_id,
+                            vendorName: val.vendor_name,
+                            vendorAddress: val.vendor_address,
+                            vendorZone: val.vendor_zone,
+                            vendorUsername: val.vendor_username,
+                            vendorPassword: val.vendor_password,
+                            vendorPhone: val.vendor_phone,
+                            vendorContactPerson_1_Name: val.vendor_contact_person_1_name,
+                            vendorContactPerson_1_Email: val.vendor_contact_person_1_email,
+                            vendorContactPerson_1_Contactno: val.vendor_contact_person_1_contactno,
+                            vendorCooName: val.vendor_coo_name,
+                            vendorCooEmail: val.vendor_coo_email,
+                            vendorCooContactno: val.vendor_coo_contactno,
+                            vendorCeoName: val.vendor_ceo_name,
+                            vendorCeoEmail: val.vendor_ceo_email,
+                            vendorCeoContactno: val.vendor_ceo_contactno,
+                            vendorDateCreated: val.vendor_added_date
+
+                          });
+                      });
+
+                        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true); 
+                
+                $scope.dtInstance.rerender(); 
+
+                      }
+
+                    }
+                  });
+                  };
+                  
+                
+
+                  
+                });
+
               }
               
             }
           });
+
+  
+  
 }); 
 
 app.controller('EditVendorController', function($scope,$http,$routeParams,$location,$window,$route){
@@ -1178,23 +1247,7 @@ app.controller('EditVendorController', function($scope,$http,$routeParams,$locat
               if(response.status == "success"){
 
                 $scope.vendorDetails = response.data[0];
-                // jQuery('#vendor_id').val(vendorDetails.vendor_id);
-                // //jQuery('#vendor_name').val(vendorDetails.vendor_name);
-                // jQuery('#vendor_zone option[value='+vendorDetails.vendor_zone+']').attr('selected','selected');
-                // jQuery('#vendor_password').val(vendorDetails.vendor_password);
-                // jQuery('#vendor_contact_person_1_name').val(vendorDetails.vendor_contact_person_1_name);
-                // jQuery('#vendor_contact_person_1_contact_no').val(vendorDetails.vendor_contact_person_1_contactno);
-                // jQuery('#vendor_coo_email').val(vendorDetails.vendor_coo_email);
-                // jQuery('#vendor_ceo_name').val(vendorDetails.vendor_ceo_name);
-                // jQuery('#vendor_ceo_contact_no').val(vendorDetails.vendor_ceo_contactno);
-                // jQuery('#vendor_address').val(vendorDetails.vendor_address);
-                // jQuery('#vendor_username').val(vendorDetails.vendor_username);
-                // jQuery('#vendor_phone').val(vendorDetails.vendor_phone);
-                // jQuery('#vendor_contact_person_1_email').val(vendorDetails.vendor_contact_person_1_email);
-                // jQuery('#vendor_coo_name').val(vendorDetails.vendor_coo_name);
-                // jQuery('#vendor_coo_contactno').val(vendorDetails.vendor_coo_contactno);
-                // jQuery('#vendor_ceo_email').val(vendorDetails.vendor_ceo_email);
-
+              
               }
               
             }
