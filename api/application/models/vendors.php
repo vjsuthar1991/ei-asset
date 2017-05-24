@@ -5,6 +5,7 @@ class Vendors extends CI_Model{
         
         $this->vendorTbl = 'vendors';
         $this->schoolsTbl = 'schools';
+        $this->vendorAccessTbl = 'vendor_access';
     }
 
     /*
@@ -67,6 +68,36 @@ class Vendors extends CI_Model{
         $this->db->delete($this->vendorTbl);
         
         return $vendor_id;
+    }
+
+    function loginVendor($vendorusername,$vendorpassword)
+    {
+        $this->db->select('*');
+        $this->db->from($this->vendorTbl);
+        $this->db->where('vendor_username',$vendorusername);
+        $this->db->where('vendor_password',$vendorpassword);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function registerVendorLogin($vendorId)
+    {
+        $randomNum = rand();
+        $authtoken = $vendorId.$randomNum.date('dmYHis');
+
+        $insert = $this->db->insert($this->vendorAccessTbl, array('vendor_id' => $vendorId,'vendor_authtoken' => $authtoken));
+
+        if($insert){
+            return $authtoken;
+        }else{
+            return false;
+        }
+    }
+
+    function unregister($token)
+    {
+        $this->db->where('vendor_authtoken', $token);
+        $this->db->delete($this->vendorAccessTbl);
     }
 
     

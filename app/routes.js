@@ -1,11 +1,98 @@
 'use strict';
 var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad','datatables']);
 
-app.run(function($rootScope, $templateCache) {
+app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$route) {
 
    $rootScope.$on('$viewContentLoaded', function() {
       $templateCache.removeAll();
    });
+
+   $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            
+            //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            checkCookie();
+
+            function checkCookie() {
+                      var vendor = getCookie("vendor_id");
+                      var vendor_auth = getCookie("vendor_authtoken");
+
+                      if (vendor != "") {
+                          // redirect to login page if not logged in and trying to access a restricted page
+                          
+                          var restrictedPage = $.inArray($location.path(), ['/dashboard','/create_vendor','/vendor_list','/edit_vendor','/packing_slips_list','/generate_packing_slips']) !== -1;
+                          console.log(restrictedPage);
+                          if (restrictedPage) {
+
+                            $location.path('/unauthorised-access');
+                          
+                          }
+                          else{
+                            if($location.path() == '/logout'){
+                                
+                                var data = {vendor_authtoken:vendor_auth};
+                                data = JSON.stringify(data);
+
+                                $.ajax({
+                                    url: "./api/vendor/unregisterVendor",
+                                    contentType: false,
+                                    processData: false,
+                                    async: true,
+                                    data: data,
+                                    type: 'POST',
+                                    dataType : 'json',
+                                    success: function (returndata) {
+                                    
+                                     }
+                                    });
+
+                                document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                                document.cookie = "vendor_authtoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                                $location.path('/vendor-login');
+                                $route.reload();
+
+
+                            }
+
+
+                           
+                            //$location.path('/vendor_list');
+                          
+                          }
+
+                      } else {
+                         $location.path('/vendor-login');$route.reload();
+                         // user = prompt("Please enter your name:","");
+                         // if (user != "" && user != null) {
+                             
+                         //     //setCookie("username", user, 30);
+                         // }
+                      }
+                  }
+
+            function getCookie(cname) {
+                      var name = cname + "=";
+                      var decodedCookie = decodeURIComponent(document.cookie);
+                      var ca = decodedCookie.split(';');
+                      for(var i = 0; i < ca.length; i++) {
+                          var c = ca[i];
+                          while (c.charAt(0) == ' ') {
+                              c = c.substring(1);
+                          }
+                          if (c.indexOf(name) == 0) {
+                              return c.substring(name.length, c.length);
+                          }
+                      }
+                      return "";
+                  }
+      
+
+            // redirect to login page if not logged in and trying to access a restricted page
+            // var restrictedPage = $.inArray($location.path(), ['/login', '/register']) === -1;
+            // var loggedIn = $rootScope.globals.currentUser;
+            // if (restrictedPage && !loggedIn) {
+            //     $location.path('/login');
+            // }
+        });
 
 });
 app.config(['$routeProvider','$locationProvider','$controllerProvider',
@@ -97,6 +184,32 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
             .when('/vendor-login',{
                 templateUrl: 'views/vendor-portal/login.html',
                 controller: 'VendorLoginController',
+            })
+            .when('/unauthorised-access',{
+                templateUrl: 'views/vendor-portal/unauthorised-access.html',
+                controller: 'UnauthorisedAccessController',
+            })
+            .when('/vendor-dashboard',{
+                templateUrl: 'views/vendor-portal/vendor-dashboard.html',
+                controller: 'VendorDashboardController',
+                resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.select',
+                            // add UI select css / js for this state
+                            files: [
+                                
+                                'asset/js/plugins/jquery.vmap.min.js',
+                                'asset/js/plugins/jquery.vmap.world.js',
+                                'asset/js/plugins/jquery.vmap.sampledata.js',
+                                'asset/js/plugins/chart.min.js',
+                            ] 
+                        }]);
+                    }]
+                }
+            })
+            .when('/logout',{
+                controller: 'LogoutController',
             });
 
 

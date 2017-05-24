@@ -137,4 +137,34 @@ class Vendor extends CI_Controller {
 
 	}
 
+	/*
+		Function Name: vendor_login
+		Description: Action function for vendor login
+		Date Modified: 24-5-2017
+	*/
+
+	public function vendor_login()
+	{
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+		$login = $this->vendors->loginVendor($inputRequest['vendor_username'],$inputRequest['vendor_password']);
+		if(count($login) > 0){
+			
+			$authtoken = $this->vendors->registerVendorLogin($login[0]->vendor_id);
+
+
+			echo json_encode(array('status' => 'success', 'data' => $login,'authtoken' => $authtoken));
+		}
+		else{
+			echo json_encode(array('status' => 'error', 'message' => 'Incorrect Username Or Password..Please Try Again!!'));	
+		}
+		die;
+	}
+
+	public function unregisterVendor(){
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$this->vendors->unregister($inputRequest['vendor_authtoken']);
+	
+	}
+
 }
