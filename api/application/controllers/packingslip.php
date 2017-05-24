@@ -19,15 +19,16 @@ class Packingslip extends CI_Controller {
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 		$data['schools'] = $this->packingslips->getSchools();
 		$data['rounds'] = $this->packingslips->getRounds();
-
 		$data['country'] = $this->packingslips->getCountry();
+		$data['zones'] = $this->packingslips->getZones();
+		$data['vendors'] = $this->packingslips->getVendors();
 
 		if(count($data['schools']) > 0)
 		{
-			echo json_encode(array('status' => 'success','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country']));
+			echo json_encode(array('status' => 'success','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors']));
 		}
 		else{
-			echo json_encode(array('status' => 'error','message' => 'No Records Found'));	
+			echo json_encode(array('status' => 'error','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors']));	
 		}
 		die;
 	}
@@ -42,7 +43,7 @@ class Packingslip extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		$data['filteredschools'] = $this->packingslips->getFilteredSchools($inputRequest['round'],$inputRequest['country']);
+		$data['filteredschools'] = $this->packingslips->getFilteredSchools($inputRequest['round'],$inputRequest['country'],$inputRequest['zone']);
 		
 		if(count($data['filteredschools']) > 0) {
 			echo json_encode(array('status' => 'success','data'=> $data['filteredschools']));
@@ -53,37 +54,54 @@ class Packingslip extends CI_Controller {
 		die;
 	}
 
-	public function generatepackingslip()
-	{
-		/*
+	/*
 		Function Name: generatepackingslip
 		Description: Action function to generate packing slip as CSV and send to vendor and logistic
-		Date Modified: 18-5-2017
+		Date Modified: 23-5-2017
 	*/
+	public function generatepackingslip()
+	{
+		
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		$data['packingslipschoollist'] = $this->packingslips->getPackingSlipSchoolList($inputRequest);
+		$data['packingslipschoollist'] = $this->packingslips->getPackingSlipSchoolList($inputRequest['data']);
 
-		$data['schoolwisebreakup'] = $this->packingslips->getSchoolWiseBreakupList($inputRequest);
+		$data['schoolwisebreakup'] = $this->packingslips->getSchoolWiseBreakupList($inputRequest['data']);
 
-		function exports_data($records1,$records2,$filename1,$filename2){
+		$data['vendorDetails'] = $this->packingslips->getVendorDetails($inputRequest['vendor']);
+
+		function exports_data($records1,$records2,$vendorEmailId,$round,$vendorId){
+
+			$ci = get_instance();
 
 			$records1 = json_decode(json_encode($records1),true);
 			$records2 = json_decode(json_encode($records2),true);
 
+			$schoolsData = json_encode($records1);
+			$breakupData = json_encode($records2);
+
+        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$schoolsData,$breakupData);
+
+        	$filename1 = $insert_id."-".date('d-m-Y-H:i:s').'_schools.csv';
+        	$filename2 = $insert_id."-".date('d-m-Y-H:i:s').'_orders.csv';
 			
+			$ci->packingslips->updatePackingSlipFile($filename1,$filename2,$insert_id);
+
 			header("Content-type: application/csv");
             header("Content-Disposition: attachment; filename=".$filename1."");
             header("Pragma: no-cache");
             header("Expires: 0");
 
-            $handle1 = fopen($filename1, 'w');
+            $handle1 = fopen("packingSlipSchoolsCSVFiles/".$filename1, 'w');
 
             fputcsv($handle1, array('Sr.No','School Code', 'School Name', 'City', 'Address', 'STD Code', 'Phone Nos','Principal Name','State','Pincode','Co-ordinator1 Name','Co-ordinator1 Contact No.','Co-ordinator1 Email'));
 
             $i = 1;
 
             foreach ($records1 as $data) {
+            	
+				$ci = get_instance();
+				$ci->packingslips->updatePackLabelDate($data['schoolno'],$round);
             	array_unshift($data, $i);
             	//$data['serial'] = $i;
                 fputcsv($handle1, $data);
@@ -91,14 +109,14 @@ class Packingslip extends CI_Controller {
             }
             
             fclose($handle1);
-            chmod($filename1, 0777);
+            chmod("packingSlipSchoolsCSVFiles/".$filename1, 0777);
 
             header("Content-type: application/csv");
             header("Content-Disposition: attachment; filename=".$filename2."");
             header("Pragma: no-cache");
             header("Expires: 0");
 
-            $handle2 = fopen($filename2, 'w');
+            $handle2 = fopen("packingslipbreakupCSVFiles/".$filename2, 'w');
 
             fputcsv($handle2, array('Sr.No','School Code', 'School Name', 'City', 'E3', 'M3', 'S3','H3','SS3','E4', 'M4', 'S4','H4','SS4','E5', 'M5', 'S5', 'H5', 'SS5', 'E6', 'M6', 'S6','H6','SS6', 'E7', 'M7', 'S7','H7','SS7', 'E8', 'M8', 'S8','H8','SS8', 'E9', 'M9', 'S9','H9','SS9', 'E10', 'M10', 'S10','H10','SS10'));
 
@@ -112,25 +130,24 @@ class Packingslip extends CI_Controller {
             }
             
                 fclose($handle2);
-                chmod($filename2, 0777);
-                $ci = get_instance();
-                $ci->setemail($filename1,$filename2);
+                chmod("packingslipbreakupCSVFiles/".$filename2, 0777);
+                
+                $ci->setemail($filename1,$filename2,$vendorEmailId);
 
             exit;
         }
 		
 		date_default_timezone_set('Asia/Calcutta');
-        
-        $filename1 = "1-".date('d-m-Y-H:i:s').'_schools.csv';
-        $filename2 = "2-".date('d-m-Y-H:i:s').'_orders.csv';
-        exports_data($data['packingslipschoollist'],$data['schoolwisebreakup'],$filename1,$filename2);
+
+		exports_data($data['packingslipschoollist'],$data['schoolwisebreakup'],$data['vendorDetails'],$inputRequest['round'],$inputRequest['vendor']);
 
 	}
 
-	public function setemail($file1,$file2)
+	public function setemail($file1,$file2,$vendorEmailId)
 
         {
-			$email="vijay.suthar@ei-india.com";
+        	$vendorEmailId = json_decode(json_encode($vendorEmailId),true);
+        	$email=$vendorEmailId[0]['vendor_contact_person_1_email'];
 			$subject="Test";
 			$message="This is testing";
 			$this->sendEmail($email,$subject,$message,$file1,$file2);
@@ -166,8 +183,9 @@ class Packingslip extends CI_Controller {
 	      if($this->email->send())
 	         {
 	          echo json_encode(array('status' => 'success','message'=> 'Packing Slip Sent Successfully To Vendor'));
-	          unlink($file1);
-	          unlink($file2);
+	          //unlink($file1);
+	          //unlink($file2);
+	          
 	         }
 	      else
 	        {
@@ -176,6 +194,13 @@ class Packingslip extends CI_Controller {
 	        }
 
 	    }
+
+	public function list_packingslips()
+	{
+		$data['packingsliplist'] = $this->packingslips->getPackingSlipList();
+		echo json_encode(array('status' => 'success','data' => $data['packingsliplist']));
+		die;
+	}    
 
 
 	

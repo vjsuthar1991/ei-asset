@@ -27,7 +27,7 @@ class Vendors extends CI_Model{
         $insert = $this->db->insert($this->vendorTbl, $data);
         //return the status
         if($insert){
-            return $this->db->insert_id();;
+            return $this->db->insert_id();
         }else{
             return false;
         }

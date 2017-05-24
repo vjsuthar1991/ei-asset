@@ -645,6 +645,8 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
   
   $scope.rounds = [];
   $scope.country = [];
+  $scope.zones = [];
+
   var flag = 0;
   var userData = [];
   $.ajax({
@@ -680,6 +682,10 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 $scope.rounds = response.rounds;
 
                 $scope.country = response.country;
+
+                $scope.zones = response.zones;
+
+                $scope.vendors = response.vendors;
 
                 
 
@@ -735,6 +741,86 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                 });
 
               }
+              else 
+              {
+                  
+                  jQuery.each( response.data, function( i, val ) {
+                  $scope.packingslipsschools.push({
+
+                    schoolCode: val.school_code,
+                    schoolName: val.schoolname,
+                    city: val.city,
+                    region: val.region,
+                    numberofStudents: val.no_of_students,
+                    amountPayable: val.amount_payable,
+                    amountPaid: val.paid,
+                    percentagePaid: val.advance_per_paid
+
+                  });
+                });
+
+
+                $scope.rounds = response.rounds;
+
+                $scope.country = response.country;
+
+                $scope.zones = response.zones;
+
+                $scope.vendors = response.vendors;
+
+                
+
+
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn("Selected")
+                .withTitle('Select All <input type="checkbox" id="example-select-all"/>')
+                .notSortable().withOption('title','Checkbox',"searchable", false)
+                .renderWith(function (data, type, full, meta) {
+                  
+                  if (full.schoolCode) {
+                    return '<input type="checkbox" class="checkboxes"  value="'+full.schoolCode+'"/>';
+                  } 
+                }).withClass("text-center"),
+
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code').withOption(''),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('city').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('region').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('numberofStudents').withTitle('No. Of Students').withOption('title','No. Of Students'),
+                DTColumnBuilder.newColumn('amountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+                DTColumnBuilder.newColumn('amountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+                DTColumnBuilder.newColumn('percentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid')
+
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = true;
+                $scope.dtColumns[6].visible = true;
+                $scope.dtColumns[7].visible = true;
+                $scope.dtColumns[8].visible = true;
+                $scope.dtColumns[9].visible = true;
+
+
+
+                $(document).on('click','#example-select-all',function(e){
+
+                  // Check/uncheck all checkboxes in the table
+                  $('tbody tr td input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+                
+                });
+              }
               
             }
           });
@@ -753,8 +839,10 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
         var round = $('#roundfilter').val();
         
         var country = $('#countryfilter').val();
+
+        var zone = $('#zonefilter').val();
         
-        var data = {round:round,country:country};
+        var data = {round:round,country:country,zone:zone};
         data = JSON.stringify(data);
 
         $.ajax({
@@ -832,10 +920,20 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
             
             arrayOfValues.push($(this).attr('value'));
         });
+      var vendorSelected = $('#vendorSelected').val();
 
-        if(arrayOfValues.length > 0){
+      var round = $('#roundfilter').val();
+      
+      if(vendorSelected != "" && vendorSelected != "undefined")
+      {
+        $('#vendorSelected').css('box-shadow','0px 0px #FF968B');
+      if(arrayOfValues.length > 0){
 
-        data = JSON.stringify(arrayOfValues);
+        $('#generatepackingslip').attr('disabled','disabled');
+        
+        var data = {data:arrayOfValues,vendor:vendorSelected,round:round};
+        
+        data = JSON.stringify(data);
 
         $.ajax({
             url: "./api/packingslip/generatepackingslip",
@@ -882,7 +980,12 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
           alert("Please Select At Least One School To Proceed Ahead");
           return false;
         }
-
+      }
+      else {
+        alert("Please Select Vendor To Send Packing Slip Ready Schools");
+        $('#vendorSelected').css('box-shadow','0px 0px 10px 5px #FF968B');
+        return false;
+      }
 
     };
 
@@ -1134,9 +1237,6 @@ app.controller('VendorListController', function($scope,$http,DTOptionsBuilder, D
 
                 $(document).on('click','.vendor-delete',function(e){
                   
-                  
-                  console.log($(this).attr('vendor-id'));
-
                   var vendor_id = $(this).attr('vendor-id');
                   
                   $scope.vendorlist = [];
@@ -1360,5 +1460,73 @@ return false;
 
 });
 
+});
 
+app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+  $scope.dtInstance = {};
+  $scope.packingsliplist = [];
+  
+  $.ajax({
+    url: './api/packingslip/list_packingslips',
+    type: 'POST',
+            dataType : 'json', // data type
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+
+                jQuery.each( response.data, function( i, val ) {
+                  $scope.packingsliplist.push({
+                    packingSlipId: val.packingslip_id,
+                    packingSlipSentDate: val.packingslip_sentdate,
+                    vendorName: val.vendor_name,
+                    packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+                    packingslipBreakupCSV: val.packingslip_breakup_data_csv
+                  });
+                });
+                
+                
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+                  DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                  DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+                  DTColumnBuilder.newColumn('vendorName').withTitle('Vendor Name').withOption('title','Vendor Name'),
+                  DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
+                  .renderWith(function (data, type, full, meta){
+                    if(full.packingSlipId){
+                      return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+                    }
+                  }).withClass("text-center"),
+                  DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
+                  .renderWith(function (data, type, full, meta){
+                    if(full.packingSlipId){
+                      return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+                    }
+                  }).withClass("text-center")
+                ];  
+                
+                $scope.dtColumns[0].visible = true;
+                $scope.dtColumns[1].visible = true;
+                $scope.dtColumns[2].visible = true;
+                $scope.dtColumns[3].visible = true;
+                $scope.dtColumns[4].visible = true;
+                
+              }
+              
+            }
+          });
+});
+
+app.controller('VendorLoginController', function($scope,$http){
+  $('#mimin').addClass('form-signin-wrapper');
 });

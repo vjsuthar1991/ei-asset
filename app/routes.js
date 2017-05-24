@@ -72,9 +72,13 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                  templateUrl: 'views/upload_csv.html',
                  controller: 'UploadCSVController',  
                  
-            }).when('/packing_slips',{
+            }).when('/generate_packing_slips',{
                  templateUrl: 'views/packing_slips.html',
                  controller: 'PackingSlipsController',  
+                 
+            }).when('/packing_slips_list',{
+                 templateUrl: 'views/packing_slips_list.html',
+                 controller: 'PackingSlipsListController',  
                  
             }).when('/create_vendor',{
                  templateUrl: 'views/create_vendor.html',
@@ -89,6 +93,10 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                  templateUrl: 'views/edit_vendor.html',
                  controller: 'EditVendorController',  
                  
+            })
+            .when('/vendor-login',{
+                templateUrl: 'views/vendor-portal/login.html',
+                controller: 'VendorLoginController',
             });
 
 
