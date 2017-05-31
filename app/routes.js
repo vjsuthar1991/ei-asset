@@ -10,7 +10,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
             
             //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            checkCookie();
+            //checkCookie();
 
             function checkCookie() {
                       var vendor = getCookie("vendor_id");
@@ -208,8 +208,17 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                     }]
                 }
             })
-            .when('/logout',{
-                controller: 'LogoutController',
+            .when('/testmaterial_mis',{
+                templateUrl: 'views/vendor-portal/testmaterial_mis.html',
+                controller: 'TestMaterialMisController',
+            })
+            .when('/vendor-packingslip-list',{
+                templateUrl: 'views/vendor-portal/vendor-packingslip-list.html',
+                controller: 'VendorPackingSlipListController',
+            })
+            .when('/qb_mis_list',{
+              templateUrl: 'views/qb_mis_list.html',
+              controller: 'QbMisListController',
             });
 
 

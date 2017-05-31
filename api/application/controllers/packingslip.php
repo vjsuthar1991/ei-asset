@@ -17,7 +17,8 @@ class Packingslip extends CI_Controller {
 	public function list_schools()
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
-		$data['schools'] = $this->packingslips->getSchools();
+
+		$data['schools'] = $this->packingslips->getSchools($inputRequest['round']);
 		$data['rounds'] = $this->packingslips->getRounds();
 		$data['country'] = $this->packingslips->getCountry();
 		$data['zones'] = $this->packingslips->getZones();
@@ -80,7 +81,7 @@ class Packingslip extends CI_Controller {
 			$schoolsData = json_encode($records1);
 			$breakupData = json_encode($records2);
 
-        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$schoolsData,$breakupData);
+        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData);
 
         	$filename1 = $insert_id."-".date('d-m-Y-H:i:s').'_schools.csv';
         	$filename2 = $insert_id."-".date('d-m-Y-H:i:s').'_orders.csv';
@@ -132,7 +133,10 @@ class Packingslip extends CI_Controller {
                 fclose($handle2);
                 chmod("packingslipbreakupCSVFiles/".$filename2, 0777);
                 
-                $ci->setemail($filename1,$filename2,$vendorEmailId);
+                $attachFile1 = "./packingSlipSchoolsCSVFiles/".$filename1;
+                $attachFile2 = "./packingslipbreakupCSVFiles/".$filename2;
+
+                $ci->setemail($attachFile1,$attachFile2,$vendorEmailId);
 
             exit;
         }

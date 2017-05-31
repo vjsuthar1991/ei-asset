@@ -10,39 +10,45 @@ class Packingslips extends CI_Model{
         $this->regionMaster = 'region_master';
         $this->vendorsTbl = 'vendors';
         $this->packingslipsListTbl = 'packing_slips';
+        $this->schoolProcessTracking = 'school_process_tracking';
+
     }
     /*
      * get rows from the schools_status table
      */
     function getSchools($params = array()){
-        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
+
+        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
         $this->db->from("$this->schoolstatusTbl as t1");
-        $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');
-        $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t1.advance_per_paid < 90", 'LEFT');
+        $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+        $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t3.exception_type_id=5 AND t3.offering='asset' AND t3.test_edition = 'V'", 'LEFT');
         $this->db->where("t1.ssf_number !=","");
         $this->db->where("t1.status !=","cancelled");
-        $this->db->where("t1.test_edition","V");
-        $this->db->where("(t1.advance_per_paid >= 90 OR (t3.test_edition = 'V' AND t3.exception_type_id = 5 AND t3.status = 'approved' AND t3.year = '2016'))");
+        $this->db->where("t1.test_edition",$params);
+        $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 OR (t3.test_edition = 'V' AND t3.status = 'approved'))");
         $this->db->where("t1.pack_label_date","0000-00-00");
         
         
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get(); 
-        
         $schools = $query->result();
+        //echo $this->db->last_query();
+        
         $schools = json_decode(json_encode($schools),true);
         
-        return $this->filterClasses($schools,'V');
+        return $this->filterClasses($schools,$params);
         
         die;
     }
 
     function filterClasses($schools,$round){
+
         $classArray = array('3','4','5','6','7','8','9','10');
 
         $selectedFinalSchools = array();
 
         $selectedschool = array();
+
 
         foreach ($schools as $key => $school) {
             
@@ -53,10 +59,13 @@ class Packingslips extends CI_Model{
 
                 $classes = explode(",",$school['dynamic_class']);
                 $pnpclasses = array_diff($classArray,$classes);
+                
 
                 if(count($pnpclasses) > 0){
                     
+
                     foreach ($pnpclasses as $key => $value) {
+                        
                         
                         $this->db->select("e$value,m$value,s$value,h$value,ss$value");
                         $this->db->from($this->schoolstatusTbl);
@@ -66,10 +75,11 @@ class Packingslips extends CI_Model{
                         $breakup = $query->result();
                         $breakup = json_decode(json_encode($breakup),true);
                         
-
                         foreach($breakup as $key2 => $break)
                         {
+                            
                             foreach ($break as $key3 => $val) {
+
                                 if($val > 0){
                                    
                                     $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
@@ -77,10 +87,12 @@ class Packingslips extends CI_Model{
                                     $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
                                     $this->db->where("t1.school_code",$school['school_code']);
                                     $this->db->where("t1.test_edition",$round);
-                                    $query = $this->db->get(); 
+                                    $query = $this->db->get();
                                     $schools = $query->result();
                                     $schools = json_decode(json_encode($schools),true);
-                                    $selectedFinalSchools[] = $schools[0];
+
+                                    $selectedFinalSchools[$school['school_code']] = $schools[0];
+                                    break;
                                    
 
                                 }
@@ -93,7 +105,8 @@ class Packingslips extends CI_Model{
 
             }
             else {
-
+                
+                
                 $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
                 $this->db->from("$this->schoolstatusTbl as t1");
                 $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
@@ -104,7 +117,9 @@ class Packingslips extends CI_Model{
                 $schools = $query->result();
                 $schools = json_decode(json_encode($schools),true);
                 
-                $selectedFinalSchools[] = $schools[0];
+                $selectedFinalSchools[$school['school_code']] = $schools[0];
+
+                
             } 
             
             
@@ -162,7 +177,7 @@ class Packingslips extends CI_Model{
         $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t1.advance_per_paid < 90", 'LEFT');
         $this->db->where("t1.ssf_number !=","");
         $this->db->where("t1.status !=","cancelled");
-        $this->db->where("(t1.advance_per_paid >= 90 OR (t3.test_edition = 'V' AND t3.exception_type_id = 5 AND t3.status = 'approved' AND t3.year = '2016'))");
+        $this->db->where("((t1.advance_per_paid / t1.amount_payable) * 100 OR (t3.test_edition = $round AND t3.exception_type_id = 5 AND t3.status = 'approved' AND t3.year = '2016'))");
         $this->db->where("t1.pack_label_date","0000-00-00");
         if($round != '')
         {
@@ -244,11 +259,30 @@ class Packingslips extends CI_Model{
         $this->db->where('school_code', $schoolCode);
         $this->db->where('test_edition', $round);
         $this->db->update($this->schoolstatusTbl,array('pack_label_date' => date('Y-m-d')));
+
+        $this->db->select('sno');
+        $this->db->from($this->schoolstatusTbl);
+        $this->db->where('school_code', $schoolCode);
+        $this->db->where('test_edition', $round);
+        $query = $this->db->get();
+        $output = $query->result();
+
+
+        $insert = $this->db->insert($this->schoolProcessTracking, array('order_id' => $output[0]->sno,'school_code' => $schoolCode,'packlabel_date' => date('Y-m-d'),'test_edition' => $round));
+        // if($insert) 
+        // {
+
+        //     return $this->db->insert_id();
+        // }
+        // else
+        // {
+        //     return false;
+        // } 
     }
 
     function getPackingSlipList()
     {
-        $this->db->select('t1.packingslip_id,t1.packingslip_sentdate,t1.packingslip_schools_data_csv,t1.packingslip_breakup_data_csv,t2.vendor_name');
+        $this->db->select('t1.packingslip_id,t1.packingslip_sentdate,t1.packingslip_schools_data_csv,t1.packingslip_breakup_data_csv,t1.packingslip_acknowledge_date,t2.vendor_name');
         $this->db->from("$this->packingslipsListTbl as t1");
         $this->db->join("$this->vendorsTbl as t2", "t1.packingslip_vendorid = t2.vendor_id", 'LEFT');
         $this->db->order_by('packingslip_id','desc');
@@ -256,9 +290,9 @@ class Packingslips extends CI_Model{
         return $query->result();
     }
 
-    function insertPackingSlip($vendorId,$schoolData,$breakupData)
+    function insertPackingSlip($vendorId,$testEdition,$schoolData,$breakupData)
     {
-        $insert = $this->db->insert($this->packingslipsListTbl, array('packingslip_schools_data' => $schoolData,'packingslip_breakup_data' => $breakupData,'packingslip_vendorid' => $vendorId));
+        $insert = $this->db->insert($this->packingslipsListTbl, array('test_edition' => $testEdition,'packingslip_schools_data' => $schoolData,'packingslip_breakup_data' => $breakupData,'packingslip_vendorid' => $vendorId));
         if($insert) 
         {
 

@@ -649,10 +649,15 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
   var flag = 0;
   var userData = [];
+  var round = $('#roundfilter').val();
+  var data = {round:'V'};
+  data = JSON.stringify(data);
+
   $.ajax({
     url: './api/packingslip/list_schools',
     type: 'POST',
             dataType : 'json', // data type
+            data: data,
             async: false,
             cache: false,
             contentType: false,
@@ -1486,7 +1491,8 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                     packingSlipSentDate: val.packingslip_sentdate,
                     vendorName: val.vendor_name,
                     packingslipSchoolsCSV: val. packingslip_schools_data_csv,
-                    packingslipBreakupCSV: val.packingslip_breakup_data_csv
+                    packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+                    packingslipAcknowledgeDate: val.packingslip_acknowledge_date
                   });
                 });
                 
@@ -1512,7 +1518,8 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                     if(full.packingSlipId){
                       return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
                     }
-                  }).withClass("text-center")
+                  }).withClass("text-center"),
+                  DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date').withOption('title','Acknowledge Date'),
                 ];  
                 
                 $scope.dtColumns[0].visible = true;
@@ -1520,6 +1527,7 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                 $scope.dtColumns[2].visible = true;
                 $scope.dtColumns[3].visible = true;
                 $scope.dtColumns[4].visible = true;
+                $scope.dtColumns[5].visible = true;
                 
               }
               
@@ -1862,9 +1870,234 @@ app.controller('VendorDashboardController', function($scope,$http,$ocLazyLoad) {
 
       });
 
-// app.controller('LogoutController', function($scope,$http,$routeParams,$location,$window,$route){
-//   alert()
-//   $location.path('/vendor-login');$scope.apply();$route.reload();
-//   document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$location,$window,$route){
+   $scope.rounds = [];
 
-// });
+   $.ajax({
+    url: './api/vendor/qb_mis',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+
+          $scope.rounds = response.rounds;
+        
+      }
+      
+    }
+  });
+
+   $(document).on('submit','#uploadqbmisform',function(event){
+    $('#uploadqbanalysismisbtn').attr('disabled','disabled');
+    var fileUpload = document.getElementById("qbmis_csvfile");
+    event.preventDefault();
+
+    if (fileUpload .value != null) {
+
+      var uploadFile = new FormData();
+      var files = $("#qbmis_csvfile").get(0).files;
+      $scope.csvdata = [];
+        // Add the uploaded file content to the form data collection
+        if (files.length > 0) {
+
+          uploadFile.append("QBMISCsv", files[0]);
+
+          $.ajax({
+            url: "./api/vendor/upload_qb_mis",
+            contentType: false,
+            processData: false,
+            data: uploadFile,
+            type: 'POST',
+            success: function (returndata) {
+
+             var response = JSON.parse(returndata);
+             
+             if(response.status == "success"){
+
+                if($('#upload_csv_message_box').hasClass('alert-danger')){
+                  $('#upload_csv_message_box').removeClass('alert-danger');
+                }
+                $('#upload_csv_message_box').addClass('alert-success');
+                $('#upload_csv_message_box').text('');
+                $('#upload_csv_message_box').append(response.message);
+                $('#upload_csv_message_box').removeClass('hide');
+                $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+                setTimeout(function(){ window.location.reload(); }, 3000);   
+
+              }
+              else {
+                if($('#upload_csv_message_box').hasClass('alert-success')){
+                  $('#upload_csv_message_box').removeClass('alert-success');
+                }
+                $('#upload_csv_message_box').addClass('alert-danger');
+                $('#upload_csv_message_box').text('');
+                $('#upload_csv_message_box').append(response.message);
+                $('#upload_csv_message_box').removeClass('hide');
+                $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+                setTimeout(function(){ window.location.reload(); }, 3000);
+              }
+
+            }
+          });
+  }
+}
+
+});
+
+});
+
+app.controller('VendorPackingSlipListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$routeParams,$location,$window,$route){
+  
+  $scope.dtInstance = {};
+  $scope.vendorpackingsliplist = [];
+  
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+  }
+
+  var vendor_id = getCookie('vendor_id');
+  var vendor_authtoken = getCookie('vendor_authtoken');                  
+
+  var data = {vendor_id : vendor_id,vendor_authtoken: vendor_authtoken};
+  
+  data = JSON.stringify(data);
+  
+  $.ajax({
+    url: './api/vendor/list_vendor_packingslips',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+
+        jQuery.each( response.data, function( i, val ) {
+          $scope.vendorpackingsliplist.push({
+            packingSlipId: val.packingslip_id,
+            packingSlipSentDate: val.packingslip_sentdate,
+            packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+            packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+            packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+          });
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date And Time').withOption('title','Sent Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingslipAcknowledgeDate == ""){
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.packingSlipId+'"><div><span>Click Here</span></div></button>';
+            }
+            else {
+              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
+        
+        
+      }
+      
+    }
+  });
+
+  $(document).on('click','.acknowledgePackingslip',function(event){
+   
+    var packingslip = $(this).attr('packingslip-id');
+    var vendor_id = getCookie('vendor_id');
+    var data = {packingslip_id : packingslip,vendor_id: vendor_id};
+    data = JSON.stringify(data);
+    $scope.newvendorpackingsliplist = [];
+    $.ajax({
+    url: './api/vendor/acknowledge_packingslip',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.data, function( i, val ) {
+          $scope.newvendorpackingsliplist.push({
+            packingSlipId: val.packingslip_id,
+            packingSlipSentDate: val.packingslip_sentdate,
+            packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+            packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+            packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newvendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtInstance.rerender(); 
+      }
+      
+    }
+  });
+  });
+
+});
+
+app.controller('QbMisListController', function($scope,$http) {
+  
+});
