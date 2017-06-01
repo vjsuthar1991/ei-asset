@@ -2098,6 +2098,43 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
 
 });
 
-app.controller('QbMisListController', function($scope,$http) {
+app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  $scope.packingslipsschools = [];
+  
+  $scope.rounds = [];
+  $scope.country = [];
+  $scope.zones = [];
+
+  var flag = 0;
+  var userData = [];
+  var round = $('#qbroundfilter').val();
+  var data = {round:'V'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/mis_system/qb_mis_list',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        
+        
+      }
+      
+    }
+  });
   
 });
