@@ -95,6 +95,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
         });
 
 });
+
 app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
     function($routeProvider,$locationProvider,$controllerProvider,$location,) {

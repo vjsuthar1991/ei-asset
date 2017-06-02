@@ -260,24 +260,16 @@ class Packingslips extends CI_Model{
         $this->db->where('test_edition', $round);
         $this->db->update($this->schoolstatusTbl,array('pack_label_date' => date('Y-m-d')));
 
-        $this->db->select('sno');
-        $this->db->from($this->schoolstatusTbl);
-        $this->db->where('school_code', $schoolCode);
-        $this->db->where('test_edition', $round);
+        $this->db->select('t1.sno,t2.schoolname,t2.city,t2.region');
+        $this->db->from("$this->schoolstatusTbl as t1");
+        $this->db->join("$this->schoolsTbl as t2", "t1.school_code = t2.schoolno", 'LEFT');
+        $this->db->where('t1.school_code', $schoolCode);
+        $this->db->where('t1.test_edition', $round);
         $query = $this->db->get();
         $output = $query->result();
 
-
-        $insert = $this->db->insert($this->schoolProcessTracking, array('order_id' => $output[0]->sno,'school_code' => $schoolCode,'packlabel_date' => date('Y-m-d'),'test_edition' => $round));
-        // if($insert) 
-        // {
-
-        //     return $this->db->insert_id();
-        // }
-        // else
-        // {
-        //     return false;
-        // } 
+        $insert = $this->db->insert($this->schoolProcessTracking, array('order_id' => $output[0]->sno,'school_code' => $schoolCode,'school_name' => $output[0]->schoolname,'school_city' => $output[0]->city,'school_region' => $output[0]->region,'packlabel_date' => date('Y-m-d'),'test_edition' => $round));
+         
     }
 
     function getPackingSlipList()

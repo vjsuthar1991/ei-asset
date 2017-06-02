@@ -39,32 +39,32 @@
                           <select id="qbpackingdatefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option value="">Packing Date</option>
-                              <option ng-selected="{{round.test_edition == 'V'}}" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.test_edition}} {{round.description}}</option>
+                              <option ng-repeat="packingdate in packingdates track by $index" value="{{packingdate.packlabel_date}}">{{packingdate.packlabel_date}}</option>
                               
                           </select>
 
                            <select id="qbschoolcodefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option value="">School Code</option>
-                              <option ng-selected="{{round.test_edition == 'V'}}" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.test_edition}} {{round.description}}</option>
+                              <option ng-repeat="schoolCode in schoolCodes" value="{{schoolCode.school_code}}">{{schoolCode}}</option>
                               
                           </select>
 
                            <select id="qbschoolnamefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option value="">School Name</option>
-                              <option ng-selected="{{round.test_edition == 'V'}}" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.test_edition}} {{round.description}}</option>
+                              <option  ng-repeat="schoolname in schoolNames" value="{{schoolname}}">{{schoolname}}</option>
                               
                           </select>
 
                           <select id="qbcityfilter"  style="width:130px;margin:15px 30px 15px 0px;height:30px;">
 
                               <option value="">City</option>
-                              <option ng-repeat="countryname in country" value="{{countryname.country}}">{{countryname.country}}</option>
+                              <option ng-repeat="city in citys" value="{{city.school_city}}">{{city.school_city}}</option>
                            
                           </select>
 
-                          <button style="width:200px;margin:15px 30px 15px 0px;height:30px;" id="searchfilterpackingslip" ng-click="filterschools()" type="button" class="btn ripple btn-raised btn-info">
+                          <button style="width:200px;margin:15px 30px 15px 0px;height:30px;" id="searchqbreports" ng-click="filterqbreports()" type="button" class="btn ripple btn-raised btn-info">
                               <div>
                                 <span>Search</span>
                               </div>
@@ -75,47 +75,20 @@
                         
                         <div class="responsive-table">
                           
-                          <!-- <table id="school_packingslip_list" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"  class="table table-striped table-bordered" width="100%" cellspacing="0" >
+                          <table id="qb_mis_reports_list" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"  class="table table-striped table-bordered" width="100%" cellspacing="0" >
                     
-                          </table> -->
+                          </table>
                           
                           
                         </div>
-                        <!--  <div ng-repeat="column in dtColumns">{{column.title}} visible: <input type="checkbox" ng-model="column.visible" /></div> -->
-           <!-- <tr ng-repeat="user in users" user="user" columns="columns"> -->
-           <div class="col-md-12" style="padding: 0;margin-top: 20px;">
-                            <div class="col-md-9 padding-0">
-                              <div id="add_packingslip_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
-                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                              
-                            </div>
-                            </div>
-                            
-                              
-                          </div>
+           
                     </div>
                   </div>
                 </div>  
                 </div>
                 </div>
             <!-- end: content -->
-            <div class="modal" role="dialog" id="myModal">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Please Confirm</h4>
-                      </div>
-                      <div class="modal-body">
-                        <p>Are You Sure You Want To Generate Packing Slip Of Selected School And Send To Vendor?</p>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" ng-click="generate_packing_slip()" data-dismiss="modal" class="btn btn-primary">Confirm & Send</button>
-                      </div>
-                    </div><!-- /.modal-content -->
-                  </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+           
 
        <!-- start: Mobile -->
         <div data-ng-include=" 'mobile_menu.html' "></div>
