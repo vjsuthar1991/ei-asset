@@ -68,8 +68,10 @@
 
     this.treeMenu = function()
     {
+      $(document).on('click','.tree-toggle',function(e){
 
-        $('.tree-toggle').click(function(e){
+      
+
             e.preventDefault();
             var $this = $(this).parent().children('ul.tree');
             $(".tree").not($this).slideUp(600);
@@ -210,11 +212,12 @@
         $(this).addClass("active");
     });
 
-    $("#mimin-mobile-menu-opener").on("click",function(e){
+    $(document).on('click','#mimin-mobile-menu-opener',function(e){
         $("#mimin-mobile").toggleClass("reverse");
         var rippler = $("#mimin-mobile");
         if(!rippler.hasClass("reverse"))
         {
+
             if(rippler.find(".ink").length == 0) {
               rippler.append("<div class='ink'></div>");
             }
@@ -235,7 +238,7 @@
                 
             rippler.css({'z-index':9999});
             rippler.animate({
-              backgroundColor: "#FF6656",
+              backgroundColor: "#2196F3",
               width: '100%'
             }, 750 );
 
@@ -245,6 +248,7 @@
                 $("#mimin-mobile-menu-opener span").removeClass("fa-bars").addClass("fa-close").css({"font-size":"2em"});
               });
         }else{
+
             
                 if(rippler.find(".ink").length == 0) {
                   rippler.append("<div class='ink'></div>");
@@ -291,7 +295,7 @@
     $("#left-menu ul li a").ripple();
     $(".ripple div").ripple();
     $("#carousel-example3").carouselAnimate();
-    $("#left-menu .sub-left-menu").niceScroll();
+    //$("#left-menu .sub-left-menu").niceScroll();
      $(".sub-mimin-mobile-menu-list").niceScroll({
             touchbehavior:true,
             cursorcolor:"#FF00FF",

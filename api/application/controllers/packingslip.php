@@ -78,13 +78,29 @@ class Packingslip extends CI_Controller {
 			$records1 = json_decode(json_encode($records1),true);
 			$records2 = json_decode(json_encode($records2),true);
 
-			$schoolsData = json_encode($records1);
+			$schoolsCount = count($records1);
+            
+            $schoolsData = json_encode($records1);
 			$breakupData = json_encode($records2);
 
-        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData);
+			$checkLot = $ci->packingslips->checkLotNo($round);
 
-        	$filename1 = $insert_id."-".date('d-m-Y-H:i:s').'_schools.csv';
-        	$filename2 = $insert_id."-".date('d-m-Y-H:i:s').'_orders.csv';
+			if(count($checkLot) > 0) {
+				if($checkLot[0]->packingslip_lotno == 0){
+					$lotno = 1;
+				}
+				else {
+					$lotno = $checkLot[0]->packingslip_lotno + 1;
+				}
+			}
+			else {
+				$lotno = 1;
+			}
+
+        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData,$lotno);
+
+        	$filename1 = $lotno."-".date('d-m-Y-H:i:s').'_schools.csv';
+        	$filename2 = $lotno."-".date('d-m-Y-H:i:s').'_orders.csv';
 			
 			$ci->packingslips->updatePackingSlipFile($filename1,$filename2,$insert_id);
 
@@ -99,10 +115,12 @@ class Packingslip extends CI_Controller {
 
             $i = 1;
 
+
+
             foreach ($records1 as $data) {
             	
 				$ci = get_instance();
-				$ci->packingslips->updatePackLabelDate($data['schoolno'],$round);
+				$ci->packingslips->updatePackLabelDate($data['schoolno'],$round,$lotno);
             	array_unshift($data, $i);
             	//$data['serial'] = $i;
                 fputcsv($handle1, $data);
@@ -136,7 +154,19 @@ class Packingslip extends CI_Controller {
                 $attachFile1 = "./packingSlipSchoolsCSVFiles/".$filename1;
                 $attachFile2 = "./packingslipbreakupCSVFiles/".$filename2;
 
-                $ci->setemail($attachFile1,$attachFile2,$vendorEmailId);
+                $roundName = $ci->packingslips->getRoundName($round);
+                $roundFullName = $roundName[0]->description;
+                
+
+                $subject = "$lotno LOT OF PACKING - $roundFullName";
+                $vendorName = $vendorEmailId[0]->vendor_name;
+                $message = 'Hello ';
+                $message .= $vendorName;
+                $message .= ' ji,';
+                $message .= '<br><br>';
+                $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
+
+                $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
 
             exit;
         }
@@ -147,13 +177,13 @@ class Packingslip extends CI_Controller {
 
 	}
 
-	public function setemail($file1,$file2,$vendorEmailId)
+	public function setemail($file1,$file2,$vendorEmailId,$subject,$message)
 
         {
         	$vendorEmailId = json_decode(json_encode($vendorEmailId),true);
         	$email=$vendorEmailId[0]['vendor_contact_person_1_email'];
-			$subject="Test";
-			$message="This is testing";
+			$subject=$subject;
+			$message=$message;
 			$this->sendEmail($email,$subject,$message,$file1,$file2);
 		}
 

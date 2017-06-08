@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'e-asset3';
+$db['default']['hostname'] = '103.21.59.165';
+$db['default']['username'] = 'xposeqma_asset';
+$db['default']['password'] = 'asset@123!';
+$db['default']['database'] = 'xposeqma_asset';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

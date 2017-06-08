@@ -5,7 +5,7 @@
 <!-- start: Content -->
 <div id="content">
       
-<div class="col-md-12" style="padding:20px;">
+<div class="col-md-12" style="padding:20px;" ng-controller="DashboardController">
                     <div class="col-md-12 padding-0">
                         
 
@@ -13,20 +13,20 @@
                     
                     <div style="width: 341px;position: relative;height: auto;margin: 0px auto;margin-top: 150px;">
                     <div class="" style="float: left;margin-right: 20px;">
-                      <a href="dashboard-penpaper">
+                      <a href="dashboard-pppretest">
                         <button style="width: 150px;height: 150px;font-size: 17px;" class="btn ripple-infinite btn-raised btn-info">
                                     <div>
-                                      <span>PEN & PAPER</span>
+                                      <span>PRE TEST</span>
                                     </div>
                                   </button>
                       </a>
                     </div>
                       
                     <div class="" style="float: left;margin-left: 20px;" >
-                      <a href="dashboard-ad">
+                      <a href="dashboard-ppposttest">
                         <button style="width: 150px;height: 150px;font-size: 17px;" class="btn ripple-infinite btn-raised btn-success">
                                     <div>
-                                      <span>ASSET <br>DYNAMIC</span>
+                                      <span>POST TEST</span>
                                     </div>
                                   </button>
                       </a>
@@ -39,7 +39,9 @@
             </div>
 
         </div>
-            
+            <!-- start: Mobile -->
+        <div data-ng-include=" 'mobile_menu.html' "></div>
+       <!-- end: Mobile -->
     
      
      

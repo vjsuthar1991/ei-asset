@@ -305,6 +305,7 @@ class Vendor extends CI_Controller {
 				if(count($data['values']) > 0){
 					$schoolCodeFlag = 0;
 					$schoolRecordFlag = 0;
+					$schoolContentListFlag = 0;
 					foreach ($data['values'] as $key => $value) {
 						if($value['B'] == '')
 						{
@@ -315,7 +316,7 @@ class Vendor extends CI_Controller {
 								
 								$fileExist = file_exists('./MIS Reports/V/Content List/'.$value['B'].'.tif');
 								if($fileExist != 1 || $fileExist == ''){
-									$schoolRecordFlag = 1;
+									$schoolContentListFlag = 1;
 								}
 
 								if($value['W'] == 'DELIVERED'){
@@ -335,7 +336,7 @@ class Vendor extends CI_Controller {
 					
 				}
 				
-				if($schoolCodeFlag == 0 && $schoolRecordFlag == 0){
+				if($schoolCodeFlag == 0 && $schoolRecordFlag == 0 && $schoolContentListFlag == 0){
 					
 
 					foreach ($data['values'] as $key => $value) {
@@ -352,17 +353,24 @@ class Vendor extends CI_Controller {
 						}
 
 						$subject .= 'Despatch details : '.$value['C'].' of '.$value['O'];
-						$message .= 'Dear Principal,' ;
+						$message .= 'Respected Sir/ Madam,' ;
 						$message .= '<br><br>';
-						$message .= 'Greetings! Thank you for participating in ASSET.';
+						$message .= 'Greetings from Educational Initiatives!';
 						$message .= '<br><br>';
-						$message .= 'As per your order we have despatched the Question papers along with other Test materials. The despatch details are as below :';
+						$message .= 'We Thank you for participating in the ASSET Test.';
 						$message .= '<br><br>';
+						$message .= 'As per your order we have despatched the Question papers along with other Test materials.';
+						$message .= '<br><br>';
+						$message .= 'We would humbly request for your kind support for the smooth conduct of the Test, by getting the number of boxes, question booklets for each subject and answers sheets (OMR) checked, with reference to the registered count of students. Answer Sheets can be counted by the number printed on it.';
+						$message .= '<br><br>';
+						$message .= 'In case of any discrepancy regarding Question Papers/ Test Material, may we request the concerned person to inform us for expeditious corrective action on the e-mail - <a href="mailto:jignasha.mistry@ei-india.com">jignasha.mistry@ei-india.com</a> or <a href="mailto:mitul.patel@ei-india.com">mitul.patel@ei-india.com</a> or call us on toll free no. – 1800 102 8885.';
+						$message .= '<br><br>';
+						$message .= 'The dispatch details are mentioned below for your kind reference.';
 						$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.$value['Q'].'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
 						$message .= '<br><br>';
-						$message .= 'The material has been despatched from Ahmedabad and will take few days to reach at the school. You may either contact us or the local courier branch to track the shipment.Below is the table mentioning the contact details of the local courier to track the shipment or just in case if you do not receive the material in time.';
+						$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
 						$message .= '<br><br>';
-						$message .= 'With warm regards,</n>The ASSET Team';
+						$message .= 'With Best Wishes and Warm Regards,</n>The ASSET Team';
 						$message .= '<br><br>';
 						$message .= '<div style="font-weight:bold;text-align:center;">| B - Big Box | SB - Small Box | C - Green Cover |</div>';
 						$message .= '<br><br>';
@@ -381,7 +389,14 @@ class Vendor extends CI_Controller {
 					echo json_encode(array('status' => 'success','message' => 'Despatch Details Sent Successfully To Logistic..Thank You!!' ));
 				}
 				else {
-					echo json_encode(array('status' => 'error','message' => 'Few Records Are Missing..!! Please Complete The Report And Upload Again.' ));					
+
+					if($schoolContentListFlag == 1){
+						echo json_encode(array('status' => 'error','message' => 'Content List Of Few Records Are Missing..!! Please Upload All The School Content List First.' ));								
+					}
+					else{
+						echo json_encode(array('status' => 'error','message' => 'Few Records Are Missing..!! Please Complete The Report And Upload Again.' ));								
+					}
+					
 				}
 			}
 			else{

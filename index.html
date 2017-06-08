@@ -8,22 +8,17 @@
 	<meta name="keyword" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ASSET Automation System</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<script src="asset/js/plugins/jquery.validate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="asset/js/plugins/jquery.validate.min.js"></script>
 
 <!-- Angular JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>  
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.min.js"></script>
   <script src="asset/js/angular-datatables.min.js"></script>
 
-<script src="asset/js/plugins/jquery.datatables.min.js"></script>
+  <script src="asset/js/plugins/jquery.datatables.min.js"></script>
   <script src="asset/js/plugins/datatables.bootstrap.min.js"></script>
 
-  <!--<script src="http://fb.me/react-0.12.1.js"></script>
-  <script src="asset/js/ngReactGrid.js"></script>
-  <script src="http://ui-grid.info/release/ui-grid.min.js"></script>
-  <script src="asset/js/plugins/datatables.bootstrap.min.js"></script>
-  ->
   <!-- start: Css -->
   <link rel="stylesheet" type="text/css" href="asset/css/bootstrap.min.css">
 
@@ -60,14 +55,56 @@
 
 <body id="mimin" class="dashboard topnav" ng-app="main-App">
           <ng-view></ng-view>
+          <!-- start: Mobile -->
+        <!-- <div data-ng-include=" 'mobile_menu.html' "></div> -->
+        <div id="mimin-mobile" class="reverse">
+        <div class="mimin-mobile-menu-list">
+            <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
+                <ul class="nav nav-list">
+                    <li class="active ripple">
+                      <a href="./" class="tree-toggle nav-header">
+                        <span class="fa-home fa"></span>Dashboard 
+                      </a>
+                    </li>
+                    <li class="ripple">
+                      <a class="tree-toggle nav-header">
+                        <span class="fa-diamond fa"></span>Vendor Management
+                        <span class="fa-angle-right fa right-arrow text-right"></span>
+                      </a>
+                      <ul class="nav nav-list tree">
+                        <li><a href="create_vendor">Create Vendor</a></li>
+                        <li><a href="vendor_list">Vendor's List</a></li>
+                      </ul>
+                    </li>
+                    <li class="ripple">
+                      <a class="tree-toggle nav-header">
+                        <span class="fa-area-chart fa"></span>Pre Test
+                        <span class="fa-angle-right fa right-arrow text-right"></span>
+                      </a>
+                      <ul class="nav nav-list tree">
+                        <li><a href="generate_packing_slips">Generate Packing Slip</a></li>
+                        <li><a href="packing_slips_list">Packing Slip List</a></li>
+                        <li><a href="qb_mis_list">QB MIS List</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+            </div>
+        </div>       
+      </div>
+      <button id="mimin-mobile-menu-opener" class="animated rubberBand btn btn-circle btn-danger">
+        <span class="fa fa-bars"></span>
+      </button>
+       <!-- end: Mobile -->
+       <!-- end: Mobile -->
           <!-- start: Javascript -->
    <footer>
-    <script src="asset/js/jquery.min.js"></script>
     <script src="asset/js/jquery.ui.min.js"></script>
     <script src="asset/js/bootstrap.min.js"></script>
+    <script src="asset/js/plugins/moment.min.js"></script>
+    <script src="asset/js/plugins/jquery.nicescroll.js"></script>
    </footer>
 
 
-  <script src="asset/js/general.js"></script>
+  <script src="asset/js/main.js"></script>
 </body>
 </html>

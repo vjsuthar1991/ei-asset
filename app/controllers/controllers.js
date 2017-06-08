@@ -1,640 +1,5 @@
 app.controller('DashboardController', function($scope,$http,$ocLazyLoad) {
 
-  //$scope.pools = [];
-         // start: Chart =============
-
-         Chart.defaults.global.pointHitDetectionRadius = 1;
-         Chart.defaults.global.customTooltips = function(tooltip) {
-
-          var tooltipEl = $('#chartjs-tooltip');
-
-          if (!tooltip) {
-            tooltipEl.css({
-              opacity: 0
-            });
-            return;
-          }
-
-          tooltipEl.removeClass('above below');
-          tooltipEl.addClass(tooltip.yAlign);
-
-          var innerHtml = '';
-          if (undefined !== tooltip.labels && tooltip.labels.length) {
-            for (var i = tooltip.labels.length - 1; i >= 0; i--) {
-              innerHtml += [
-              '<div class="chartjs-tooltip-section">',
-              '   <span class="chartjs-tooltip-key" style="background-color:' + tooltip.legendColors[i].fill + '"></span>',
-              '   <span class="chartjs-tooltip-value">' + tooltip.labels[i] + '</span>',
-              '</div>'
-              ].join('');
-            }
-            tooltipEl.html(innerHtml);
-          }
-
-          tooltipEl.css({
-            opacity: 1,
-            left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
-            top: tooltip.chart.canvas.offsetTop + tooltip.y + 'px',
-            fontFamily: tooltip.fontFamily,
-            fontSize: tooltip.fontSize,
-            fontStyle: tooltip.fontStyle
-          });
-        };
-        var randomScalingFactor = function() {
-          return Math.round(Math.random() * 100);
-        };
-        var lineChartData = {
-          labels: ["January", "February", "March", "April", "May", "June", "July"],
-          datasets: [{
-            label: "My First dataset",
-            fillColor: "rgba(21,186,103,0.4)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(66,69,67,0.3)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [18,9,5,7,4.5,4,5,4.5,6,5.6,7.5]
-          }, {
-            label: "My Second dataset",
-            fillColor: "rgba(21,113,186,0.5)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [4,7,5,7,4.5,4,5,4.5,6,5.6,7.5]
-          }]
-        };
-
-        var doughnutData = [
-        {
-          value: 300,
-          color:"#129352",
-          highlight: "#15BA67",
-          label: "Alfa"
-        },
-        {
-          value: 50,
-          color: "#1AD576",
-          highlight: "#15BA67",
-          label: "Beta"
-        },
-        {
-          value: 100,
-          color: "#FDB45C",
-          highlight: "#15BA67",
-          label: "Gamma"
-        },
-        {
-          value: 40,
-          color: "#0F5E36",
-          highlight: "#15BA67",
-          label: "Peta"
-        },
-        {
-          value: 120,
-          color: "#15A65D",
-          highlight: "#15BA67",
-          label: "X"
-        }
-
-        ];
-
-
-        var doughnutData2 = [
-        {
-          value: 100,
-          color:"#129352",
-          highlight: "#15BA67",
-          label: "Alfa"
-        },
-        {
-          value: 250,
-          color: "#FF6656",
-          highlight: "#FF6656",
-          label: "Beta"
-        },
-        {
-          value: 100,
-          color: "#FDB45C",
-          highlight: "#15BA67",
-          label: "Gamma"
-        },
-        {
-          value: 40,
-          color: "#FD786A",
-          highlight: "#15BA67",
-          label: "Peta"
-        },
-        {
-          value: 120,
-          color: "#15A65D",
-          highlight: "#15BA67",
-          label: "X"
-        }
-
-        ];
-
-        var barChartData = {
-          labels: ["January", "February", "March", "April", "May", "June", "July"],
-          datasets: [
-          {
-            label: "My First dataset",
-            fillColor: "rgba(21,186,103,0.4)",
-            strokeColor: "rgba(220,220,220,0.8)",
-            highlightFill: "rgba(21,186,103,0.2)",
-            highlightStroke: "rgba(21,186,103,0.2)",
-            data: [65, 59, 80, 81, 56, 55, 40]
-          },
-          {
-            label: "My Second dataset",
-            fillColor: "rgba(21,113,186,0.5)",
-            strokeColor: "rgba(151,187,205,0.8)",
-            highlightFill: "rgba(21,113,186,0.2)",
-            highlightStroke: "rgba(21,113,186,0.2)",
-            data: [28, 48, 40, 19, 86, 27, 90]
-          }
-          ]
-        };
-
-        var ctx2 = $(".line-chart")[0].getContext("2d");
-        window.myLine = new Chart(ctx2).Line(lineChartData, {
-         responsive: true,
-         showTooltips: true,
-         multiTooltipTemplate: "<%= value %>",
-         maintainAspectRatio: false
-       });
-
-        var ctx3 = $(".bar-chart")[0].getContext("2d");
-        window.myLine = new Chart(ctx3).Bar(barChartData, {
-         responsive: true,
-         showTooltips: true
-       });
-
-        var ctx4 = $(".doughnut-chart2")[0].getContext("2d");
-        window.myDoughnut2 = new Chart(ctx4).Doughnut(doughnutData2, {
-          responsive : true,
-          showTooltips: true
-        });
-
-
-      });
-
-app.controller('AddStudentTargetController', function($scope,$http){
-
-});
-
-app.controller('ListingTableController', function($scope,$http){
-
-  var employees = [];
-
-  for(var i = 0; i < 100000; i++)
-    employees.push({
-      firstName: "John " + i,
-      lastName: "Doe " + i,
-      classname: "Class " + i
-    });
-
-  $scope.grid = {
-    data: employees,
-    columnDefs: [
-    {
-      field: "firstName",
-      displayName: "First Name"
-    },
-    {
-      field: "lastName",
-      displayName: "Last Name"
-    },
-    {
-      field: "classname",
-      displayName: "Class Name"
-    }
-    ]
-  };
-  
-});
-
-
-app.controller('AddUserController', function($scope,$http){
-
-  $("#adduserform").validate({
-    errorElement: "em",
-    errorPlacement: function(error, element) {
-      $(element.parent("div").addClass("form-animate-error"));
-      error.appendTo(element.parent("div"));
-    },
-    success: function(label) {
-      $(label.parent("div").removeClass("form-animate-error"));
-    },
-    rules: {
-      user_firstname: "required",
-      user_lastname: "required",
-      user_password: {
-        required: true,
-        minlength: 5
-      },
-      user_email: {
-        required: true,
-        email: true
-      }
-    },
-    messages: {
-      user_firstname: "Please enter your firstname",
-      user_lastname: "Please enter your lastname",
-      user_password: {
-        required: "Please provide a password",
-        minlength: "Your password must be at least 5 characters long"
-      },
-      user_email: "Please enter a valid email address"
-
-    }
-  });
-
-  $(document).on('submit','#adduserform',function(event){
-            // code
-            jQuery('#adduserbtn').attr('disabled','disabled');
-            event.stopImmediatePropagation();
-
-          //disable the default form submission
-          event.preventDefault();
-          var jsonData = {};
-
-
-          //grab all form data  
-          var formData = jQuery('form#adduserform').serializeArray();
-          jQuery.each(formData, function() {
-
-           if (jsonData[this.name]) {
-
-             if (!jsonData[this.name].push) {
-
-               jsonData[this.name] = [jsonData[this.name]];
-
-             }
-
-             jsonData[this.name].push(this.value || '');
-           } else {
-
-             jsonData[this.name] = this.value || '';
-
-           }
-
-
-         });
-
-          jsonData = JSON.stringify(jsonData);
-
-          //console.log(JSON.parse(JSON.stringify(jsonData)));  
-          $.ajax({
-            url: './api/user/add_user',
-            type: 'POST',
-            dataType : 'json', // data type
-            data: jsonData,
-            async: true,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-              var response = JSON.parse(JSON.stringify(returndata));
-
-              if(response.status == "success"){
-
-                if($('#add_user_message_box').hasClass('alert-danger')){
-                  $('#add_user_message_box').removeClass('alert-danger');
-                }
-                $('#add_user_message_box').addClass('alert-success');
-                $('#add_user_message_box').text('');
-                $('#add_user_message_box').append(response.message);
-                $('#add_user_message_box').removeClass('hide');
-                $(window).scrollTop($('#add_user_message_box').offset().top);
-
-                setTimeout(function(){ window.location.reload(); }, 3000);
-
-              }
-              //window.location="#/portfolio/view-portfolio-cat"
-              
-            }
-          });
-
-return false;
-
-});
-
-});
-
-app.controller('ViewUserController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder){
-
-  $scope.users = [];
-  var flag = 0;
-  var userData = [];
-  $.ajax({
-    url: './api/user/list_users',
-    type: 'POST',
-            dataType : 'json', // data type
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-              var response = JSON.parse(JSON.stringify(returndata));
-
-              if(response.status == "success"){
-
-
-                jQuery.each( response.data, function( i, val ) {
-                  $scope.users.push({
-                    userId: val.user_id,
-                    userFirstName: val.user_name,
-                    userLastName: val.user_lastname,
-                    userEmail: val.user_email
-
-                  });
-                });
-
-                $scope.dtColumns = [
-                DTColumnBuilder.newColumn('userFirstName').withTitle('First Name').withOption('title','First Name'),
-                DTColumnBuilder.newColumn('userLastName').withTitle('Last Name').withOption('title','Last Name'),
-                DTColumnBuilder.newColumn('userEmail').withTitle('Email').withOption('title','Email'),
-                DTColumnBuilder.newColumn(null).withTitle('Action').notSortable().withOption('title','Action').renderWith(function (data, type, full, meta){
-                  return '<button class="btn btn-warning" ng-click="edit(' + data.id + ')">' +
-                  '   <i class="fa fa-edit"></i>' +
-                  '</button>&nbsp;' +
-                  '<button class="btn btn-danger" ng-click="delete(' + data.id + ')">' +
-                  '   <i class="fa fa-trash-o"></i>' +
-                  '</button>';
-
-                })
-                ];  
-                $scope.dtColumns[0].visible = true;
-                $scope.dtColumns[1].visible = true;
-                $scope.dtColumns[2].visible = true;
-                $scope.dtColumns[3].visible = false;
-
-       //console.log($scope.dtColumns['userFirstName'].);
-
-
-         // $scope.dtColumns = [{
-         //                id: "column1",
-         //                title: "First Name",
-         //                field: 'userFirstName',
-         //                visible: true
-         //              }, {
-         //                id: "column2",
-         //                title: "Last Name",
-         //                field: 'userFirstName',
-         //                visible: true
-         //              }, {
-         //                id: "column3",
-         //                title: "Email",
-         //                field: 'userFirstName',
-         //                visible: true
-         //              },{
-         //                id: "column4",
-         //                title: "Action",
-         //                template: '<a href="">Edit</a>',
-         //                visible: true
-         //              }, ];
-
-
-         $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.users).withOption('processing',true);         
-
-                    // $scope.grid = {
-                    //         data: users,
-                    //         columnDefs: [
-                    //         {
-                    //             field: "userFirstName",
-                    //             displayName: "First Name"
-                    //         },
-                    //         {
-                    //             field: "userLastName",
-                    //             displayName: "Last Name"
-                    //         },
-                    //         {
-                    //             displayName: "Edit",
-                    //             cellTemplate: '<button id="editBtn" type="button">Edit</button> ',
-
-                    //         }
-                    //         ]
-                    // };
-
-                  }
-
-                }
-              });
-
- //setTimeout(function() {
-
-
-
- //},500);
-
-
-});
-
-app.controller('EditUserController', function($scope,$http,$routeParams,$location,$window,$route){
-
-  var data = {user_id : $routeParams.user_id};
-  $scope.userDetails = [];
-
-  data = JSON.stringify(data);
-  $.ajax({
-    url: './api/user/get_user',
-    type: 'POST',
-    data: data,
-            dataType : 'json', // data type
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-              var response = JSON.parse(JSON.stringify(returndata));
-
-              if(response.status == "success"){
-
-                userDetails = response.data[0];
-                jQuery('#user_id').val(userDetails.user_id);
-                jQuery('#user_firstname').val(userDetails.user_name);
-                jQuery('#user_lastname').val(userDetails.user_lastname);
-                jQuery('#user_email').val(userDetails.user_email);
-                jQuery('#user_password').val(userDetails.user_password);
-
-              }
-              
-            }
-          });
-
-  $("#edituserform").validate({
-    errorElement: "em",
-    errorPlacement: function(error, element) {
-      $(element.parent("div").addClass("form-animate-error"));
-      error.appendTo(element.parent("div"));
-    },
-    success: function(label) {
-      $(label.parent("div").removeClass("form-animate-error"));
-    },
-    rules: {
-      user_firstname: "required",
-      user_lastname: "required",
-      user_password: {
-        required: true,
-        minlength: 5
-      },
-      user_email: {
-        required: true,
-        email: true
-      }
-    },
-    messages: {
-      user_firstname: "Please enter your firstname",
-      user_lastname: "Please enter your lastname",
-      user_password: {
-        required: "Please provide a password",
-        minlength: "Your password must be at least 5 characters long"
-      },
-      user_email: "Please enter a valid email address"
-
-    }
-  });
-
-  $(document).on('submit','#edituserform',function(event){
-            // code
-          //event.preventDefault();
-          jQuery('#edituserbtn').attr('disabled','disabled');
-          var jsonData = {};
-
-
-          //grab all form data  
-          var formData = jQuery('form#edituserform').serializeArray();
-          jQuery.each(formData, function() {
-
-           if (jsonData[this.name]) {
-
-             if (!jsonData[this.name].push) {
-
-               jsonData[this.name] = [jsonData[this.name]];
-
-             }
-
-             jsonData[this.name].push(this.value || '');
-           } else {
-
-             jsonData[this.name] = this.value || '';
-
-           }
-
-
-         });
-
-          jsonData = JSON.stringify(jsonData);
-
-          //console.log(JSON.parse(JSON.stringify(jsonData)));  
-          $.ajax({
-            url: './api/user/edit_user',
-            type: 'POST',
-            dataType : 'json', // data type
-            data: jsonData,
-            async: true,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-              var response = JSON.parse(JSON.stringify(returndata));
-
-              if(response.status == "success"){
-
-                if($('#edit_user_message_box').hasClass('alert-danger')){
-                  $('#edit_user_message_box').removeClass('alert-danger');
-                }
-                $('#edit_user_message_box').addClass('alert-success');
-                $('#edit_user_message_box').text('');
-                $('#edit_user_message_box').append(response.message);
-                $('#edit_user_message_box').removeClass('hide');
-                $(window).scrollTop($('#edit_user_message_box').offset().top);
-
-                setTimeout(function(){ $location.search('user_id', null);$location.path('/view_user');$scope.$apply();$route.reload(); }, 3000);
-
-
-              }
-              //window.location="#/portfolio/view-portfolio-cat"
-              
-            }
-          });
-
-return false;
-
-});
-
- //setTimeout(function() {
-
-
-
- //},500);
-
-
-});
-
-app.controller('UploadCSVController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder){
-  $(document).on('submit','#uploadcsvform',function(event){
-    var fileUpload = document.getElementById("user_csvfile");
-    event.preventDefault();
-
-    if (fileUpload .value != null) {
-
-      var uploadFile = new FormData();
-      var files = $("#user_csvfile").get(0).files;
-      $scope.csvdata = [];
-        // Add the uploaded file content to the form data collection
-        if (files.length > 0) {
-
-          uploadFile.append("CsvDoc", files[0]);
-
-          $.ajax({
-            url: "./api/user/upload_csv",
-            contentType: false,
-            processData: false,
-            data: uploadFile,
-            type: 'POST',
-            success: function (returndata) {
-             var response = JSON.parse(returndata);
-             
-             if(response.status == "success"){
-
-              jQuery.each( response.data, function( i, val ) {
-                $scope.csvdata.push({
-                  taskId: val.age,
-                  Category: val.Category,
-                  Age: val.Age,
-                  Product: val.Product
-
-                });
-              });
-
-
-
-                   // jQuery('#uploadedcsvdata').append('<table id="datatables-example1" datatable="" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped table-bordered" width="100%" cellspacing="0" ></table></div><div ng-repeat="column in dtColumns">{{column.title}} visible: <input type="checkbox" ng-model="column.visible" /></div>');
-                   //                     $scope.dtColumns = [
-                   //     DTColumnBuilder.newColumn('taskId').withTitle('Task Id').withOption('title','Task Id'),
-                   //     DTColumnBuilder.newColumn('Category').withTitle('Category').withOption('title','Category'),
-                   //     DTColumnBuilder.newColumn('Age').withTitle('Age').withOption('title','Age'),
-                   //     DTColumnBuilder.newColumn('Product').withTitle('Product').withOption('title','Product')
-                   // ];
-
-                   // $scope.dtColumns[0].visible = true;
-                   // $scope.dtColumns[1].visible = true;
-                   // $scope.dtColumns[2].visible = true;
-                   // $scope.dtColumns[3].visible = false;
-
-                   // $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.csvdata);
-                 }
-
-               }
-             });
-}
-}
-
-});
-
 });
 
 app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
@@ -1490,6 +855,7 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                 jQuery.each( response.data, function( i, val ) {
                   $scope.packingsliplist.push({
                     packingSlipId: val.packingslip_id,
+                    packingSlipLotno: val.packingslip_lotno,
                     packingSlipSentDate: val.packingslip_sentdate,
                     vendorName: val.vendor_name,
                     packingslipSchoolsCSV: val. packingslip_schools_data_csv,
@@ -1508,17 +874,18 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                 $scope.dtColumns = [
                   DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
                   DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+                  DTColumnBuilder.newColumn('packingSlipLotno').withTitle('Lot No.').withOption('title','Lot No.'),
                   DTColumnBuilder.newColumn('vendorName').withTitle('Vendor Name').withOption('title','Vendor Name'),
                   DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
                   .renderWith(function (data, type, full, meta){
                     if(full.packingSlipId){
-                      return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+                      return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
                     }
                   }).withClass("text-center"),
                   DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
                   .renderWith(function (data, type, full, meta){
                     if(full.packingSlipId){
-                      return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+                      return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
                     }
                   }).withClass("text-center"),
                   DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date').withOption('title','Acknowledge Date'),
@@ -1937,16 +1304,21 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
 
               }
               else {
+
+                $('#uploadqbmisform')[0].reset();
+                $('#uploadqbanalysismisbtn').removeAttr('disabled');
+                
                 if($('#upload_csv_message_box').hasClass('alert-success')){
                   $('#upload_csv_message_box').removeClass('alert-success');
                 }
+                
                 $('#upload_csv_message_box').addClass('alert-danger');
                 $('#upload_csv_message_box').text('');
                 $('#upload_csv_message_box').append(response.message);
                 $('#upload_csv_message_box').removeClass('hide');
                 $(window).scrollTop($('#upload_csv_message_box').offset().top);
 
-                setTimeout(function(){ window.location.reload(); }, 3000);
+                setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 2000);
               }
 
             }
@@ -2004,6 +1376,7 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
         jQuery.each( response.data, function( i, val ) {
           $scope.vendorpackingsliplist.push({
             packingSlipId: val.packingslip_id,
+            packingSlipLotNo: val.packingslip_lotno,
             packingSlipSentDate: val.packingslip_sentdate,
             packingslipSchoolsCSV: val. packingslip_schools_data_csv,
             packingslipBreakupCSV: val.packingslip_breakup_data_csv,
@@ -2021,16 +1394,17 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
         $scope.dtColumns = [
           DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
           DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date And Time').withOption('title','Sent Date And Time'),
+          DTColumnBuilder.newColumn('packingSlipLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
           DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
           .renderWith(function (data, type, full, meta){
             if(full.packingSlipId){
-              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
             }
           }).withClass("text-center"),
           DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
           .renderWith(function (data, type, full, meta){
             if(full.packingSlipId){
-              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
             }
           }).withClass("text-center"),
           DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
@@ -2051,6 +1425,58 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
         $scope.dtColumns[3].visible = true;
         
         
+      }
+      else {
+        jQuery.each( response.data, function( i, val ) {
+          $scope.vendorpackingsliplist.push({
+            packingSlipId: val.packingslip_id,
+            packingSlipLotNo: val.packingslip_lotno,
+            packingSlipSentDate: val.packingslip_sentdate,
+            packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+            packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+            packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+          });
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date And Time').withOption('title','Sent Date And Time'),
+          DTColumnBuilder.newColumn('packingSlipLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingslipAcknowledgeDate == ""){
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.packingSlipId+'"><div><span>Click Here</span></div></button>';
+            }
+            else {
+              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
       }
       
     }
@@ -2080,6 +1506,7 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
         jQuery.each( response.data, function( i, val ) {
           $scope.newvendorpackingsliplist.push({
             packingSlipId: val.packingslip_id,
+            packingSlipLotNo: val.packingslip_lotno,
             packingSlipSentDate: val.packingslip_sentdate,
             packingslipSchoolsCSV: val. packingslip_schools_data_csv,
             packingslipBreakupCSV: val.packingslip_breakup_data_csv,
@@ -2151,15 +1578,25 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
           var firstDate = new Date(val.qb_despatch_date);
           var secondDate = new Date(val.packlabel_date);
 
-          var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+          var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
           
           if(isNaN(diffDays)){
             diffDays = 'Not Yet Dispatched';
           }
 
+          var dispatchDate = new Date(val.qb_despatch_date);
+          var deliveryDate = new Date(val.qb_delivery_date);
+
+          var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+          
+          if(isNaN(deliverydiffDays)){
+            deliverydiffDays = 'Not Yet Delivered';
+          }
+
 
           
           $scope.qbmisreports.push({
+
             schoolCode: val.school_code,
             schoolName: val.school_name,
             schoolCity: val.school_city,
@@ -2172,6 +1609,10 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
             schoolQty: val.material,
             schoolWeight: val.weight,
             schoolTat: diffDays,
+            schoolQbDelivery_status: val.qb_delivery_status,
+            schoolQbDeliveryDate:val.qb_delivery_date,
+            schoolQbRecieverName: val.qb_reciever_name,
+            schoolDeliveryTime: deliverydiffDays
 
           });
         });
@@ -2190,7 +1631,7 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
 
                 $scope.dtColumns = [
 
-                DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
                 DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
                 DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
                 DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
@@ -2202,15 +1643,19 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
                 DTColumnBuilder.newColumn('schoolMode').withTitle('Mode').withOption('title','Mode'),
                 DTColumnBuilder.newColumn('schoolQty').withTitle('No. Of Box').withOption('title','No. Of Box'),
                 DTColumnBuilder.newColumn('schoolWeight').withTitle('Weight').withOption('title','Weight'),
+                DTColumnBuilder.newColumn('schoolQbDelivery_status').withTitle('Delivery Status').withOption('title','Delivery Status'),
+                DTColumnBuilder.newColumn('schoolQbDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+                DTColumnBuilder.newColumn('schoolQbRecieverName').withTitle('Reciever Name').withOption('title','Reciever Name'),
                 DTColumnBuilder.newColumn('schoolTat').withTitle('Days Taken For Dispatch').withOption('title','Days Taken For Dispatch'),
+                DTColumnBuilder.newColumn('schoolDeliveryTime').withTitle('Days Taken For Delivery').withOption('title','Days Taken For Delivery'),
                 ];  
                 
-                // $scope.dtColumns[0].visible = true;
-                // $scope.dtColumns[1].visible = true;
-                // $scope.dtColumns[2].visible = true;
-                // $scope.dtColumns[3].visible = true;
-                // $scope.dtColumns[4].visible = true;
-                // $scope.dtColumns[5].visible = false;
+                
+                $scope.dtColumns[12].visible = false;
+                $scope.dtColumns[13].visible = false;
+                $scope.dtColumns[14].visible = false;
+                $scope.dtColumns[16].visible = false;
+                
                 
       }
       
@@ -2312,4 +1757,12 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
   };
 
   
+});
+
+app.controller('DashboardPenAndPaperController', function($scope,$http){
+
+});
+
+app.controller('DashboardPenAndPaperPreTestController', function($scope,$http){
+
 });

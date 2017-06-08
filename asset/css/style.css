@@ -1793,6 +1793,7 @@ ul li a:focus {
     text-shadow: 0px 1px 5px #918C8C;
     padding: 15px;
     margin-left: 20px;
+
     font-size: 2.3em;
     color: #FFFFFF !important;
   }
@@ -5645,6 +5646,7 @@ ul li a:focus {
 #mimin-mobile .tree{
   padding-left: 10px;
   background: #ef5949;
+  /*display: none;*/
 }
 .sub-mimin-mobile-menu-list {
   display: none;
@@ -5666,7 +5668,7 @@ ul li a:focus {
 }
 
 #mimin-mobile .ink {
-  background: #FF6656;
+  background: #2196F3;
 }
 
 #mimin-mobile .ink.animate {

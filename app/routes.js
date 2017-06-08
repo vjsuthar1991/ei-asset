@@ -98,7 +98,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
 
 app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
-    function($routeProvider,$locationProvider,$controllerProvider,$location,) {
+    function($routeProvider,$locationProvider,$controllerProvider,$location) {
         app.registerCtrl = $controllerProvider.register;
         
         $routeProvider.
@@ -109,58 +109,8 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
 
                 controller: 'DashboardController',
 
-                resolve: {
-                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            name: 'ui.select',
-                            // add UI select css / js for this state
-                            files: [
-                                
-                                'asset/js/plugins/jquery.vmap.min.js',
-                                'asset/js/plugins/jquery.vmap.world.js',
-                                'asset/js/plugins/jquery.vmap.sampledata.js',
-                                'asset/js/plugins/chart.min.js',
-                            ] 
-                        }]);
-                    }]
-                }
-            }).
-
-            when('/add_student_target', {
-
-                templateUrl: 'views/add_student_target.html',
-
-                controller: 'AddStudentTargetController'
-
-            }).
-
-            when('/listing_table', {
-                templateUrl: 'views/listing_table.html',
-
-                controller: 'ListingTableController',
-
-                
-            }).
-            when('/add_user',{
-                 templateUrl: 'views/add_user.html',
-                 controller: 'AddUserController',  
-                 
-            }).
-            when('/view_user',{
-                 templateUrl: 'views/view_user.html',
-                 controller: 'ViewUserController',  
-                 
-            }).
-            when('/edit_user',{
-                 templateUrl: 'views/edit_user.html',
-                 controller: 'EditUserController',  
-                 
             })
-            .when('/upload_csv',{
-                 templateUrl: 'views/upload_csv.html',
-                 controller: 'UploadCSVController',  
-                 
-            }).when('/generate_packing_slips',{
+            .when('/generate_packing_slips',{
                  templateUrl: 'views/packing_slips.html',
                  controller: 'PackingSlipsController',  
                  
@@ -220,6 +170,14 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
             .when('/qb_mis_list',{
               templateUrl: 'views/qb_mis_list.html',
               controller: 'QbMisListController',
+            })
+            .when('/dashboard-penpaper',{
+              templateUrl: 'views/dashboard-penpaper.html',
+              controller: 'DashboardPenAndPaperController',
+            })
+            .when('/dashboard-pppretest',{
+              templateUrl: 'views/dashboard-pppretest.html',
+              controller: 'DashboardPenAndPaperPreTestController',
             });
 
 

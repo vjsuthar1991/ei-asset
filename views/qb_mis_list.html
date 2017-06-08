@@ -79,7 +79,7 @@
                     
                           </table>
                           
-                          
+                          <div ng-repeat="column in dtColumns" ng-if="column.title == 'Delivery Status' || column.title == 'Delivery Date' || column.title == 'Reciever Name' || column.title == 'Days Taken For Delivery'">{{column.title}}: <input type="checkbox" ng-model="column.visible" /></div>
                         </div>
            
                     </div>
