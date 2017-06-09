@@ -1777,5 +1777,60 @@ app.controller('DashboardPenAndPaperController', function($scope,$http){
 });
 
 app.controller('DashboardPenAndPaperPreTestController', function($scope,$http){
+  var doughnutData = [
+                {
+                    value: 100,
+                    color:"#4ED18F",
+                    highlight: "#15BA67",
+                    label: "Alfa"
+                },
+                {
+                    value: 250,
+                    color: "#15BA67",
+                    highlight: "#15BA67",
+                    label: "Beta"
+                },
+                {
+                    value: 100,
+                    color: "#5BAABF",
+                    highlight: "#15BA67",
+                    label: "Gamma"
+                },
+                
+
+            ];
+
+              var ctx2 = $(".pie-chart")[0].getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(doughnutData, {
+                    responsive : true,
+                    showTooltips: true
+                });
+
+                var ctx2 = $(".pie-chart2")[0].getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(doughnutData, {
+                    responsive : true,
+                    showTooltips: true
+                });
+
+                var ctx2 = $(".pie-chart3")[0].getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(doughnutData, {
+                    responsive : true,
+                    showTooltips: true
+                });
+
+                var ctx2 = $(".pie-chart4")[0].getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(doughnutData, {
+                    responsive : true,
+                    showTooltips: true
+                });
+
+                var ctx2 = $(".pie-chart5")[0].getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(doughnutData, {
+                    responsive : true,
+                    showTooltips: true
+                });
+
+
+
 
 });

@@ -175,6 +175,18 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
             .when('/dashboard-pppretest',{
               templateUrl: 'views/dashboard-pppretest.html',
               controller: 'DashboardPenAndPaperPreTestController',
+              resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.select',
+                            // add UI select css / js for this state
+                            files: [
+                                
+                                'asset/js/plugins/chart.min.js',
+                            ] 
+                        }]);
+                    }]
+                }
             });
 
 
