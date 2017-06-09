@@ -22,12 +22,11 @@ class Mis_system extends CI_Controller {
 
 		$data['zones'] = $this->vendors->getZones();
 		$data['rounds'] = $this->packingslips->getRounds();
-		$data['schooldetails'] = $this->qb_mis_list_model->getSchoolDetails($inputRequest['round']);
-		$data['packlabel_date'] = $this->qb_mis_list_model->getPackLabelDate($inputRequest['round']);
-		$data['school_city'] = $this->qb_mis_list_model->getSchoolCity($inputRequest['round']);
+		$data['lotnos'] = $this->qb_mis_list_model->getPackingLotNos($inputRequest['round']);
+		
 		$data['qb_mis_reports'] = $this->qb_mis_list_model->getQbMisReports($inputRequest['round']);
 		
-		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'schooldata' => $data['schooldetails'],'packlabel_date' => $data['packlabel_date'],'school_city' => $data['school_city'],'qb_mis_reports' => $data['qb_mis_reports']));
+		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'lotnos' => $data['lotnos'],'qb_mis_reports' => $data['qb_mis_reports']));
 		die;
 	}
 
@@ -41,7 +40,7 @@ class Mis_system extends CI_Controller {
     {
         $inputRequest = json_decode(file_get_contents("php://input"),true);
 
-        $data['filteredreports'] = $this->qb_mis_list_model->getFilteredQbReports($inputRequest['round'],$inputRequest['schoolCode'],$inputRequest['zone'],$inputRequest['packingdate'],$inputRequest['city']);
+        $data['filteredreports'] = $this->qb_mis_list_model->getFilteredQbReports($inputRequest['round'],$inputRequest['zone'],$inputRequest['lotno']);
         
         if(count($data['filteredreports']) > 0) {
             echo json_encode(array('status' => 'success','filteredqbreports'=> $data['filteredreports']));

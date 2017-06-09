@@ -46,6 +46,17 @@ class Qb_mis_list_model extends CI_Model{
         return $query->result(); 
     }
 
+    function getPackingLotNos($round){
+
+        $this->db->distinct();
+        $this->db->select('lot_no');
+        $this->db->from($this->schoolProcessTracking);
+        $this->db->where('test_edition',$round);
+        $this->db->order_by('lot_no','asc');
+        $query = $this->db->get();
+        return $query->result();    
+    }
+
     function getQbMisReports($round)
     {
         $this->db->select('t1.*,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo');
@@ -58,29 +69,22 @@ class Qb_mis_list_model extends CI_Model{
         return $query->result(); 
     }
 
-    function getFilteredQbReports($round,$schoolCode,$zone,$packingDate,$city)
+    function getFilteredQbReports($round,$zone,$lotno)
     {
         $this->db->select('t1.*,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo');
         $this->db->from("$this->schoolProcessTracking as t1");
-        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = $round", 'LEFT');
+        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
+        
         if($round != ""){
             $this->db->where('t1.test_edition',$round);
-        }
-
-        if($schoolCode != ""){
-            $this->db->where('t1.school_code',$schoolCode);
         }
 
         if($zone != ""){
             $this->db->where('t1.school_region',$zone);
         }
 
-        if($packingDate != ""){
-            $this->db->where('t1.packlabel_date');
-        }
-
-        if($city != ""){
-            $this->db->where('t1.school_city');   
+        if($lotno != ""){
+            $this->db->where('t1.lot_no',$lotno);
         }
 
         $this->db->order_by('t1.packlabel_date','desc');
@@ -89,11 +93,6 @@ class Qb_mis_list_model extends CI_Model{
         return $query->result(); 
 
     }
-
-    
-
-
-    
 
     
 }

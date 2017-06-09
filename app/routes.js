@@ -104,11 +104,8 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
         $routeProvider.
 
             when('/', {
-
                 templateUrl: 'views/dashboard.html',
-
                 controller: 'DashboardController',
-
             })
             .when('/generate_packing_slips',{
                  templateUrl: 'views/packing_slips.html',

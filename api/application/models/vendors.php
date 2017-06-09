@@ -159,23 +159,101 @@ class Vendors extends CI_Model{
         $query = $this->db->get();
         $edition = $query->result();
 
-        if($deliveryDate == ''){
-            $deliveryDate = '0000-00-00';
-        }
-
-        $this->db->where("school_code",$schoolCode);
-        $this->db->where("test_edition",$edition[0]->test_edition);
         if($contentType == "QB") {
+
+            $this->db->select('qb_despatch_date,qb_delivery_date');
+            $this->db->from($this->schoolProcessTracking);
+            $this->db->where('school_code',$schoolCode);
+            $this->db->where('test_edition',$edition[0]->test_edition);
+            $query = $this->db->get();
+            $check = $query->result();
+
+            if($deliveryDate == ''){
+                $deliveryDate = '0000-00-00';
+            }
+
             
-            $this->db->update($this->schoolProcessTracking,array('qb_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
-            $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'QB Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
+
+            if($check[0]->qb_despatch_date == "0000-00-00"){
+
+                $this->db->where("school_code",$schoolCode);
+                $this->db->where("test_edition",$edition[0]->test_edition);
+
+                $this->db->update($this->schoolProcessTracking,array('qb_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
+                
+                return 1;        
+            }
+            else {
+                if($check[0]->qb_delivery_date == '0000-00-00'){
+
+                    $this->db->where("school_code",$schoolCode);
+                    $this->db->where("test_edition",$edition[0]->test_edition);
+                    
+                    $this->db->update($this->schoolProcessTracking,array('qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
+                
+                    return false;
+                }
+            }
+            
+            
+            $this->db->select('srno');
+            $this->db->from($this->courierDispatchDetails);
+            $this->db->where('schoolCode',$schoolCode);
+            $this->db->where('test_edition',$edition[0]->test_edition);
+            $query = $this->db->get();
+            $check2 = $query->result();
+
+            
+            if(count($check2) == 0){
+
+                $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'QB Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
              
+            }
+
         }
         elseif($contentType == "Analysis"){
 
-            $this->db->update($this->schoolProcessTracking,array('analysis_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));
-            $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'Analysis Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
+            $this->db->select('analysis_despatch_date,analysis_delivery_date');
+            $this->db->from($this->schoolProcessTracking);
+            $this->db->where('school_code',$schoolCode);
+            $this->db->where('test_edition',$edition[0]->test_edition);
+            $query = $this->db->get();
+            $check = $query->result();
 
+            if($deliveryDate == ''){
+                $deliveryDate = '0000-00-00';
+            }
+
+            $this->db->where("school_code",$schoolCode);
+            $this->db->where("test_edition",$edition[0]->test_edition);
+
+            if($check[0]->analysis_despatch_date == "0000-00-00"){
+
+                $this->db->update($this->schoolProcessTracking,array('analysis_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));
+            
+                return 1;
+            }
+
+            else {
+                if($check[0]->analysis_delivery_date == '0000-00-00'){
+
+                    $this->db->update($this->schoolProcessTracking,array('analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));    
+                    return false;
+                }
+            }
+
+            $this->db->select('srno');
+            $this->db->from($this->courierDispatchDetails);
+            $this->db->where('schoolCode',$schoolCode);
+            $this->db->where('test_edition',$edition[0]->test_edition);
+            $query = $this->db->get();
+            $check = $query->result();
+
+            if(count($check) == 0){
+
+                $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'Analysis Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
+
+            }
         }
         
     }

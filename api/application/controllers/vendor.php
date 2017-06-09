@@ -341,49 +341,51 @@ class Vendor extends CI_Controller {
 
 					foreach ($data['values'] as $key => $value) {
 						
-						$this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
+						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
 
-						$message = '';
-						$subject = '';
+						if($mailFlag == 1){
+							$message = '';
+							$subject = '';
 
-						if($value['V'] == 'SFC'){
-							
-							$value['V'] = 'Surface';
-							 
+							if($value['V'] == 'SFC'){
+								
+								$value['V'] = 'Surface';
+								 
+							}
+
+							$subject .= 'Despatch details : '.$value['C'].' of '.$value['O'];
+							$message .= 'Respected Sir/ Madam,' ;
+							$message .= '<br><br>';
+							$message .= 'Greetings from Educational Initiatives!';
+							$message .= '<br><br>';
+							$message .= 'We Thank you for participating in the ASSET Test.';
+							$message .= '<br><br>';
+							$message .= 'As per your order we have despatched the Question papers along with other Test materials.';
+							$message .= '<br><br>';
+							$message .= 'We would humbly request for your kind support for the smooth conduct of the Test, by getting the number of boxes, question booklets for each subject and answers sheets (OMR) checked, with reference to the registered count of students. Answer Sheets can be counted by the number printed on it.';
+							$message .= '<br><br>';
+							$message .= 'In case of any discrepancy regarding Question Papers/ Test Material, may we request the concerned person to inform us for expeditious corrective action on the e-mail - <a href="mailto:jignasha.mistry@ei-india.com">jignasha.mistry@ei-india.com</a> or <a href="mailto:mitul.patel@ei-india.com">mitul.patel@ei-india.com</a> or call us on toll free no. – 1800 102 8885.';
+							$message .= '<br><br>';
+							$message .= 'The dispatch details are mentioned below for your kind reference.';
+							$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.$value['Q'].'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
+							$message .= '<br><br>';
+							$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
+							$message .= '<br><br>';
+							$message .= 'With Best Wishes and Warm Regards,</n>The ASSET Team';
+							$message .= '<br><br>';
+							$message .= '<div style="font-weight:bold;text-align:center;">| B - Big Box | SB - Small Box | C - Green Cover |</div>';
+							$message .= '<br><br>';
+							$courierCompanyDetails = $this->vendors->courierCompanyDetails($value['R'],$value['H'],$value['D']);
+							if(count($courierCompanyDetails) > 0) {
+
+								$message .= '<table><tr><td><b>Main Branch Office Number:</b></td><td>'.$courierCompanyDetails[0]->phone_no_1.'</td></tr><tr><td><b>Contact Person:</b></td><td>'.$courierCompanyDetails[0]->contact_person.'</td></tr><tr><td><b>Contact Person Email-ID:</b></td><td>'.$courierCompanyDetails[0]->email_Id.'</td></tr><tr><td><b>Website:</b></td><td>'.$courierCompanyDetails[0]->website.'</td></tr><tr><td><b>Contact No. from where the material is Despatched:</b></td><td></td></tr></table>';
+							}
+
+							$ci = get_instance();
+							$filename1 = '';
+							$filename1 = './MIS Reports/V/Content List/'.$value['B'].'.tif';
+							$ci->setemail($filename1,'vijay.suthar@ei-india.com',$subject,$message);
 						}
-
-						$subject .= 'Despatch details : '.$value['C'].' of '.$value['O'];
-						$message .= 'Respected Sir/ Madam,' ;
-						$message .= '<br><br>';
-						$message .= 'Greetings from Educational Initiatives!';
-						$message .= '<br><br>';
-						$message .= 'We Thank you for participating in the ASSET Test.';
-						$message .= '<br><br>';
-						$message .= 'As per your order we have despatched the Question papers along with other Test materials.';
-						$message .= '<br><br>';
-						$message .= 'We would humbly request for your kind support for the smooth conduct of the Test, by getting the number of boxes, question booklets for each subject and answers sheets (OMR) checked, with reference to the registered count of students. Answer Sheets can be counted by the number printed on it.';
-						$message .= '<br><br>';
-						$message .= 'In case of any discrepancy regarding Question Papers/ Test Material, may we request the concerned person to inform us for expeditious corrective action on the e-mail - <a href="mailto:jignasha.mistry@ei-india.com">jignasha.mistry@ei-india.com</a> or <a href="mailto:mitul.patel@ei-india.com">mitul.patel@ei-india.com</a> or call us on toll free no. – 1800 102 8885.';
-						$message .= '<br><br>';
-						$message .= 'The dispatch details are mentioned below for your kind reference.';
-						$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.$value['Q'].'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
-						$message .= '<br><br>';
-						$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
-						$message .= '<br><br>';
-						$message .= 'With Best Wishes and Warm Regards,</n>The ASSET Team';
-						$message .= '<br><br>';
-						$message .= '<div style="font-weight:bold;text-align:center;">| B - Big Box | SB - Small Box | C - Green Cover |</div>';
-						$message .= '<br><br>';
-						$courierCompanyDetails = $this->vendors->courierCompanyDetails($value['R'],$value['H'],$value['D']);
-						if(count($courierCompanyDetails) > 0) {
-
-							$message .= '<table><tr><td><b>Main Branch Office Number:</b></td><td>'.$courierCompanyDetails[0]->phone_no_1.'</td></tr><tr><td><b>Contact Person:</b></td><td>'.$courierCompanyDetails[0]->contact_person.'</td></tr><tr><td><b>Contact Person Email-ID:</b></td><td>'.$courierCompanyDetails[0]->email_Id.'</td></tr><tr><td><b>Website:</b></td><td>'.$courierCompanyDetails[0]->website.'</td></tr><tr><td><b>Contact No. from where the material is Despatched:</b></td><td></td></tr></table>';
-						}
-
-						$ci = get_instance();
-						$filename1 = '';
-						$filename1 = './MIS Reports/V/Content List/'.$value['B'].'.tif';
-						$ci->setemail($filename1,'vijay.suthar@ei-india.com',$subject,$message);
 
 					}
 					echo json_encode(array('status' => 'success','message' => 'Despatch Details Sent Successfully To Logistic..Thank You!!' ));

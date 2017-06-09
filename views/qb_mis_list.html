@@ -23,7 +23,6 @@
                           
                           <select id="qbroundfilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
                            
-                              <option value="">Round</option>
                               <option ng-selected="{{round.test_edition == 'V'}}" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.test_edition}} {{round.description}}</option>
                               
                           </select>
@@ -36,32 +35,11 @@
                             
                           </select>
 
-                          <select id="qbpackingdatefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
+                          <select id="packinglotnofilter" name="packinglotnofilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
                            
-                              <option value="">Packing Date</option>
-                              <option ng-repeat="packingdate in packingdates track by $index" value="{{packingdate.packlabel_date}}">{{packingdate.packlabel_date}}</option>
+                              <option value="">Lot No.</option>
+                              <option ng-repeat="lotno in lotnos" value="{{lotno.lot_no}}">{{lotno.lot_no}}</option>
                               
-                          </select>
-
-                           <select id="qbschoolcodefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
-                           
-                              <option value="">School Code</option>
-                              <option ng-repeat="schoolCode in schoolCodes" value="{{schoolCode.school_code}}">{{schoolCode}}</option>
-                              
-                          </select>
-
-                           <select id="qbschoolnamefilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
-                           
-                              <option value="">School Name</option>
-                              <option  ng-repeat="schoolname in schoolNames" value="{{schoolname}}">{{schoolname}}</option>
-                              
-                          </select>
-
-                          <select id="qbcityfilter"  style="width:130px;margin:15px 30px 15px 0px;height:30px;">
-
-                              <option value="">City</option>
-                              <option ng-repeat="city in citys" value="{{city.school_city}}">{{city.school_city}}</option>
-                           
                           </select>
 
                           <button style="width:200px;margin:15px 30px 15px 0px;height:30px;" id="searchqbreports" ng-click="filterqbreports()" type="button" class="btn ripple btn-raised btn-info">

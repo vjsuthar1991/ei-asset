@@ -1534,11 +1534,8 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
   $scope.dtInstance = {};
   
   $scope.rounds = [];
-  $scope.packingdates = [];
+  $scope.lotnos = [];
   $scope.zones = [];
-  $scope.schoolCodes = [];
-  $scope.schoolNames = [];
-  $scope.citys = [];
   $scope.qbmisreports = [];
 
   var flag = 0;
@@ -1563,6 +1560,8 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
         
         $scope.zones = response.zones;
         $scope.rounds = response.rounds;
+        $scope.lotnos = response.lotnos;
+
         
         jQuery.each( response.schooldata, function( i, val ) {
          
@@ -1668,15 +1667,11 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
       
         var round = $('#qbroundfilter').val();
         
-        var schoolCode = $('#qbschoolcodefilter').val();
-
         var zone = $('#qbzonefilter').val();
 
-        var packingdate = $('#qbpackingdatefilter').val();
+        var lotno = $('#packinglotnofilter').val();
 
-        var city = $('#qbcityfilter').val();
-
-        var data = {round:round,schoolCode:schoolCode,zone:zone,packingdate:packingdate,city:city};
+        var data = {round:round,lotno:lotno,zone:zone};
         
         data = JSON.stringify(data);
 
@@ -1694,36 +1689,55 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
              
                 if(response.status == "success"){
 
+                  console.log(response.filteredqbreports);
                     jQuery.each( response.filteredqbreports, function( i, val ) {
 
-                    var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-                    var firstDate = new Date(val.qb_despatch_date);
-                    var secondDate = new Date(val.packlabel_date);
+                        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+                        var firstDate = new Date(val.qb_despatch_date);
+                        var secondDate = new Date(val.packlabel_date);
 
-                    var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
-                    
-                    if(isNaN(diffDays)){
-                      diffDays = 'Not Yet Dispatched';
-                    }
+                        var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
+                        
+                        if(isNaN(diffDays)){
+                          diffDays = 'Not Yet Dispatched';
+                        }
+
+                        var dispatchDate = new Date(val.qb_despatch_date);
+                        var deliveryDate = new Date(val.qb_delivery_date);
+
+                        var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+                        
+                        if(isNaN(deliverydiffDays)){
+                          deliverydiffDays = 'Not Yet Delivered';
+                        }
 
 
-                    
-                    $scope.filteredqbReports.push({
-                      schoolCode: val.school_code,
-                      schoolName: val.school_name,
-                      schoolCity: val.school_city,
-                      schoolRegion: val.school_region,
-                      schoolPackLabelDate: val.packlabel_date,
-                      schoolQbDispatchDate: val.qb_despatch_date,
-                      schoolCourierCompany: val.courier,
-                      schoolAwbNo: val.consignmentNo,
-                      schoolMode: val.mode,
-                      schoolQty: val.material,
-                      schoolWeight: val.weight,
-                      schoolTat: diffDays,
+                        
+                        $scope.filteredqbReports.push({
 
-                    });
-                  });    
+                          schoolCode: val.school_code,
+                          schoolName: val.school_name,
+                          schoolCity: val.school_city,
+                          schoolRegion: val.school_region,
+                          schoolPackLabelDate: val.packlabel_date,
+                          schoolQbDispatchDate: val.qb_despatch_date,
+                          schoolCourierCompany: val.courier,
+                          schoolAwbNo: val.consignmentNo,
+                          schoolMode: val.mode,
+                          schoolQty: val.material,
+                          schoolWeight: val.weight,
+                          schoolTat: diffDays,
+                          schoolQbDelivery_status: val.qb_delivery_status,
+                          schoolQbDeliveryDate:val.qb_delivery_date,
+                          schoolQbRecieverName: val.qb_reciever_name,
+                          schoolDeliveryTime: deliverydiffDays
+
+                        });
+
+
+                      });  
+            
+                console.log($scope.filteredqbReports);
 
                    
                    
@@ -1731,11 +1745,10 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
-                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true); 
+                }).withOption('paging', false).withOption('processing', true); 
 
                 $scope.dtInstance.rerender();
-                
-
+               
                 }
                 else
                 {
