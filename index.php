@@ -1,10 +1,12 @@
 <?php 
-require_once('support_files/check.php');
-$loginUserName = $_SESSION['username'];
-checkPermission('OPS');
-// echo '<pre>';
-// print_r($_SESSION);
-// echo '</pre>';
+$url = $_SERVER['REQUEST_URI'];
+$urlparts = explode('/',$url);
+
+if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list')){
+  require_once('support_files/check.php');
+  $loginUserName = $_SESSION['username'];
+  checkPermission('OPS');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,13 +64,14 @@ checkPermission('OPS');
 </head>
 
 <body id="mimin" class="dashboard topnav" ng-app="main-App">
-  <!-- start: Header -->
-<div data-ng-include=" 'header.html' "></div>
+<!-- start: Header -->
+<!-- <div data-ng-include=" 'header.html' "></div> -->
 <!-- end: Header -->
+<input type="hidden" name="loginusername" id="loginusername" value="<?php echo $_SESSION['username'];?>">
           <ng-view></ng-view>
           <!-- start: Mobile -->
         <!-- <div data-ng-include=" 'mobile_menu.html' "></div> -->
-        <input type="hidden" name="loginusername" id="loginusername" value="<?php echo $_SESSION['username'];?>">
+        
         <div id="mimin-mobile" class="reverse">
         <div class="mimin-mobile-menu-list">
             <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">

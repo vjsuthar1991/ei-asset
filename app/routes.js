@@ -39,9 +39,10 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
    });
 
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+
             
             //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            //checkCookie();
+            checkCookie();
 
             function checkCookie() {
                       var vendor = getCookie("vendor_id");
@@ -78,8 +79,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
 
                                 document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                                 document.cookie = "vendor_authtoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                                $location.path('/vendor-login');
-                                $route.reload();
+                                window.location = './vendor-login';
 
 
                             }
