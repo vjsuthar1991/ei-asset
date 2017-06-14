@@ -165,6 +165,7 @@ class Packingslip extends CI_Controller {
                 $message .= ' ji,';
                 $message .= '<br><br>';
                 $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
+                $message .= 'Regards,</n>Jignasha Mistry';
 
                 $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
 

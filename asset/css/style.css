@@ -5628,9 +5628,9 @@ ul li a:focus {
 }
 
 #mimin-mobile-menu-opener{
-  right: 20px;
+  right: 35px;
   position: fixed;
-  bottom: 20px;
+  bottom: 40px;
   outline: none !important;
   z-index: 9999999;
   display: none
@@ -5645,13 +5645,13 @@ ul li a:focus {
 }
 #mimin-mobile .tree{
   padding-left: 10px;
-  background: #ef5949;
+  background: rgb(33, 150, 243);
   /*display: none;*/
 }
 .sub-mimin-mobile-menu-list {
   display: none;
   padding: 0;
-  height: 300px;
+  /*height: 300px;*/
   font-weight: 100;
   overflow: auto;
   font-size: 2em;
@@ -6392,7 +6392,13 @@ ul li a:focus {
   .responsive-table td:before { content: attr(data-title); }
 
   .search-nav{
-    display: none !Im;
+    display: none !important;
+  }
+
+ .padding-1 {
+
+    padding-top: 1px;
+
   }
 
   #quote-carousel .carousel-indicators {

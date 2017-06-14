@@ -1,0 +1,23 @@
+.tooltip{position:absolute;width:250px;left:0;top:0;background-color:#000;color:#FFF;font-weight:800;z-index:11111;border:2px solid #000;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;opacity:0.9;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70)}
+.tooltip p,.tourcontrols p{font-size:14px;text-shadow:none;font-style:italic;color:#FFF!important;padding:10px}
+.tooltip_arrow{position:absolute;background-color:transparent;background-repeat:no-repeat}
+.tooltip_arrow_T,.tooltip_arrow_B,.tooltip_arrow_TL,.tooltip_arrow_TR,.tooltip_arrow_BL,.tooltip_arrow_BR{background-image:url(../images/topbottom.png);width:13px;height:7px}
+.tooltip_arrow_L,.tooltip_arrow_R,.tooltip_arrow_LT,.tooltip_arrow_LB,.tooltip_arrow_RT,.tooltip_arrow_RB{background-image:url(../images/leftright.png);width:7px;height:13px}
+.tooltip_arrow_T{background-position:0 -7px;top:-7px;left:50%;margin-left:-3.5px}
+.tooltip_arrow_TL{background-position:0 -7px;top:-7px;left:5px}
+.tooltip_arrow_TR{background-position:0 -7px;top:-7px;right:5px}
+.tooltip_arrow_B{background-position:0 0;bottom:-7px;left:50%;margin-left:-3.5px}
+.tooltip_arrow_BL{background-position:0 0;bottom:-7px;left:5px}
+.tooltip_arrow_BR{background-position:0 0;bottom:-7px;right:5px}
+.tooltip_arrow_L{background-position:-7px 0;top:50%;margin-top:-6.5px;left:-7px}
+.tooltip_arrow_LT{background-position:-7px 0;top:5px;left:-7px}
+.tooltip_arrow_LB{background-position:-7px 0;bottom:5px;left:-7px}
+.tooltip_arrow_R{background-position:0 0;top:50%;margin-top:-6.5px;right:-7px}
+.tooltip_arrow_RT{background-position:0 0;top:5px;right:-7px}
+.tooltip_arrow_RB{background-position:0 0;bottom:5px;right:-7px}
+.overlay{position:fixed;width:100%;height:100%;top:0;left:0;background:#fff;opacity:0.5;z-index:100;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50)}
+.tourcontrols{position:fixed;top:20px;right:-300px;width:270px;background:#000;color:#fff;text-shadow:0 0 1px #fff;font-size:16px;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;font-weight:700;z-index:9999;opacity:0.9;padding:10px}
+.tourcontrols a{font-size:11px;color:#f0f0f0;cursor:pointer;font-weight:400;text-decoration:underline;margin:10px}
+.tourcontrols a:hover{color:#fff}
+.close{position:absolute;top:6px;right:7px;width:10px;height:10px;background:#000 no-repeat center center;cursor:pointer}
+.tourcontrols p{padding:10px}

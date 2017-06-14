@@ -213,8 +213,11 @@
     });
 
     $(document).on('click','#mimin-mobile-menu-opener',function(e){
+        
         $("#mimin-mobile").toggleClass("reverse");
+        
         var rippler = $("#mimin-mobile");
+
         if(!rippler.hasClass("reverse"))
         {
 
@@ -249,7 +252,7 @@
               });
         }else{
 
-            
+
                 if(rippler.find(".ink").length == 0) {
                   rippler.append("<div class='ink'></div>");
                 }
@@ -279,6 +282,49 @@
                 });
         }
     });
+
+
+  $(document).on('click','.nav .nav-list',function(e){
+
+        $("#mimin-mobile").toggleClass("reverse");
+        
+        var rippler = $("#mimin-mobile");
+
+        if(rippler.hasClass("reverse"))
+        {
+
+            if(rippler.find(".ink").length == 0) {
+                  rippler.append("<div class='ink'></div>");
+                }
+                var ink = rippler.find(".ink");
+                ink.removeClass("animate");
+                if(!ink.height() && !ink.width())
+                {
+                    var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
+                    ink.css({height: d, width: d});
+
+                }
+                var x = e.pageX - rippler.offset().left - ink.width()/2;
+                var y = e.pageY - rippler.offset().top - ink.height()/2;
+                ink.css({
+                  top: y+'px',
+                  left:x+'px',
+                }).addClass("animate");
+                rippler.animate({
+                  backgroundColor: "transparent",
+                  'z-index':'-1'
+                }, 750 );
+
+                $("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+                function(e){
+                  $("#mimin-mobile-menu-opener span").removeClass("fa-close").addClass("fa-bars").css({"font-size":"1em"});
+                  $(".sub-mimin-mobile-menu-list").hide();
+                });
+
+        }
+    });
+
+
 
 
 

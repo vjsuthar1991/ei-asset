@@ -1,0 +1,200 @@
+
+@media (max-width: 1200px) {
+  .tile {
+    width: 80px;
+    height: 80px;
+  }
+  a.button .iconSmall{
+    margin-left: 2px;
+  }
+  .bigmenu{
+      font-size: 13px;
+  }
+    .dropdown-menu {
+      min-width:100% !important;
+  }
+  .dropdown-menu a{
+      font-size: 12px !important;
+  }
+}
+@media (min-width: 1200px) {
+  .tile {
+    width: 80px;
+    height: 80px;
+  }
+  a.button .iconSmall{
+    margin-left: 4px;
+  }
+  .bigmenu{
+      font-size: 16px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+  }
+  .dropdown-menu a{
+      font-size: 14px !important;
+  }
+}
+@media (max-width: 1024px) {
+  a.button .iconSmall{
+    margin-left: 0;
+  }
+  .bigmenu{
+      font-size: 11px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+      
+  }
+  .dropdown-menu a{
+      font-size: 11px !important;
+  }
+}
+@media (max-width: 980px) {
+  a.button .iconSmall{
+    margin-left: 0;
+  }
+  .bigmenu{
+      font-size: 10px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+      
+  }
+  .dropdown-menu a{
+      font-size: 10px !important;
+  }
+}
+@media (max-width: 768px) {
+html, body, .metro{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display:block;
+    font-size: 12px;
+    line-height: normal;
+    overflow: auto !important;
+  }
+footer{display:none}
+  a.button .iconSmall{
+    margin-left: 0;
+  }
+  .bigmenu{
+      font-size: 10px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+  }
+  .dropdown-menu a{
+      font-size: 10px !important;
+  }
+}
+@media (max-width: 767px) {
+html, body, .metro{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display:block;
+    font-size: 12px;
+    line-height: normal;
+    overflow: auto !important;
+  }
+  .metro .grid.fluid .row [class*="span"]:first-child {margin:auto;}
+  .tour_5{
+	min-width:300px;
+	}
+
+	#sideMenu{
+	min-width: 300px;
+	min-height:300px;
+	}
+	#bgimg{
+	min-width: 300px;
+	min-height:300px;
+	}
+	#fixedcontainer{
+	min-width: 300px;
+	min-height:300px;
+	}
+
+	#centercontainer{
+	min-width:300px;
+	min-height:300px
+	}
+	#rightcontainer{
+	min-width:300px;
+	min-height:300px
+	}
+	.breadcrumbs{display:none;}
+  
+footer{display:none}
+  a.button .iconSmall{
+    margin-left: 0;
+  }
+  .bigmenu{
+      font-size: 10px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+  }
+  .dropdown-menu a{
+      font-size: 10px !important;
+  }
+}
+@media (max-width: 480px) {
+  html, body, .metro{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display:block;
+    font-size: 12px;
+    line-height: normal;
+    overflow: auto !important;
+  }
+  .tour_5{
+	min-width:300px;
+	}
+
+	#sideMenu{
+	min-width: 300px;
+	min-height:300px;
+	}
+	#bgimg{
+	min-width: 300px;
+	min-height:300px;
+	}
+	#fixedcontainer{
+	min-width: 300px;
+	min-height:300px;
+	}
+
+	#centercontainer{
+	min-width:300px;
+	min-height:300px
+	}
+	#rightcontainer{
+	min-width:300px;
+	min-height:300px
+	}
+	.breadcrumbs{display:none;}
+  footer{display:none}
+  .tile {
+    width: 80px;
+    height: 80px;
+  }
+  a.button .iconSmall{
+    margin-left: auto;
+  }
+  .bigmenu{
+      font-size: 10px;
+  }
+  .dropdown-menu {
+      min-width:100% !important;
+  }
+  .dropdown-menu a{
+      font-size: 10px !important;
+  }
+}

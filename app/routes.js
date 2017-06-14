@@ -2,6 +2,37 @@
 var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad','datatables']);
 
 app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$route) {
+  var username = $('#loginusername').val();
+  var data = {username:username};
+  data = JSON.stringify(data);
+
+  $.ajax({
+    url: './api/dashboard/loginuser_details',
+    type: 'POST',
+            dataType : 'json', // data type
+            data: data,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+                var d = new Date();
+                d.setTime(d.getTime() + (1*24*60*60*1000));
+                var expires = "expires=" + d.toGMTString();
+                document.cookie = "loginusername=" + response.fullname[0]['fullname'] + ";" + expires + ";path=/";
+
+              }
+              else 
+              {
+                  
+                  
+              }
+              
+            }
+          });
 
    $rootScope.$on('$viewContentLoaded', function() {
       $templateCache.removeAll();
@@ -20,7 +51,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                           // redirect to login page if not logged in and trying to access a restricted page
                           
                           var restrictedPage = $.inArray($location.path(), ['/dashboard','/create_vendor','/vendor_list','/edit_vendor','/packing_slips_list','/generate_packing_slips']) !== -1;
-                          console.log(restrictedPage);
+                          
                           if (restrictedPage) {
 
                             $location.path('/unauthorised-access');
@@ -41,7 +72,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                                     type: 'POST',
                                     dataType : 'json',
                                     success: function (returndata) {
-                                    
+                                      
                                      }
                                     });
 
@@ -84,6 +115,33 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                       }
                       return "";
                   }
+
+                  
+
+            if($location.path() == '/admin-logout'){
+              
+
+              $.ajax({
+                    url: "./api/dashboard/adminLogout",
+                    contentType: false,
+                    processData: false,
+                    async: true,
+                    type: 'POST',
+                    success: function (returndata) {
+                
+                    var response = JSON.parse(returndata);
+                    
+                    if(response.status == "success"){
+
+                      // return false;
+                      document.cookie = "loginusername=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      window.location = './';
+                      
+                    }
+
+                 }
+                });
+            }      
       
 
             // redirect to login page if not logged in and trying to access a restricted page
@@ -181,7 +239,6 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                             name: 'ui.select',
                             // add UI select css / js for this state
                             files: [
-                                
                                 'asset/js/plugins/chart.min.js',
                             ] 
                         }]);

@@ -1,12 +1,8 @@
-<!-- start: Header -->
-<div data-ng-include=" 'header.html' "></div>
-<!-- end: Header -->
-
 <!-- start: Content -->
 <div id="content">
       
   <div class="col-md-12" style="padding:20px;" ng-controller="DashboardController">
-        <div class="col-md-12 padding-0" style="background-color: #FFF;">
+        <div class="col-md-12" style="background-color: #FFF;padding:15px;">
                               
           <div class="col-md-12 card-wrap padding-0" style="position: relative;">
               <div class="navbar-default col-md-12" style="border: 5px solid #e7e7e7;padding: 10px 0px;width: 100%;">
@@ -15,7 +11,7 @@
                 </div>
                 <div class="col-md-3">
                   <div class="">
-                    <select tabindex="1" id="vendor_zone" name="vendor_zone" class="form-control">
+                    <select tabindex="1" id="pppretest_dashboard_zone" name="pppretest_dashboard_zone" class="form-control">
                       <option value="">Select Zone</option>
                       <option ng-repeat="zone in zones" value="{{zone.region}}">{{zone.region}}</option>
                     </select>
@@ -24,15 +20,15 @@
                 </div>
                 <div class="col-md-3">
                   <div class="" >
-                    <select tabindex="2" id="vendor_zone" name="vendor_zone" class="form-control">
+                    <select tabindex="2" id="pppretest_dashboard_round" name="pppretest_dashboard_round" class="form-control">
                       <option value="">Select Round</option>
-                      <option ng-repeat="zone in zones" value="{{zone.region}}">{{zone.region}}</option>
+                      <option ng-selected="round.test_edition == 'V'" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.test_edition}} {{round.description}}</option>
                     </select>
                     <span class="bar"></span>
                   </div>
                 </div>
                 <div class="col-md-4" tabindex="3">
-                   <button id="searchfilterpackingslip" ng-click="filterschools()" type="button" class="btn ripple btn-raised btn-info">
+                   <button id="searchfilterpppretestdashboard" ng-click="filterPpPretestDashboardData()" type="button" class="btn ripple btn-raised btn-info">
                                         <div>
                                           <span>Search</span>
                                         </div>
@@ -52,7 +48,7 @@
                         <div style="clear:both;"></div>
                       </div>
                       <div class="panel-body text-center padding-0" style="padding: 0;">
-                        <h1 style="margin-top: 10px;color:red;">500</h1>
+                        <h1 style="margin-top: 10px;color:red;cursor:pointer;" ng-click="showSchoolRegistered()" >{{ssfCount}}</h1>
                         <p style="color: #58666e;font-weight: bold;font-size: 13px;">SUMMER 2016</p>
                       </div>
                     </div>
@@ -61,7 +57,7 @@
             </div>
 
             <div class="clear" style="clear:both;"></div>
-              <div class="col-md-12">
+              <div class="col-md-12" style="padding: 0px 50px;">
                 <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;">
                   <div class="panel-heading-white panel-heading text-center">
                                 <h4>SSF Recieved</h4>
@@ -79,15 +75,15 @@
                       <tr>
                         
                         <td>Completed</td>
-                        <td>60</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolSSFReceived()">{{ssfRecievedCount}}</td>
                       </tr>
                       <tr>
                         <td>Pending</td>
-                        <td>30</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolSSFPending()">{{ssfPendingCount}}</td>
                       </tr>
                       <tr>
                         <td>Alert</td>
-                        <td>10</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolSSFAlert()">{{ssfAlertCount}}</td>
                       </tr>
                       
                     </tbody>
@@ -95,11 +91,11 @@
                   </div>
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 152px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
                              
-                              <div class="panel-body" style="padding-top: 16px;">
+                              <div class="panel-body" style="padding-top: 32px;">
                                 <center>
-                                <canvas class="pie-chart"></canvas>
+                                <canvas class="pie-chart1"></canvas>
                                 </center>
                               </div>
                         </div>
@@ -124,15 +120,15 @@
                       <tr>
                         
                         <td>Completed</td>
-                        <td>60</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPaymentReceived()">{{paymentRecieved}}</td>
                       </tr>
                       <tr>
                         <td>Pending</td>
-                        <td>30</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPaymentPending()">{{paymentPending}}</td>
                       </tr>
                       <tr>
                         <td>Alert</td>
-                        <td>10</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPaymentAlert()">{{paymentAlert}}</td>
                       </tr>
                       
                     </tbody>
@@ -141,9 +137,9 @@
 
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 152px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
                              
-                              <div class="panel-body" style="padding-top: 16px;">
+                              <div class="panel-body" style="padding-top: 32px;">
                                 <center>
                                 <canvas class="pie-chart2"></canvas>
                                 </center>
@@ -157,7 +153,7 @@
               </div>
             <div class="clear" style="clear:both;"></div>
             <div class="col-md-12" style="
-    margin-top: 30px;
+    margin-top: 30px;padding:0px 50px;
 ">
                 <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;">
                   <div class="panel-heading-white panel-heading text-center">
@@ -176,15 +172,15 @@
                       <tr>
                         
                         <td>Completed</td>
-                        <td>60</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateSet()">{{packLabelDateSet}}</td>
                       </tr>
                       <tr>
                         <td>Pending</td>
-                        <td>30</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateNotSet()">{{packLabelDateNotSet}}</td>
                       </tr>
                       <tr>
                         <td>Alert</td>
-                        <td>10</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateAlert()">{{packLabelDateAlert}}</td>
                       </tr>
                       
                     </tbody>
@@ -192,9 +188,9 @@
                   </div>
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 152px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
                              
-                              <div class="panel-body" style="padding-top: 16px;">
+                              <div class="panel-body" style="padding-top: 32px;">
                                 <center>
                                 <canvas class="pie-chart3"></canvas>
                                 </center>
@@ -206,8 +202,8 @@
                 </div>
                 <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:right;">
                   <div class="panel-heading-white panel-heading text-center">
-                                <h4>Dispatch Summary</h4>
-                              </div>
+                      <h4>Dispatch Summary</h4>
+                  </div>
                   <div class="col-md-6 responsive-table" style="margin-top: 20px;">
                       
                     <table class="table table-striped table-bordered" width="100%" cellspacing="0">
@@ -221,15 +217,15 @@
                       <tr>
                         
                         <td>Completed</td>
-                        <td>60</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateSet()">{{dispatchDateSet}}</td>
                       </tr>
                       <tr>
                         <td>Pending</td>
-                        <td>30</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateNotSet()">{{dispatchDateNotSet}}</td>
                       </tr>
                       <tr>
                         <td>Alert</td>
-                        <td>10</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateAlert()">{{dispatchDateAlert}}</td>
                       </tr>
                       
                     </tbody>
@@ -238,9 +234,9 @@
 
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 152px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
                              
-                              <div class="panel-body" style="padding-top: 16px;">
+                              <div class="panel-body" style="padding-top: 32px;">
                                 <center>
                                 <canvas class="pie-chart4"></canvas>
                                 </center>
@@ -276,15 +272,15 @@
                       <tr>
                         
                         <td>Completed</td>
-                        <td>60</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateSet()">{{deliveryDateSet}}</td>
                       </tr>
                       <tr>
                         <td>Pending</td>
-                        <td>30</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateNotSet()">{{deliveryDateNotSet}}</td>
                       </tr>
                       <tr>
                         <td>Alert</td>
-                        <td>10</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateAlert()">{{deliveryDateAlert}}</td>
                       </tr>
                       
                     </tbody>
@@ -309,6 +305,15 @@
                 <div class="clear" style="clear:both;"></div>
               </div>
             <div class="clear" style="clear:both;"></div>
+            <div class="col-md-12" style="margin-top: 30px;">
+              <div class="responsive-table hide" id="ppPreTestDynamicTable">
+                      
+                    <table id="schoollist-table" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="table table-striped table-bordered" width="100%" cellspacing="0" >
+                          
+                    </table>
+                  </div>
+            </div>
+            <div class="clear" style="clear:both;"></div>
           </div>
         </div>
                       
@@ -317,5 +322,5 @@
 
 </div>
 <!-- start: Mobile -->
-  <div data-ng-include=" 'mobile_menu.html' "></div>
+ <!--  <div data-ng-include=" 'mobile_menu.html' "></div> -->
 <!-- end: Mobile -->

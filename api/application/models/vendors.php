@@ -5,6 +5,7 @@ class Vendors extends CI_Model{
         
         $this->vendorTbl = 'vendors';
         $this->schoolsTbl = 'schools';
+        $this->schoolstatusTbl = 'school_status';
         $this->vendorAccessTbl = 'vendor_access';
         $this->packingslipsListTbl = 'packing_slips';
         $this->testEditionTbl = 'test_edition_details';
@@ -180,6 +181,7 @@ class Vendors extends CI_Model{
                 $this->db->where("test_edition",$edition[0]->test_edition);
 
                 $this->db->update($this->schoolProcessTracking,array('qb_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
+                $this->db->update($this->schoolstatusTbl,array('despatch_date' => date('Y-m-d',strtotime($despatchDate))));
                 
                 return 1;        
             }

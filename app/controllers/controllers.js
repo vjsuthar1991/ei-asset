@@ -1737,11 +1737,6 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
 
                       });  
             
-                console.log($scope.filteredqbReports);
-
-                   
-                   
-                    
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
@@ -1776,61 +1771,1333 @@ app.controller('DashboardPenAndPaperController', function($scope,$http){
 
 });
 
-app.controller('DashboardPenAndPaperPreTestController', function($scope,$http){
-  var doughnutData = [
-                {
-                    value: 100,
-                    color:"#4ED18F",
-                    highlight: "#15BA67",
-                    label: "Alfa"
-                },
-                {
-                    value: 250,
-                    color: "#15BA67",
-                    highlight: "#15BA67",
-                    label: "Beta"
-                },
-                {
-                    value: 100,
-                    color: "#5BAABF",
-                    highlight: "#15BA67",
-                    label: "Gamma"
-                },
-                
+app.controller('DashboardPenAndPaperPreTestController', function($scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
+  
+$scope.dtInstance = {};
 
-            ];
+function destroy() {
+    angular.element('#schoollist-table').children('thead').children().remove();
+    angular.element('#schoollist-table').children('tbody').children().remove(); 
+}
 
-              var ctx2 = $(".pie-chart")[0].getContext("2d");
-                window.myPie = new Chart(ctx2).Pie(doughnutData, {
-                    responsive : true,
-                    showTooltips: true
-                });
+function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,highlightcolor2,label2,val3,color3,highlightcolor3,label3){
 
-                var ctx2 = $(".pie-chart2")[0].getContext("2d");
-                window.myPie = new Chart(ctx2).Pie(doughnutData, {
-                    responsive : true,
-                    showTooltips: true
-                });
+    var doughnutData = [
+      {
+          value: val1,
+          color: color1,
+          highlight: '',
+          label: label1
+      },
+      {
+          value: val2,
+          color: color2,
+          highlight: '',
+          label: label2
+      },
+      {
+          value: val3,
+          color: color3,
+          highlight: '',
+          label: label3
+      },
+    ];
 
-                var ctx2 = $(".pie-chart3")[0].getContext("2d");
-                window.myPie = new Chart(ctx2).Pie(doughnutData, {
-                    responsive : true,
-                    showTooltips: true
-                });
+    
 
-                var ctx2 = $(".pie-chart4")[0].getContext("2d");
-                window.myPie = new Chart(ctx2).Pie(doughnutData, {
-                    responsive : true,
-                    showTooltips: true
-                });
+    var ctx = $(classname)[0].getContext("2d");
+    window.myPie = new Chart(ctx).Pie(doughnutData, {
+        responsive : true,
+        showTooltips: true
+    });
+  }
+  $scope.schoolRegisteredList = [];
 
-                var ctx2 = $(".pie-chart5")[0].getContext("2d");
-                window.myPie = new Chart(ctx2).Pie(doughnutData, {
-                    responsive : true,
-                    showTooltips: true
-                });
+  
+  $scope.schoolRegisteredList.push({
+    schoolCode: 0,
+    schoolName: 0,
+    schoolCity: 0,
+    schoolRegion: 0,
+    schoolEnteredDate: 0,
+  });
+  
 
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolRegisteredList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+    $("td:first", nRow).html(iDisplayIndex +1);
+    return nRow;
+  }).withOption('processing', true);
+
+  $scope.dtColumns = [
+
+      DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+      DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+      DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+      DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+      DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+      DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+      ];  
+
+
+
+  $scope.rounds = [];
+  
+  $scope.zones = [];
+
+  $scope.ssfCount = '0';
+
+  $scope.ssfRecievedCount = '0';
+
+  $scope.paymentRecieved = '0';
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: 'V',zone: zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboard',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.ssfCount = response.school_registered[0]['ssfcount'];
+        $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
+        $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
+        $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
+        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
+        $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
+        $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
+        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
+        $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
+        $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];
+        createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.dispatchDateSet = response.dispatchdate_set[0]['dispatchsetcount'];
+        $scope.dispatchDateNotSet = response.dispatchdate_notset[0]['dispatchnotsetcount'];
+        $scope.dispatchDateAlert = response.dispatchdate_alert[0]['dispatchalertcount'];
+        createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
+        $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
+        $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
+        createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+
+      }
+      
+    }
+  });
+
+$scope.filterPpPretestDashboardData = function(e){
+
+  destroy();
+
+  $('#ppPreTestDynamicTable').addClass('hide');
+
+  $scope.ssfCount = '0';
+
+  $scope.ssfRecievedCount = '0';
+
+  $scope.paymentRecieved = '0';
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboard',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.ssfCount = response.school_registered[0]['ssfcount'];
+        $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
+        $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
+        $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
+        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
+        $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
+        $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
+        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
+        $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
+        $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];
+        createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.dispatchDateSet = response.dispatchdate_set[0]['dispatchsetcount'];
+        $scope.dispatchDateNotSet = response.dispatchdate_notset[0]['dispatchnotsetcount'];
+        $scope.dispatchDateAlert = response.dispatchdate_alert[0]['dispatchalertcount'];
+        createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+        $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
+        $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
+        $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
+        createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+        $location.path('/dashboard-pppretest');
+
+      }
+      
+    }
+  });
+};
+
+$scope.showSchoolRegistered = function(e){
+
+  destroy();
+
+  $scope.schoolRegisteredList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolRegistered',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.school_registered, function( i, val ) {
+          $scope.schoolRegisteredList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolEnteredDate: val.entered_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolRegisteredList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+
+        
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolSSFReceived = function(e){
+
+  destroy();
+
+  $scope.schoolSSFReceivedList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolSSFReceived',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.ssf_recieved, function( i, val ) {
+          $scope.schoolSSFReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolSSFDate: val.SSF_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolSSFReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+
+        
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolSSFPending = function(e){
+
+  destroy();
+
+  $scope.schoolSSFPendingList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolSSFPending',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.ssf_pending, function( i, val ) {
+          $scope.schoolSSFPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolEnteredDate: val.entered_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolSSFPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+
+        
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolSSFAlert = function(e){
+
+  destroy();
+
+  $scope.schoolSSFAlertList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolSSFAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.ssf_alert, function( i, val ) {
+          $scope.schoolSSFAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolEnteredDate: val.entered_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolSSFAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+
+        
+
+      }
+      
+    }
+  });
+
+};
+
+
+
+$scope.showSchoolPaymentReceived = function(e){
+
+  destroy();  
+
+  $scope.schoolPaymentReceivedList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPaymentReceived',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.payment_recieved, function( i, val ) {
+          $scope.schoolPaymentReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolAmountpayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPaymentReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolPaymentPending = function(e){
+
+  destroy();  
+
+  $scope.schoolPaymentPendingList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPaymentPending',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.payment_pending, function( i, val ) {
+          $scope.schoolPaymentPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolAmountpayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPaymentPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolPaymentAlert = function(e){
+
+  destroy();  
+
+  $scope.schoolPaymentAlertList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPaymentAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.payment_alert, function( i, val ) {
+          $scope.schoolPaymentAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolAmountpayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPaymentAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });  
+
+};
+
+$scope.showSchoolPackLabelDateSet = function(e){
+
+  destroy();  
+
+  $scope.schoolPackLabelDateSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPackLabelDateSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.packlabeldate_set, function( i, val ) {
+          $scope.schoolPackLabelDateSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolPacklabelDate: val.pack_label_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPackLabelDateSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolPacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolPackLabelDateNotSet = function(e){
+
+  destroy();  
+
+  $scope.schoolPackLabelDateNotSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPackLabelDateNotSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.packlabeldate_notset, function( i, val ) {
+          $scope.schoolPackLabelDateNotSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolSSFDate: val.SSF_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPackLabelDateNotSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolPackLabelDateAlert = function(e){
+
+  destroy();  
+
+  $scope.schoolPackLabelDateAlertList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolPackLabelDateAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.packlabeldate_alert, function( i, val ) {
+          $scope.schoolPackLabelDateAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolSSFDate: val.SSF_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolPackLabelDateAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolDispatchDateSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDispatchDateSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDispatchDateSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.dispatchdate_set_list, function( i, val ) {
+          $scope.schoolDispatchDateSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDispatchDate: val.qb_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDispatchDateSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolDispatchDateNotSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDispatchDateNotSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDispatchDateNotSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.dispatchdate_notset_list, function( i, val ) {
+          $scope.schoolDispatchDateNotSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolpacklabelDate: val.packlabel_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDispatchDateNotSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolpacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolDispatchDateAlert = function(e){
+
+  destroy();  
+
+  $scope.schoolDispatchDateAlertList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDispatchDateAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.dispatchdate_alert_list, function( i, val ) {
+          $scope.schoolDispatchDateAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolpacklabelDate: val.packlabel_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDispatchDateAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolpacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolDeilveryDateSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_set_list, function( i, val ) {
+          $scope.schoolDeliveryDateSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDeliveryDate: val.qb_delivery_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+
+$scope.showSchoolDeilveryDateNotSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateNotSetList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateNotSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_notset_list, function( i, val ) {
+          $scope.schoolDeliveryDateNotSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDispatchDate: val.qb_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateNotSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+
+$scope.showSchoolDeilveryDateAlert = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateAlertList = [];
+
+  var round = $('#pppretest_dashboard_round').val();
+  var zone = $('#pppretest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_alert_list, function( i, val ) {
+          $scope.schoolDeliveryDateAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDispatchDate: val.qb_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            ];  
+
+
+            $('#ppPreTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-pppretest');
+
+            $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
 
 
 
 });
+
+// app.controller('AdminLogoutController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
+
+  
+
+  
+
+// });
