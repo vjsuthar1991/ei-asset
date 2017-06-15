@@ -6,6 +6,7 @@ class Packingslip extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('packingslips');
+		$this->load->model('dashboards');
 	}
 	
 	/*
@@ -18,7 +19,28 @@ class Packingslip extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		$data['schools'] = $this->packingslips->getSchools($inputRequest['round']);
+		$data['round_latest'] = $this->packingslips->getLatestRound();
+
+		foreach ($data['round_latest'] as $key => $value) {
+
+			$date1 = '01-08-'.date('Y');
+
+			$date2 = date('d-m-Y');
+
+			if(new DateTime($date1) > new DateTime($date2)){
+				if($value->description == 'Summer '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			else{
+				if($value->description == 'Winter '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			
+		}
+
+		$data['schools'] = $this->packingslips->getSchools($round);
 		$data['rounds'] = $this->packingslips->getRounds();
 		$data['country'] = $this->packingslips->getCountry();
 		$data['zones'] = $this->packingslips->getZones();
@@ -26,10 +48,10 @@ class Packingslip extends CI_Controller {
 
 		if(count($data['schools']) > 0)
 		{
-			echo json_encode(array('status' => 'success','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors']));
+			echo json_encode(array('status' => 'success','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors'],'round_selected' => $round));
 		}
 		else{
-			echo json_encode(array('status' => 'error','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors']));	
+			echo json_encode(array('status' => 'error','data'=> $data['schools'],'rounds'=> $data['rounds'],'country' => $data['country'],'zones' => $data['zones'],'vendors' => $data['vendors'],'round_selected' => $round));	
 		}
 		die;
 	}
@@ -63,20 +85,44 @@ class Packingslip extends CI_Controller {
 	public function generatepackingslip()
 	{
 		
+
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['user_details'] = $this->dashboards->getUserDetails($inputRequest['username']);
 
 		$data['packingslipschoollist'] = $this->packingslips->getPackingSlipSchoolList($inputRequest['data']);
 
-		$data['schoolwisebreakup'] = $this->packingslips->getSchoolWiseBreakupList($inputRequest['data']);
+		$data['schoolwisebreakup'] = $this->packingslips->getSchoolWiseBreakupList($inputRequest['data'],$inputRequest['round']);
+		
+		foreach ($data['schoolwisebreakup'] as $key => $value) {
+			
+			$adclasses = $this->packingslips->getAdClasses($value['school_code'],$inputRequest['round']);
+			
+			$adclass = $adclasses[0]['dynamic_class'];
+            $adclassArray = explode(',',$adclass);
+            
+            foreach($adclassArray as $key2 => $value2) {
+
+            	
+            	$data['schoolwisebreakup'][0]['e'.$value2] = 0;
+            	$data['schoolwisebreakup'][0]['m'.$value2] = 0;
+            	$data['schoolwisebreakup'][0]['s'.$value2] = 0;
+            	$data['schoolwisebreakup'][0]['h'.$value2] = 0;
+            	$data['schoolwisebreakup'][0]['ss'.$value2] = 0;
+    			
+            }
+
+		
+		}
 
 		$data['vendorDetails'] = $this->packingslips->getVendorDetails($inputRequest['vendor']);
 
-		function exports_data($records1,$records2,$vendorEmailId,$round,$vendorId){
+		function exports_data($records1,$records2,$vendorEmailId,$round,$vendorId,$senderName){
 
 			$ci = get_instance();
 
-			$records1 = json_decode(json_encode($records1),true);
-			$records2 = json_decode(json_encode($records2),true);
+			// $records1 = json_decode(json_encode($records1),true);
+			// $records2 = json_decode(json_encode($records2),true);
 
 			$schoolsCount = count($records1);
             
@@ -142,10 +188,15 @@ class Packingslip extends CI_Controller {
             $i = 1;
 
             foreach ($records2 as $data) {
+            	
+            	$ci = get_instance();
+            	
             	array_unshift($data, $i);
+
             	//$data['serial'] = $i;
                 fputcsv($handle2, $data);
                 $i++;
+
             }
             
                 fclose($handle2);
@@ -165,7 +216,8 @@ class Packingslip extends CI_Controller {
                 $message .= ' ji,';
                 $message .= '<br><br>';
                 $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
-                $message .= 'Regards,</n>Jignasha Mistry';
+                $message .= '<br><br>Regards,<br>';
+                $message .= $senderName;
 
                 $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
 
@@ -174,7 +226,7 @@ class Packingslip extends CI_Controller {
 		
 		date_default_timezone_set('Asia/Calcutta');
 
-		exports_data($data['packingslipschoollist'],$data['schoolwisebreakup'],$data['vendorDetails'],$inputRequest['round'],$inputRequest['vendor']);
+		exports_data($data['packingslipschoollist'],$data['schoolwisebreakup'],$data['vendorDetails'],$inputRequest['round'],$inputRequest['vendor'],$data['user_details'][0]->fullname);
 
 	}
 

@@ -233,7 +233,7 @@ class Vendor extends CI_Controller {
 		      }
 		      
 		      if(empty($errors)==true){
-		         move_uploaded_file($file_tmp,"./MIS Reports/V/".$file_name);
+		         move_uploaded_file($file_tmp,"./MIS Reports/".$file_name);
 		         $success = '1';
 		          //echo "Success";
 		      }else{
@@ -246,7 +246,7 @@ class Vendor extends CI_Controller {
     		//load the excel library
 			$this->load->library('excel');
 			//read file from path
-			$objPHPExcel = PHPExcel_IOFactory::load('./MIS Reports/V/'.$file_name);
+			$objPHPExcel = PHPExcel_IOFactory::load('./MIS Reports/'.$file_name);
 			$worksheet = $objPHPExcel->getSheet(0);
 			$sheetData = $worksheet->toArray(null,true,true,true);
 
@@ -313,8 +313,9 @@ class Vendor extends CI_Controller {
 						}
 						else{
 							if($value['O'] != '' && $value['P'] != '' && $value['Q'] != '' && $value['R'] != '' && $value['S'] != '' && $value['T'] != '' && $value['U'] != '' && $value['V'] != '' && $value['W'] != ''){
+								//echo 'PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
+								$fileExist = file_exists('/Applications/XAMPP/xamppfiles/htdocs/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif');
 								
-								$fileExist = file_exists('./MIS Reports/V/Content List/'.$value['B'].'.tif');
 								if($fileExist != 1 || $fileExist == ''){
 									$schoolContentListFlag = 1;
 								}
@@ -341,6 +342,8 @@ class Vendor extends CI_Controller {
 
 					foreach ($data['values'] as $key => $value) {
 						
+						if($value['P'] == 'QB'){
+
 						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
 
 						if($mailFlag == 1){
@@ -382,13 +385,27 @@ class Vendor extends CI_Controller {
 							}
 
 							$ci = get_instance();
+
+							$school_email = $this->vendors->getSchoolEmailId($value['B']);
+
+							$schoolEmail = $school_email[0]['email'];
+
+							if($schoolEmail == ''){
+								$schoolEmail = 'harit@ei-india.com';
+							}
+
 							$filename1 = '';
-							$filename1 = './MIS Reports/V/Content List/'.$value['B'].'.tif';
+							$filename1 = '/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
 							$ci->setemail($filename1,'vijay.suthar@ei-india.com',$subject,$message);
 						}
+					}
+					else {
+
+						//Analysis code here
+					}
 
 					}
-					echo json_encode(array('status' => 'success','message' => 'Despatch Details Sent Successfully To Logistic..Thank You!!' ));
+					echo json_encode(array('status' => 'success','message' => 'Dispatch Details Sent Successfully To Logistic..Thank You!!' ));
 				}
 				else {
 

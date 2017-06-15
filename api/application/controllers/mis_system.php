@@ -20,13 +20,34 @@ class Mis_system extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
+		$data['round_latest'] = $this->packingslips->getLatestRound();
+
+		foreach ($data['round_latest'] as $key => $value) {
+
+			$date1 = '01-08-'.date('Y');
+
+			$date2 = date('d-m-Y');
+
+			if(new DateTime($date1) > new DateTime($date2)){
+				if($value->description == 'Summer '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			else{
+				if($value->description == 'Winter '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			
+		}
+
 		$data['zones'] = $this->vendors->getZones();
 		$data['rounds'] = $this->packingslips->getRounds();
-		$data['lotnos'] = $this->qb_mis_list_model->getPackingLotNos($inputRequest['round']);
+		$data['lotnos'] = $this->qb_mis_list_model->getPackingLotNos($round);
 		
-		$data['qb_mis_reports'] = $this->qb_mis_list_model->getQbMisReports($inputRequest['round']);
+		$data['qb_mis_reports'] = $this->qb_mis_list_model->getQbMisReports($round);
 		
-		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'lotnos' => $data['lotnos'],'qb_mis_reports' => $data['qb_mis_reports']));
+		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'lotnos' => $data['lotnos'],'qb_mis_reports' => $data['qb_mis_reports'],'round_selected' => $round));
 		die;
 	}
 

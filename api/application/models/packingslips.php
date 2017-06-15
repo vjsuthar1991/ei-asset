@@ -13,17 +13,28 @@ class Packingslips extends CI_Model{
         $this->schoolProcessTracking = 'school_process_tracking';
 
     }
+
+    function getLatestRound(){
+
+        $this->db->select('test_edition,description');
+        $this->db->from($this->testEditionTbl);
+        $this->db->where('year',date('Y'));
+        $query = $this->db->get(); 
+        return $query->result();
+
+    }
     /*
      * get rows from the schools_status table
      */
     function getSchools($params = array()){
 
-        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
+        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, ROUND((t1.paid / t1.amount_payable) * 100) AS "paid_percentage", t1.dynamic_class, t2.schoolname, t2.city, t2.region');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t3.exception_type_id=5 AND t3.offering='asset' AND t3.test_edition = '$params'", 'LEFT');
         $this->db->where("t1.ssf_number !=","");
         $this->db->where("t1.status !=","cancelled");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.test_edition",$params);
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 OR (t3.test_edition = '$params' AND t3.status = 'approved'))");
         $this->db->where("t1.pack_label_date","0000-00-00");
@@ -31,102 +42,103 @@ class Packingslips extends CI_Model{
         
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get(); 
-        $schools = $query->result();
+
+        return $query->result();
         
-        $schools = json_decode(json_encode($schools),true);
+        // $schools = json_decode(json_encode($schools),true);
         
-        return $this->filterClasses($schools,$params);
+        // return $this->filterClasses($schools,$params);
         
         die;
     }
 
-    function filterClasses($schools,$round){
+    // function filterClasses($schools,$round){
 
-        $classArray = array('3','4','5','6','7','8','9','10');
+    //     $classArray = array('3','4','5','6','7','8','9','10');
 
-        $selectedFinalSchools = array();
+    //     $selectedFinalSchools = array();
 
-        $selectedschool = array();
+    //     $selectedschool = array();
 
 
-        foreach ($schools as $key => $school) {
+    //     foreach ($schools as $key => $school) {
             
               
-            if($school['dynamic_class'] != "" && $school['dynamic_class'] != NULL)
-            {
+    //         if($school['dynamic_class'] != "" && $school['dynamic_class'] != NULL)
+    //         {
                 
 
-                $classes = explode(",",$school['dynamic_class']);
-                $pnpclasses = array_diff($classArray,$classes);
+    //             $classes = explode(",",$school['dynamic_class']);
+    //             $pnpclasses = array_diff($classArray,$classes);
                 
 
-                if(count($pnpclasses) > 0){
+    //             if(count($pnpclasses) > 0){
                     
 
-                    foreach ($pnpclasses as $key => $value) {
+    //                 foreach ($pnpclasses as $key => $value) {
                         
                         
-                        $this->db->select("e$value,m$value,s$value,h$value,ss$value");
-                        $this->db->from($this->schoolstatusTbl);
-                        $this->db->where("school_code",$school['school_code']);
-                        $this->db->where("test_edition",$round);
-                        $query = $this->db->get(); 
-                        $breakup = $query->result();
-                        $breakup = json_decode(json_encode($breakup),true);
+    //                     $this->db->select("e$value,m$value,s$value,h$value,ss$value");
+    //                     $this->db->from($this->schoolstatusTbl);
+    //                     $this->db->where("school_code",$school['school_code']);
+    //                     $this->db->where("test_edition",$round);
+    //                     $query = $this->db->get(); 
+    //                     $breakup = $query->result();
+    //                     $breakup = json_decode(json_encode($breakup),true);
                         
-                        foreach($breakup as $key2 => $break)
-                        {
+    //                     foreach($breakup as $key2 => $break)
+    //                     {
                             
-                            foreach ($break as $key3 => $val) {
+    //                         foreach ($break as $key3 => $val) {
 
-                                if($val > 0){
+    //                             if($val > 0){
                                    
-                                    $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
-                                    $this->db->from("$this->schoolstatusTbl as t1");
-                                    $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
-                                    $this->db->where("t1.school_code",$school['school_code']);
-                                    $this->db->where("t1.test_edition",$round);
-                                    $query = $this->db->get();
-                                    $schools = $query->result();
-                                    $schools = json_decode(json_encode($schools),true);
+    //                                 $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
+    //                                 $this->db->from("$this->schoolstatusTbl as t1");
+    //                                 $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
+    //                                 $this->db->where("t1.school_code",$school['school_code']);
+    //                                 $this->db->where("t1.test_edition",$round);
+    //                                 $query = $this->db->get();
+    //                                 $schools = $query->result();
+    //                                 $schools = json_decode(json_encode($schools),true);
 
-                                    $selectedFinalSchools[$school['school_code']] = $schools[0];
-                                    break;
+    //                                 $selectedFinalSchools[$school['school_code']] = $schools[0];
+    //                                 break;
                                    
 
-                                }
-                            }
-                        }
+    //                             }
+    //                         }
+    //                     }
 
 
-                    }
-                }
+    //                 }
+    //             }
 
-            }
-            else {
+    //         }
+    //         else {
                 
                 
-                $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
-                $this->db->from("$this->schoolstatusTbl as t1");
-                $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
-                $this->db->where("t1.school_code",$school['school_code']);
-                $this->db->where("t1.test_edition",$round);
+    //             $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.advance_per_paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
+    //             $this->db->from("$this->schoolstatusTbl as t1");
+    //             $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'LEFT');    
+    //             $this->db->where("t1.school_code",$school['school_code']);
+    //             $this->db->where("t1.test_edition",$round);
 
-                $query = $this->db->get(); 
-                $schools = $query->result();
-                $schools = json_decode(json_encode($schools),true);
+    //             $query = $this->db->get(); 
+    //             $schools = $query->result();
+    //             $schools = json_decode(json_encode($schools),true);
                 
-                $selectedFinalSchools[$school['school_code']] = $schools[0];
+    //             $selectedFinalSchools[$school['school_code']] = $schools[0];
 
                 
-            } 
+    //         } 
             
             
-        }
+    //     }
         
-        return $selectedFinalSchools;
+    //     return $selectedFinalSchools;
 
-    }
+    // }
 
     /*
      * get round from the test_edition_details table
@@ -170,12 +182,13 @@ class Packingslips extends CI_Model{
     function getFilteredSchools($round,$country,$zone){
         
        
-        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, t1.dynamic_class, t2.schoolname, t2.city, t2.region');
+        $this->db->select('t1.school_code, t1.no_of_students, t1.amount_payable, t1.paid, ROUND((t1.paid / t1.amount_payable) * 100) AS "paid_percentage", t1.dynamic_class, t2.schoolname, t2.city, t2.region');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->join("$this->exceptionList as t3", "t1.school_code = t3.school_code AND t3.exception_type_id=5 AND t3.offering='asset' AND t3.test_edition = '".$round."'", 'LEFT');
         $this->db->where("t1.ssf_number !=","");
         $this->db->where("t1.status !=","cancelled");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 OR (t3.test_edition = '".$round."' AND t3.status = 'approved'))");
         $this->db->where("t1.pack_label_date","0000-00-00");
         if($round != '')
@@ -194,10 +207,10 @@ class Packingslips extends CI_Model{
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get(); 
         //echo $this->db->last_query();
-        $schools = $query->result();
-        $schools = json_decode(json_encode($schools),true);
+        return $query->result();
+        // $schools = json_decode(json_encode($schools),true);
         
-        return $this->filterClasses($schools,$round);
+        // return $this->filterClasses($schools,$round);
         
         die;
         
@@ -217,10 +230,10 @@ class Packingslips extends CI_Model{
         $this->db->order_by("t1.schoolno","asc");
         $query = $this->db->get();
 
-        return $query->result();
+        return $query->result_array();
     }
 
-    function getSchoolWiseBreakupList($schools)
+    function getSchoolWiseBreakupList($schools,$round)
     {
        $schoolIds = implode(",",$schools);
         
@@ -228,11 +241,22 @@ class Packingslips extends CI_Model{
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", "t1.school_code = t2.schoolno", 'LEFT');
         $this->db->where("t1.school_code IN ($schoolIds)");
-        $this->db->where("t1.test_edition","V");
+        $this->db->where("t1.test_edition",$round);
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get();
-        //echo $this->db->last_query();
-        return $query->result(); 
+        
+        return $query->result_array(); 
+    }
+    
+    function getAdClasses($schoolCode,$round)
+    {
+        $this->db->select('dynamic_class');
+        $this->db->from($this->schoolstatusTbl);
+        $this->db->where('test_edition',$round);
+        $this->db->where('school_code',$schoolCode);
+        $query = $this->db->get();
+        
+        return $query->result_array();
     }
 
     function getVendors()

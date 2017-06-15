@@ -160,6 +160,8 @@ class Vendors extends CI_Model{
         $query = $this->db->get();
         $edition = $query->result();
 
+
+
         if($contentType == "QB") {
 
             $this->db->select('qb_despatch_date,qb_delivery_date');
@@ -258,6 +260,16 @@ class Vendors extends CI_Model{
             }
         }
         
+    }
+
+    function getSchoolEmailId($schoolCode){
+
+        $this->db->select('email');
+        $this->db->from($this->schoolsTbl);
+        $this->db->where('schoolno',$schoolCode);
+        $query = $this->db->get();
+        return $query->result_array();
+
     }
 
     

@@ -42,7 +42,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
 
             
             //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            checkCookie();
+            //checkCookie();
 
             function checkCookie() {
                       var vendor = getCookie("vendor_id");

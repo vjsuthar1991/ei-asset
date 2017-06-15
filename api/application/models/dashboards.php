@@ -33,10 +33,12 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
         $query = $this->db->get();
+
         return $query->result();
 
     }
@@ -49,6 +51,7 @@ class Dashboards extends CI_Model{
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.ssf_number != ''");
+         $this->db->where("t1.dynamic_flag != 1");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -66,6 +69,7 @@ class Dashboards extends CI_Model{
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.ssf_number = ''");
+         $this->db->where("t1.dynamic_flag != 1");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -84,6 +88,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         $this->db->where("t1.ssf_number != ''");
+         $this->db->where("t1.dynamic_flag != 1");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -99,11 +104,13 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
         $query = $this->db->get();
+        
         return $query->result();
 
     }
@@ -115,6 +122,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -131,6 +139,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number = ''");
         if($zone != ""){
@@ -148,6 +157,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date != 0000-00-00");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -165,6 +175,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date = 0000-00-00");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -182,6 +193,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date = 0000-00-00");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number != ''");
@@ -203,6 +215,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         if($zone != ""){
@@ -220,6 +233,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         if($zone != ""){
@@ -237,6 +251,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 7 DAY)");
@@ -259,6 +274,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date != 0000-00-00");
@@ -277,6 +293,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
@@ -296,6 +313,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -312,6 +330,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.ssf_number != ''");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -330,6 +349,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.ssf_number = ''");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -347,6 +367,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         $this->db->where("t1.ssf_number != ''");
         if($zone != ""){
@@ -364,6 +385,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -380,6 +402,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -396,6 +419,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number = ''");
         if($zone != ""){
@@ -414,6 +438,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.pack_label_date != 0000-00-00");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -431,6 +456,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.pack_label_date = 0000-00-00");
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -448,6 +474,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.pack_label_date = 0000-00-00");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number != ''");
@@ -468,6 +495,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         if($zone != ""){
@@ -487,6 +515,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         if($zone != ""){
@@ -504,6 +533,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 7 DAY)");
@@ -525,6 +555,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date != 0000-00-00");
@@ -543,6 +574,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
@@ -561,6 +593,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
@@ -581,6 +614,7 @@ class Dashboards extends CI_Model{
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
+        $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");

@@ -14,15 +14,14 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
   var flag = 0;
   var userData = [];
-  var round = $('#roundfilter').val();
-  var data = {round:'V'};
-  data = JSON.stringify(data);
+  // var round = $('#roundfilter').val();
+  // var data = {round:'V'};
+  // data = JSON.stringify(data);
 
   $.ajax({
     url: './api/packingslip/list_schools',
     type: 'POST',
             dataType : 'json', // data type
-            data: data,
             async: false,
             cache: false,
             contentType: false,
@@ -43,11 +42,12 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                     numberofStudents: val.no_of_students,
                     amountPayable: val.amount_payable,
                     amountPaid: val.paid,
-                    percentagePaid: val.advance_per_paid
+                    percentagePaid: val.paid_percentage
 
                   });
                 });
 
+                $scope.roundSelected = response.round_selected;
 
                 $scope.rounds = response.rounds;
 
@@ -241,7 +241,7 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                           numberofStudents: val.no_of_students,
                           amountPayable: val.amount_payable,
                           amountPaid: val.paid,
-                          percentagePaid: val.advance_per_paid
+                          percentagePaid: val.paid_percentage
 
                         });
                     });
@@ -292,6 +292,9 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
             
             arrayOfValues.push($(this).attr('value'));
         });
+
+      var username = $('#loginusername').val();  
+
       var vendorSelected = $('#vendorSelected').val();
 
       var round = $('#roundfilter').val();
@@ -303,7 +306,7 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
         $('#generatepackingslip').attr('disabled','disabled');
         
-        var data = {data:arrayOfValues,vendor:vendorSelected,round:round};
+        var data = {data:arrayOfValues,vendor:vendorSelected,round:round,username:username};
         
         data = JSON.stringify(data);
 
@@ -1113,7 +1116,7 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
             success: function (returndata) {
 
              var response = JSON.parse(returndata);
-             
+
              if(response.status == "success"){
 
                 if($('#upload_csv_message_box').hasClass('alert-danger')){
@@ -1143,7 +1146,7 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
                 $('#upload_csv_message_box').removeClass('hide');
                 $(window).scrollTop($('#upload_csv_message_box').offset().top);
 
-                setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 2000);
+                setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 4000);
               }
 
             }
@@ -1365,14 +1368,13 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
 
   var flag = 0;
   var userData = [];
-  var round = $('#qbroundfilter').val();
-  var data = {round:'V'};
-  data = JSON.stringify(data);
+  // var round = $('#qbroundfilter').val();
+  // var data = {round:'V'};
+  // data = JSON.stringify(data);
 
     $.ajax({
     url: './api/mis_system/qb_mis_list',
     type: 'POST',
-    data: data,
     dataType : 'json', // data type
     async: false,
     cache: false,
@@ -1386,6 +1388,7 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
         $scope.zones = response.zones;
         $scope.rounds = response.rounds;
         $scope.lotnos = response.lotnos;
+        $scope.roundSelected = response.round_selected;
 
         
         jQuery.each( response.schooldata, function( i, val ) {
@@ -1678,7 +1681,7 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: 'V',zone: zone};
+  var data = {zone: zone};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -1695,6 +1698,8 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
 
       if(response.status == "success"){
         
+        $scope.roundSelected = response.round_selected;
+        $scope.roundDescription = response.round_description;
         $scope.zones = response.zones;
         $scope.rounds = response.rounds;
         $scope.ssfCount = response.school_registered[0]['ssfcount'];
@@ -1743,7 +1748,7 @@ $scope.filterPpPretestDashboardData = function(e){
   data = JSON.stringify(data);
 
     $.ajax({
-    url: './api/dashboard/pppretestDashboard',
+    url: './api/dashboard/pppretestDashboardFilter',
     type: 'POST',
     data: data,
     dataType : 'json', // data type
@@ -1755,7 +1760,8 @@ $scope.filterPpPretestDashboardData = function(e){
       var response = JSON.parse(JSON.stringify(returndata));
 
       if(response.status == "success"){
-        
+
+        $scope.roundDescription = response.round_description;
         $scope.ssfCount = response.school_registered[0]['ssfcount'];
         $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
         $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
