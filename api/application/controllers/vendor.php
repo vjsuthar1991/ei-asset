@@ -342,7 +342,7 @@ class Vendor extends CI_Controller {
 
 					foreach ($data['values'] as $key => $value) {
 						
-						if($value['P'] == 'QB'){
+					if($value['P'] == 'QB') {
 
 						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
 
@@ -378,7 +378,9 @@ class Vendor extends CI_Controller {
 							$message .= '<br><br>';
 							$message .= '<div style="font-weight:bold;text-align:center;">| B - Big Box | SB - Small Box | C - Green Cover |</div>';
 							$message .= '<br><br>';
+
 							$courierCompanyDetails = $this->vendors->courierCompanyDetails($value['R'],$value['H'],$value['D']);
+							
 							if(count($courierCompanyDetails) > 0) {
 
 								$message .= '<table><tr><td><b>Main Branch Office Number:</b></td><td>'.$courierCompanyDetails[0]->phone_no_1.'</td></tr><tr><td><b>Contact Person:</b></td><td>'.$courierCompanyDetails[0]->contact_person.'</td></tr><tr><td><b>Contact Person Email-ID:</b></td><td>'.$courierCompanyDetails[0]->email_Id.'</td></tr><tr><td><b>Website:</b></td><td>'.$courierCompanyDetails[0]->website.'</td></tr><tr><td><b>Contact No. from where the material is Despatched:</b></td><td></td></tr></table>';
@@ -395,7 +397,7 @@ class Vendor extends CI_Controller {
 							}
 
 							$filename1 = '';
-							$filename1 = '/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
+							$filename1 = '/Applications/XAMPP/xamppfiles/htdocs/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
 							$ci->setemail($filename1,'vijay.suthar@ei-india.com',$subject,$message);
 						}
 					}
