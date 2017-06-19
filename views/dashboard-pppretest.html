@@ -61,7 +61,7 @@
               <div class="col-md-12" style="padding: 0px 50px;">
                 <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;">
                   <div class="panel-heading-white panel-heading text-center">
-                                <h4>SSF Recieved</h4>
+                                <h4>Final BreakUp Recieved</h4>
                               </div>
                   <div class="col-md-6 responsive-table" style="margin-top: 20px;">
                       
@@ -83,8 +83,8 @@
                         <td style="cursor:pointer;" ng-click="showSchoolSSFPending()">{{ssfPendingCount}}</td>
                       </tr>
                       <tr>
-                        <td>Alert</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolSSFAlert()">{{ssfAlertCount}}</td>
+                        <td>Alerts</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolPaymentAlert()">{{paymentAlert}}</td>
                       </tr>
                       
                     </tbody>
@@ -128,8 +128,9 @@
                         <td style="cursor:pointer;" ng-click="showSchoolPaymentPending()">{{paymentPending}}</td>
                       </tr>
                       <tr>
-                        <td>Alert</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPaymentAlert()">{{paymentAlert}}</td>
+                        <td>Alerts</td>
+                        <td style="cursor:pointer;" ng-click="showSchoolSSFAlert()">{{ssfAlertCount}}</td>
+                        
                       </tr>
                       
                     </tbody>
@@ -180,7 +181,7 @@
                         <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateNotSet()">{{packLabelDateNotSet}}</td>
                       </tr>
                       <tr>
-                        <td>Alert</td>
+                        <td>Alerts</td>
                         <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateAlert()">{{packLabelDateAlert}}</td>
                       </tr>
                       
@@ -203,7 +204,7 @@
                 </div>
                 <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:right;">
                   <div class="panel-heading-white panel-heading text-center">
-                      <h4>Dispatch Summary</h4>
+                      <h4>Given For Dispatch</h4>
                   </div>
                   <div class="col-md-6 responsive-table" style="margin-top: 20px;">
                       
@@ -225,7 +226,7 @@
                         <td style="cursor:pointer;" ng-click="showSchoolDispatchDateNotSet()">{{dispatchDateNotSet}}</td>
                       </tr>
                       <tr>
-                        <td>Alert</td>
+                        <td>Alerts</td>
                         <td style="cursor:pointer;" ng-click="showSchoolDispatchDateAlert()">{{dispatchDateAlert}}</td>
                       </tr>
                       
@@ -280,7 +281,7 @@
                         <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateNotSet()">{{deliveryDateNotSet}}</td>
                       </tr>
                       <tr>
-                        <td>Alert</td>
+                        <td>Alerts</td>
                         <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateAlert()">{{deliveryDateAlert}}</td>
                       </tr>
                       

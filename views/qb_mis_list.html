@@ -18,13 +18,13 @@
                       <div class="panel-body">
                         <div class="col-md-12 form-group padding-0">
                           
-                          <select id="qbroundfilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
+                          <select id="qbroundfilter" style="width:200px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option ng-selected="{{round.test_edition == roundSelected}}" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.description}}-{{round.test_edition}}</option>
                               
                           </select>
 
-                          <select id="qbzonefilter"  style="width:130px;margin:15px 30px 15px 0px;height:30px;">
+                          <select id="qbzonefilter"  style="width:200px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option value="">Zone</option>
                               <option ng-repeat="zone in zones" value="{{zone.region}}">{{zone.region}}</option>
@@ -32,7 +32,7 @@
                             
                           </select>
 
-                          <select id="packinglotnofilter" name="packinglotnofilter" style="width:130px;margin:15px 30px 15px 0px;height:30px;">
+                          <select id="packinglotnofilter" name="packinglotnofilter" style="width:200px;margin:15px 30px 15px 0px;height:30px;">
                            
                               <option value="">Lot No.</option>
                               <option ng-repeat="lotno in lotnos" value="{{lotno.lot_no}}">{{lotno.lot_no}}</option>

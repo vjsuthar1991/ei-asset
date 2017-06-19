@@ -195,7 +195,7 @@ class Vendors extends CI_Model{
                     
                     $this->db->update($this->schoolProcessTracking,array('qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
                 
-                    return false;
+                    return 0;
                 }
             }
             
@@ -206,7 +206,10 @@ class Vendors extends CI_Model{
             $this->db->where('test_edition',$edition[0]->test_edition);
             $query = $this->db->get();
             $check2 = $query->result();
-
+            // echo '<pre>';
+            // print_r($check2);
+            // echo count($check2);
+            // die;
             
             if(count($check2) == 0){
 

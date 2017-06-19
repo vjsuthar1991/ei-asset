@@ -1706,11 +1706,11 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
         $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
         $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
         $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
-        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
         $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
         $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
         $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
-        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
         $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
         $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
         $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];
@@ -1766,11 +1766,11 @@ $scope.filterPpPretestDashboardData = function(e){
         $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
         $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
         $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
-        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
         $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
         $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
         $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
-        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
         $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
         $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
         $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];

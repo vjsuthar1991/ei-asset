@@ -2,8 +2,9 @@
         <nav class="navbar navbar-default header navbar-fixed-top">
           <div class="col-md-12 nav-wrapper">
             <div class="navbar-header" style="width:100%;">
-                <a href="" class="navbar-brand"> 
-                 <b>ASSET</b>
+                <a href="" class="navbar-brand">
+                <img src="asset/img/asset-logo.png" style="width: 39px;display: inline-block;margin-top: -6px;"> 
+                 <b style="font-size: 25px;">ASSET</b>
                 </a>
 
               <ul class="nav navbar-nav search-nav">
@@ -27,7 +28,7 @@
                   <li role="separator" class="divider"></li>
                   <li><a href="packing_slips_list">Packing Slip List</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="qb_mis_list">QB MIS List</a></li>
+                  <li><a href="qb_mis_list">Test Material Status</a></li>
                 </ul>
               </li>
               

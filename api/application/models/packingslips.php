@@ -297,7 +297,8 @@ class Packingslips extends CI_Model{
 
     function getPackingSlipList()
     {
-        $this->db->select('t1.packingslip_id,t1.packingslip_lotno,t1.packingslip_sentdate,t1.packingslip_schools_data_csv,t1.packingslip_breakup_data_csv,t1.packingslip_acknowledge_date,t2.vendor_name');
+        $this->db->select("t1.packingslip_id,t1.packingslip_lotno,t1.packingslip_schools_data_csv,t1.packingslip_breakup_data_csv,t1.packingslip_acknowledge_date,t2.vendor_name");
+        $this->db->select("DATE_FORMAT(t1.packingslip_sentdate,'%d-%c-%Y') as packingslip_sentdate",FALSE);
         $this->db->from("$this->packingslipsListTbl as t1");
         $this->db->join("$this->vendorsTbl as t2", "t1.packingslip_vendorid = t2.vendor_id", 'LEFT');
         $this->db->order_by('packingslip_id','desc');
