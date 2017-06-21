@@ -875,6 +875,24 @@ ul li a:focus {
   background-color: #B9B0ED;
 }
 
+.tabtitlecustom {
+
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: -5px;
+}
+
+/* basic positioning */
+.legend { list-style: none; margin-top: 20px;}
+.legend li { margin-right: 10px; font-size: 14px;text-align: left;}
+.legend span { border: 1px solid #ccc; float: left; width: 15px; height: 15px; margin: 2px; }
+
+/* your colors */
+.legend .completedlegend { background-color: #27C24C; }
+.legend .pendinglegend { background-color: #FFC107; }
+.legend .alertlegend { background-color: #F44336; }
+
 .progress {
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;

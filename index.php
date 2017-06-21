@@ -31,6 +31,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
 
   <!-- start: Css -->
   <link rel="stylesheet" type="text/css" href="asset/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
 
   <!-- plugins -->
   <link rel="stylesheet" type="text/css" href="asset/css/plugins/font-awesome.min.css"/>

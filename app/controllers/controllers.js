@@ -1601,6 +1601,7 @@ app.controller('DashboardPenAndPaperController', function($scope,$http){
 
 app.controller('DashboardPenAndPaperPreTestController', function($scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
   
+
 $scope.dtInstance = {};
 
 function destroy() {
@@ -1639,6 +1640,7 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
         showTooltips: true
     });
   }
+
   $scope.schoolRegisteredList = [];
 
   
@@ -1710,24 +1712,47 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
         $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
         $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
         $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
-        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
         $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
         $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];
-        createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.dispatchDateSet = response.dispatchdate_set[0]['dispatchsetcount'];
         $scope.dispatchDateNotSet = response.dispatchdate_notset[0]['dispatchnotsetcount'];
         $scope.dispatchDateAlert = response.dispatchdate_alert[0]['dispatchalertcount'];
-        createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
         $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
         $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
-        createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+        
 
+        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+  
+          var tabtarget = $(this).attr('href');
+          
+          if(tabtarget == '#tabs-demo6-area1'){
+            createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area2'){
+            createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area3'){
+            createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area4'){
+            createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area5'){
+            createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+          }        
+        });
       }
       
     }
   });
+
+
+
 
 $scope.filterPpPretestDashboardData = function(e){
 
@@ -1766,30 +1791,63 @@ $scope.filterPpPretestDashboardData = function(e){
         $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
         $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
         $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
-        createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+        $('.nav-tabs a[href="#tabs-demo6-area1"]').tab('show');
+         setTimeout(function(){ createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert'); }, 10);
+        
         $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
         $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
         $scope.paymentAlert = response.payment_alert[0]['paymentalertcount'];
-        createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.packLabelDateSet = response.packlabeldate_set[0]['packlabelsetcount'];
         $scope.packLabelDateNotSet = response.packlabeldate_notset[0]['packlabelnotsetcount'];
         $scope.packLabelDateAlert = response.packlabeldate_alert[0]['packlabelalertcount'];
-        createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.dispatchDateSet = response.dispatchdate_set[0]['dispatchsetcount'];
         $scope.dispatchDateNotSet = response.dispatchdate_notset[0]['dispatchnotsetcount'];
         $scope.dispatchDateAlert = response.dispatchdate_alert[0]['dispatchalertcount'];
-        createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+        
         $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
         $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
         $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
-        createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+
+
         $location.path('/dashboard-pppretest');
+
+
+        
+        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+  
+          var tabtarget = $(this).attr('href');
+          
+          if(tabtarget == '#tabs-demo6-area1'){
+            createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area2'){
+            createGraph('.pie-chart2',parseInt(response.payment_recieved[0]['paymentrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.payment_pending[0]['paymentpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.ssf_alert[0]['ssfalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area3'){
+            createGraph('.pie-chart3',parseInt(response.packlabeldate_set[0]['packlabelsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.packlabeldate_notset[0]['packlabelnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.packlabeldate_alert[0]['packlabelalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area4'){
+            createGraph('.pie-chart4',parseInt(response.dispatchdate_set[0]['dispatchsetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.dispatchdate_notset[0]['dispatchnotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.dispatchdate_alert[0]['dispatchalertcount']),'#F44336','#03A9F4','Alert');
+          }
+          else if(tabtarget == '#tabs-demo6-area5'){
+            createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
+          }        
+        });
+        
+
 
       }
       
     }
   });
 };
+
+$(".nav-tabs a").click(function (e) {
+      e.preventDefault();  
+      $(this).tab('show');
+    });
 
 $scope.showSchoolRegistered = function(e){
 

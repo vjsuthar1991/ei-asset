@@ -180,6 +180,23 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
             }).when('/vendor_list',{
                  templateUrl: 'views/vendor_list.html',
                  controller: 'VendorListController',  
+                 resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.select',
+                            // add UI select css / js for this state
+                            files: [
+                                
+                                'https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js',
+                                'https://cdn.datatables.net/buttons/1.2.2/js/buttons.colVis.min.js',
+                                'https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js',
+                                'https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js',
+                                'https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js',
+
+                            ] 
+                        }]);
+                    }]
+                }
                  
             })
             .when('/edit_vendor',{

@@ -536,7 +536,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 7 DAY)");
+        $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 3 DAY)");
         
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
@@ -597,7 +597,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 7 DAY)");
+        $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 10 DAY)");
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }

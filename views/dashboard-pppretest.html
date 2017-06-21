@@ -37,13 +37,14 @@
                 </div>
               </div>
               <div class="clear" style="clear:both;"></div>
-              <div class="col-md-12" style="width: 100%;text-align: center;position: relative;margin-top: 30px;min-height:200px;">
+
+              <div class="col-md-12" style="width: 100%;text-align: center;position: relative;margin-top: 30px;min-height:120px;">
                 <div class="col-md-3" style="position: absolute;margin: 0px auto;right: 35%;left: 35%;">
                     <div class="panel box-v1">
                       <div class="panel-heading bg-white border-none" style="padding:0px;">
                         <div class="col-md-12 col-sm-6 col-xs-6 text-center padding-0">
                           <h4 class="text-center" style="font-size: 15px;font-weight: bold;">SCHOOL REGISTERED</h4>
-                          <img src="asset/img/icon-57.png" style="width: 70px;"></img>
+                          <!-- <img src="asset/img/icon-57.png" style="width: 70px;"></img> -->
 
                         </div>
                         <div style="clear:both;"></div>
@@ -58,14 +59,67 @@
             </div>
 
             <div class="clear" style="clear:both;"></div>
-              <div class="col-md-12" style="padding: 0px 50px;">
-                <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;">
+
+              <div role="tabpanel" class="tab-pane fade active in" id="tabs-area-demo" aria-labelledby="tabs1">
+                <div class="col-md-12 padding-0">
+                  <div class="col-md-12 padding-0">
+                    <div class="col-md-12 tabs-area">
+                      <div class="liner"></div>
+                      <ul class="nav nav-tabs nav-tabs-v5" id="tabs-demo6">
+                        <li class="active text-center">
+                          <div class="tabtitlecustom">Final BreakUp Recieved</div>
+                         <a href="#tabs-demo6-area1" data-toggle="tab" title="welcome">
+                          <span class="round-tabs one">
+                            <i class="glyphicon icon-docs"></i>
+                          </span> 
+
+                        </a>
+                      </li>
+
+                      <li class="text-center">
+                        <div class="tabtitlecustom">Payment Recieved</div>
+                        <a href="#tabs-demo6-area2" data-toggle="tab" title="profile">
+                         <span class="round-tabs two">
+                           <i class="glyphicon fa fa-inr"></i>
+                         </span> 
+                       </a>
+                     </li>
+
+                     <li class="text-center">
+                      <div class="tabtitlecustom">Given For Packing</div>
+                      <a href="#tabs-demo6-area3" data-toggle="tab" title="bootsnipp goodies">
+                       <span class="round-tabs three">
+                        <i class="glyphicon glyphicon-gift"></i>
+                      </span> </a>
+                    </li>
+
+                    <li class="text-center">
+                      <div class="tabtitlecustom">Given For Dispatch</div>
+                      <a href="#tabs-demo6-area4" data-toggle="tab" title="blah blah">
+                       <span class="round-tabs four">
+                         <i class="glyphicon fa fa-plane"></i>
+                       </span> 
+                     </a>
+                   </li>
+
+                   <li class="text-center">
+                    <div class="tabtitlecustom">Delivery Status</div>
+                    <a href="#tabs-demo6-area5" data-toggle="tab" title="completed">
+                     <span class="round-tabs five">
+                      <i class="glyphicon glyphicon-ok"></i>
+                    </span> </a>
+                  </li>
+                </ul>
+                <div class="tab-content tab-content-v5" style="padding:20px;">
+                  <div class="tab-pane fade in active" id="tabs-demo6-area1">
+                    <center style="width: 60%;margin: 0px auto;">
+                    <div class="col-md-7" style="border: 1px solid #ddd;padding: 0;width:100%;">
                   <div class="panel-heading-white panel-heading text-center">
                                 <h4>Final BreakUp Recieved</h4>
                               </div>
                   <div class="col-md-6 responsive-table" style="margin-top: 20px;">
                       
-                    <table class="table table-striped table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
                     <thead>
                       <tr>
                         <th>Status</th>
@@ -73,16 +127,16 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr style="color: #27C24C;font-weight: bold;">
                         
                         <td>Completed</td>
                         <td style="cursor:pointer;" ng-click="showSchoolSSFReceived()">{{ssfRecievedCount}}</td>
                       </tr>
-                      <tr>
+                      <tr style="color: #FFC107;font-weight: bold;">
                         <td>Pending</td>
                         <td style="cursor:pointer;" ng-click="showSchoolSSFPending()">{{ssfPendingCount}}</td>
                       </tr>
-                      <tr>
+                      <tr style="color: #F44336;font-weight: bold;">
                         <td>Alerts</td>
                         <td style="cursor:pointer;" ng-click="showSchoolPaymentAlert()">{{paymentAlert}}</td>
                       </tr>
@@ -92,7 +146,7 @@
                   </div>
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 200px;margin-top: 20px;">
                              
                               <div class="panel-body" style="padding-top: 32px;">
                                 <center>
@@ -104,166 +158,195 @@
                   </div>
 
                 </div>
-                <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:right;">
-                  <div class="panel-heading-white panel-heading text-center">
-                                <h4>Payment Recieved</h4>
-                              </div>
-                  <div class="col-md-6 responsive-table" style="margin-top: 20px;">
-                      
-                    <table class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                      <tr>
-                        <th>Status</th>
-                        <th>No. Of School</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        
-                        <td>Completed</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPaymentReceived()">{{paymentRecieved}}</td>
-                      </tr>
-                      <tr>
-                        <td>Pending</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPaymentPending()">{{paymentPending}}</td>
-                      </tr>
-                      <tr>
-                        <td>Alerts</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolSSFAlert()">{{ssfAlertCount}}</td>
-                        
-                      </tr>
-                      
-                    </tbody>
-                  </table>
-                  </div>
-
-                  <div class="col-md-6" >
-
-                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
-                             
-                              <div class="panel-body" style="padding-top: 32px;">
-                                <center>
-                                <canvas class="pie-chart2"></canvas>
-                                </center>
-                              </div>
-                        </div>
-
-                  </div>
-
-                </div>
                 <div class="clear" style="clear:both;"></div>
-              </div>
-            <div class="clear" style="clear:both;"></div>
-            <div class="col-md-12" style="
-    margin-top: 30px;padding:0px 50px;
-">
-                <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;">
-                  <div class="panel-heading-white panel-heading text-center">
-                                <h4>Given For Packing</h4>
-                              </div>
-                  <div class="col-md-6 responsive-table" style="margin-top: 20px;">
+                <ul class="legend padding-0">
+                  <li><span class="completedlegend"></span> Final Student Breakup Received</li>
+                  <li><span class="pendinglegend"></span> Final Student Breakup Pending</li>
+                  <li><span class="alertlegend"></span> 90% and Above Payment Is Received But Final Student Breakup Is Pending</li>
+              </ul>
+              </center>
+              
+             </div>
+            <div class="tab-pane fade" id="tabs-demo6-area2">
+                  <center style="width: 60%;margin: 0px auto;">
+                  <div class="col-md-7" style="border: 1px solid #ddd;padding: 0;width:100%;">
+                <div class="panel-heading-white panel-heading text-center">
+                              <h4>Payment Recieved</h4>
+                            </div>
+                <div class="col-md-6 responsive-table" style="margin-top: 20px;">
+                    
+                  <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>No. Of School</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="color: #27C24C;font-weight: bold;">
                       
-                    <table class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                      <tr>
-                        <th>Status</th>
-                        <th>No. Of School</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        
-                        <td>Completed</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateSet()">{{packLabelDateSet}}</td>
-                      </tr>
-                      <tr>
-                        <td>Pending</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateNotSet()">{{packLabelDateNotSet}}</td>
-                      </tr>
-                      <tr>
-                        <td>Alerts</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateAlert()">{{packLabelDateAlert}}</td>
-                      </tr>
+                      <td>Completed</td>
+                      <td style="cursor:pointer;" ng-click="showSchoolPaymentReceived()">{{paymentRecieved}}</td>
+                    </tr>
+                    <tr style="color: #FFC107;font-weight: bold;">
+                      <td>Pending</td>
+                      <td style="cursor:pointer;" ng-click="showSchoolPaymentPending()">{{paymentPending}}</td>
+                    </tr>
+                    <tr style="color: #F44336;font-weight: bold;">
+                      <td>Alerts</td>
+                      <td style="cursor:pointer;" ng-click="showSchoolSSFAlert()">{{ssfAlertCount}}</td>
                       
-                    </tbody>
-                  </table>
-                  </div>
-                  <div class="col-md-6" >
+                    </tr>
+                    
+                  </tbody>
+                </table>
+                </div>
 
-                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
-                             
-                              <div class="panel-body" style="padding-top: 32px;">
-                                <center>
-                                <canvas class="pie-chart3"></canvas>
-                                </center>
-                              </div>
-                        </div>
+                <div class="col-md-6" >
 
-                  </div>
+                  <div class="panel" style="margin: 0px;height: 200px;margin-top: 20px;">
+                           
+                            <div class="panel-body" style="padding-top: 32px;">
+                              <center>
+                              <canvas class="pie-chart2"></canvas>
+                              </center>
+                            </div>
+                      </div>
 
                 </div>
-                <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:right;">
-                  <div class="panel-heading-white panel-heading text-center">
-                      <h4>Given For Dispatch</h4>
-                  </div>
-                  <div class="col-md-6 responsive-table" style="margin-top: 20px;">
-                      
-                    <table class="table table-striped table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                      <tr>
-                        <th>Status</th>
-                        <th>No. Of School</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        
-                        <td>Completed</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateSet()">{{dispatchDateSet}}</td>
-                      </tr>
-                      <tr>
-                        <td>Pending</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateNotSet()">{{dispatchDateNotSet}}</td>
-                      </tr>
-                      <tr>
-                        <td>Alerts</td>
-                        <td style="cursor:pointer;" ng-click="showSchoolDispatchDateAlert()">{{dispatchDateAlert}}</td>
-                      </tr>
-                      
-                    </tbody>
-                  </table>
-                  </div>
 
-                  <div class="col-md-6" >
-
-                    <div class="panel" style="margin: 0px;height: 153px;margin-top: 20px;">
-                             
-                              <div class="panel-body" style="padding-top: 32px;">
-                                <center>
-                                <canvas class="pie-chart4"></canvas>
-                                </center>
-                              </div>
-                        </div>
-
-                  </div>
-
-                </div>
-                <div class="clear" style="clear:both;"></div>
               </div>
-            <div class="clear" style="clear:both;"></div>
+              <div class="clear" style="clear:both;"></div>
+              <ul class="legend padding-0">
+                  <li><span class="completedlegend"></span> 90% and Above Payment Received</li>
+                  <li><span class="pendinglegend"></span> Payment Pending</li>
+                  <li><span class="alertlegend"></span> Final Student Breakup Received But Payment Pending</li>
+              </ul>
+            </center>
+
+            </div>
+            <div class="tab-pane fade" id="tabs-demo6-area3">
+              <center style="width: 60%;margin: 0px auto;">
+              <div class="col-md-7" style="border: 1px solid #ddd;padding: 0;width:100%;">
+            <div class="panel-heading-white panel-heading text-center">
+                          <h4>Given For Packing</h4>
+                        </div>
+            <div class="col-md-6 responsive-table" style="margin-top: 20px;">
+                
+              <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>No. Of School</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="color: #27C24C;font-weight: bold;">
+                  
+                  <td>Completed</td>
+                  <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateSet()">{{packLabelDateSet}}</td>
+                </tr>
+                <tr style="color: #FFC107;font-weight: bold;">
+                  <td>Pending</td>
+                  <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateNotSet()">{{packLabelDateNotSet}}</td>
+                </tr>
+                <tr style="color: #F44336;font-weight: bold;">
+                  <td>Alerts</td>
+                  <td style="cursor:pointer;" ng-click="showSchoolPackLabelDateAlert()">{{packLabelDateAlert}}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+            </div>
+            <div class="col-md-6" >
+
+              <div class="panel" style="margin: 0px;height: 200px;margin-top: 20px;">
+                       
+                        <div class="panel-body" style="padding-top: 32px;">
+                          <center>
+                          <canvas class="pie-chart3"></canvas>
+                          </center>
+                        </div>
+                  </div>
+
+            </div>
+
           </div>
+           <div class="clear" style="clear:both;"></div>
+           <ul class="legend padding-0">
+                  <li><span class="completedlegend"></span> Pack Label Generated And Sent For Packing To Vendor</li>
+                  <li><span class="pendinglegend"></span> Final Student Breakup And/OR Payment Pending</li>
+                  <li><span class="alertlegend"></span> Final Student BreakUp And 90% and Above Payment Received But Not Given For Packing</li>
+              </ul>
+         </center>
+            </div>
+            <div class="tab-pane fade" id="tabs-demo6-area4">
+            <center style="width: 60%;margin: 0px auto;">
+            <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;width:100%;">
+            <div class="panel-heading-white panel-heading text-center">
+            <h4>Given For Dispatch</h4>
+            </div>
+            <div class="col-md-6 responsive-table" style="margin-top: 20px;">
 
-          <div class="col-md-12" style="
-    margin-top: 30px;
-">
-<center style="width: 41.8%;margin: 0px auto;">
-                <div class="col-md-5" style="border: 1px solid #ddd;padding: 0;float:left;width:100%;">
+            <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
+            <thead>
+            <tr>
+            <th>Status</th>
+            <th>No. Of School</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="color: #27C24C;font-weight: bold;">
+
+            <td>Completed</td>
+            <td style="cursor:pointer;" ng-click="showSchoolDispatchDateSet()">{{dispatchDateSet}}</td>
+            </tr>
+            <tr style="color: #FFC107;font-weight: bold;">
+            <td>Pending</td>
+            <td style="cursor:pointer;" ng-click="showSchoolDispatchDateNotSet()">{{dispatchDateNotSet}}</td>
+            </tr>
+            <tr style="color: #F44336;font-weight: bold;">
+            <td>Alerts</td>
+            <td style="cursor:pointer;" ng-click="showSchoolDispatchDateAlert()">{{dispatchDateAlert}}</td>
+            </tr>
+
+            </tbody>
+            </table>
+            </div>
+
+            <div class="col-md-6" >
+
+            <div class="panel" style="margin: 0px;height: 200px;margin-top: 20px;">
+               
+                <div class="panel-body" style="padding-top: 32px;">
+                  <center>
+                  <canvas class="pie-chart4"></canvas>
+                  </center>
+                </div>
+            </div>
+
+            </div>
+
+            </div>
+
+           <div class="clear" style="clear:both;"></div>
+            <ul class="legend padding-0">
+                  <li><span class="completedlegend"></span> Dispatch Confirmation Received From Vendor</li>
+                  <li><span class="pendinglegend"></span> Given For Packing But Dispatch Pending</li>
+                  <li><span class="alertlegend"></span> Dispatch Pending For More Than 3 Days Of Packing Date</li>
+              </ul>
+            </center>
+            <div class="clear" style="clear:both;"></div>
+            </div>
+            <div class="tab-pane fade" id="tabs-demo6-area5">
+              <center style="width: 60%;margin: 0px auto;">
+                <div class="col-md-7" style="border: 1px solid #ddd;padding: 0;width:100%;">
                   <div class="panel-heading-white panel-heading text-center">
                                 <h4>Delivery Status</h4>
                               </div>
                   <div class="col-md-6 responsive-table" style="margin-top: 20px;">
                       
-                    <table class="table table-striped table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
                     <thead>
                       <tr>
                         <th>Status</th>
@@ -271,16 +354,16 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr style="color: #27C24C;font-weight: bold;">
                         
                         <td>Completed</td>
                         <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateSet()">{{deliveryDateSet}}</td>
                       </tr>
-                      <tr>
+                      <tr style="color: #FFC107;font-weight: bold;">
                         <td>Pending</td>
                         <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateNotSet()">{{deliveryDateNotSet}}</td>
                       </tr>
-                      <tr>
+                      <tr style="color: #F44336;font-weight: bold;">
                         <td>Alerts</td>
                         <td style="cursor:pointer;" ng-click="showSchoolDeilveryDateAlert()">{{deliveryDateAlert}}</td>
                       </tr>
@@ -290,7 +373,7 @@
                   </div>
                   <div class="col-md-6" >
 
-                    <div class="panel" style="margin: 0px;height: 152px;margin-top: 20px;">
+                    <div class="panel" style="margin: 0px;height: 200px;margin-top: 20px;">
                              
                               <div class="panel-body" style="padding-top: 16px;">
                                 <center>
@@ -302,10 +385,30 @@
                   </div>
 
                 </div>
+                <div class="clear" style="clear:both;"></div>
+                <ul class="legend padding-0">
+                  <li><span class="completedlegend"></span> Delivery Status Confirm From Vendor</li>
+                  <li><span class="pendinglegend"></span> Delivery Status Pending From Vendor</li>
+                  <li><span class="alertlegend"></span> Delivery Status Pending For More Than 10 Days Of Packing Date</li>
+              </ul>
                 </center>
                 
-                <div class="clear" style="clear:both;"></div>
+              <div style="clear:both;"></div>
               </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>      
+              </div>
+              
+                
+                
+                </div>
+
+
+          </div>
+
+          
             <div class="clear" style="clear:both;"></div>
             <div class="col-md-12" style="margin-top: 30px;">
               <div class="responsive-table hide" id="ppPreTestDynamicTable">
