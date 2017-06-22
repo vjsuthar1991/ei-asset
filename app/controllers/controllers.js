@@ -1607,6 +1607,7 @@ $scope.dtInstance = {};
 function destroy() {
     angular.element('#schoollist-table').children('thead').children().remove();
     angular.element('#schoollist-table').children('tbody').children().remove(); 
+    angular.element('#schoollist-table').empty();
 }
 
 function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,highlightcolor2,label2,val3,color3,highlightcolor3,label3){
@@ -1649,7 +1650,11 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
     schoolName: 0,
     schoolCity: 0,
     schoolRegion: 0,
-    schoolEnteredDate: 0,
+    schoolSSFDate: 0,
+    schoolAmountPayable: 0,
+    schoolAmountPaid: 0,
+    schoolPercentagePaid: 0,
+    schoolAmountDifference: 0,
   });
   
 
@@ -1665,7 +1670,11 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
       DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
       DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
       DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-      DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+      DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+      DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+      DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+      DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+      DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount'),
       ];  
 
 
@@ -1882,7 +1891,12 @@ $scope.showSchoolRegistered = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolEnteredDate: val.entered_date,
+            schoolSSFNumber: val.ssf_number,
+            schoolSSFDate: val.SSF_date,
+            schoolAmountPayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -1898,7 +1912,12 @@ $scope.showSchoolRegistered = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            DTColumnBuilder.newColumn('schoolSSFNumber').withTitle('SSF Number').withOption('title','SSF Number'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount'),
             ];  
 
 
@@ -1949,7 +1968,12 @@ $scope.showSchoolSSFReceived = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
+            schoolSSFNumber: val.ssf_number,
             schoolSSFDate: val.SSF_date,
+            schoolAmountPayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -1965,7 +1989,12 @@ $scope.showSchoolSSFReceived = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFNumber').withTitle('SSF Number').withOption('title','SSF Number'),
             DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount'),
             ];  
 
 
@@ -2016,9 +2045,14 @@ $scope.showSchoolSSFPending = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolEnteredDate: val.entered_date,
+            schoolAmountPayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
+
+
 
         $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolSSFPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
           $("td:first", nRow).html(iDisplayIndex +1);
@@ -2032,7 +2066,10 @@ $scope.showSchoolSSFPending = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount')
             ];  
 
 
@@ -2083,7 +2120,10 @@ $scope.showSchoolSSFAlert = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolEnteredDate: val.entered_date,
+            schoolAmountPayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -2099,7 +2139,10 @@ $scope.showSchoolSSFAlert = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolEnteredDate').withTitle('Entered Date').withOption('title','Entered Date'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount')
             ];  
 
 
@@ -2152,8 +2195,10 @@ $scope.showSchoolPaymentReceived = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolAmountpayable: val.amount_payable,
+            schoolAmountPayable: val.amount_payable,
             schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -2172,8 +2217,10 @@ $scope.showSchoolPaymentReceived = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
             DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount')
             ];  
 
 
@@ -2225,8 +2272,10 @@ $scope.showSchoolPaymentPending = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolAmountpayable: val.amount_payable,
+            schoolAmountPayable: val.amount_payable,
             schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -2245,8 +2294,10 @@ $scope.showSchoolPaymentPending = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
             DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount')
             ];  
 
 
@@ -2298,8 +2349,10 @@ $scope.showSchoolPaymentAlert = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
-            schoolAmountpayable: val.amount_payable,
+            schoolAmountPayable: val.amount_payable,
             schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
           });
         });
 
@@ -2318,8 +2371,10 @@ $scope.showSchoolPaymentAlert = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
-            DTColumnBuilder.newColumn('schoolAmountpayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
             DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount')
             ];  
 
 
@@ -2371,7 +2426,9 @@ $scope.showSchoolPackLabelDateSet = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
+            schoolSSFDate: val.SSF_date,
             schoolPacklabelDate: val.pack_label_date,
+            schoolPercentagePaid: val.percentage_paid,
           });
         });
 
@@ -2390,7 +2447,9 @@ $scope.showSchoolPackLabelDateSet = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
             DTColumnBuilder.newColumn('schoolPacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
             ];  
 
 
@@ -2443,6 +2502,8 @@ $scope.showSchoolPackLabelDateNotSet = function(e){
             schoolCity: val.city,
             schoolRegion: val.region,
             schoolSSFDate: val.SSF_date,
+            schoolPacklabelDate: val.pack_label_date,
+            schoolPercentagePaid: val.percentage_paid,
           });
         });
 
@@ -2462,6 +2523,8 @@ $scope.showSchoolPackLabelDateNotSet = function(e){
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
             DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolPacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
             ];  
 
 
@@ -2514,6 +2577,8 @@ $scope.showSchoolPackLabelDateAlert = function(e){
             schoolCity: val.city,
             schoolRegion: val.region,
             schoolSSFDate: val.SSF_date,
+            schoolPacklabelDate: val.pack_label_date,
+            schoolPercentagePaid: val.percentage_paid,
           });
         });
 
@@ -2533,6 +2598,8 @@ $scope.showSchoolPackLabelDateAlert = function(e){
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
             DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolPacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
             ];  
 
 
@@ -2584,7 +2651,11 @@ $scope.showSchoolDispatchDateSet = function(e){
             schoolName: val.schoolname,
             schoolCity: val.city,
             schoolRegion: val.region,
+            schoolSSFDate: val.SSF_date,
+            schoolPacklabelDate: val.pack_label_date,
             schoolDispatchDate: val.qb_despatch_date,
+            schoolAWBNo: val.consignmentNo,
+            schoolCourierCompany: val.courier,
           });
         });
 
@@ -2603,7 +2674,11 @@ $scope.showSchoolDispatchDateSet = function(e){
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolPacklabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
             DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            DTColumnBuilder.newColumn('schoolAWBNo').withTitle('AWB No.').withOption('title','AWB No.'),
+            DTColumnBuilder.newColumn('schoolCourierCompany').withTitle('Courier Company').withOption('title','Courier Company'),
             ];  
 
 
@@ -2798,6 +2873,7 @@ $scope.showSchoolDeilveryDateSet = function(e){
             schoolCity: val.city,
             schoolRegion: val.region,
             schoolDeliveryDate: val.qb_delivery_date,
+            schoolDeliveryStatus: val.qb_delivery_status,
           });
         });
 
@@ -2817,6 +2893,7 @@ $scope.showSchoolDeilveryDateSet = function(e){
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
             DTColumnBuilder.newColumn('schoolDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+            DTColumnBuilder.newColumn('schoolDeliveryStatus').withTitle('Delivery Status').withOption('title','Delivery Status'),
             ];  
 
 

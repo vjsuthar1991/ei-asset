@@ -374,10 +374,9 @@ class Vendor extends CI_Controller {
 							$message .= '<br><br>';
 							$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
 							$message .= '<br><br>';
-							$message .= 'With Best Wishes and Warm Regards,</n>The ASSET Team';
+							$message .= 'With Best Wishes and Warm Regards,</br>The ASSET Team';
 							$message .= '<br><br>';
-							$message .= '<div style="font-weight:bold;text-align:center;">| B - Big Box | SB - Small Box | C - Green Cover |</div>';
-							$message .= '<br><br>';
+							
 
 							$courierCompanyDetails = $this->vendors->courierCompanyDetails($value['R'],$value['H'],$value['D']);
 							
