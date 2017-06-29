@@ -185,6 +185,22 @@ class Vendors extends CI_Model{
                 $this->db->update($this->schoolProcessTracking,array('qb_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
                 $this->db->update($this->schoolstatusTbl,array('despatch_date' => date('Y-m-d',strtotime($despatchDate))));
                 
+                $this->db->select('srno');
+                $this->db->from($this->courierDispatchDetails);
+                $this->db->where('schoolCode',$schoolCode);
+                $this->db->where('test_edition',$edition[0]->test_edition);
+                $query = $this->db->get();
+                $check2 = $query->result();
+                // echo '<pre>';
+                // print_r($check2);
+                // echo count($check2);
+                // die;
+                
+                if(count($check2) == 0){
+
+                    $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'QB Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
+                 
+                }
                 return 1;        
             }
             else {
@@ -200,25 +216,11 @@ class Vendors extends CI_Model{
             }
             
             
-            $this->db->select('srno');
-            $this->db->from($this->courierDispatchDetails);
-            $this->db->where('schoolCode',$schoolCode);
-            $this->db->where('test_edition',$edition[0]->test_edition);
-            $query = $this->db->get();
-            $check2 = $query->result();
-            // echo '<pre>';
-            // print_r($check2);
-            // echo count($check2);
-            // die;
             
-            if(count($check2) == 0){
-
-                $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'QB Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
-             
-            }
 
         }
         elseif($contentType == "Analysis"){
+            die($contentType);
 
             $this->db->select('analysis_despatch_date,analysis_delivery_date');
             $this->db->from($this->schoolProcessTracking);
@@ -238,6 +240,19 @@ class Vendors extends CI_Model{
 
                 $this->db->update($this->schoolProcessTracking,array('analysis_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));
             
+                $this->db->select('srno');
+                $this->db->from($this->courierDispatchDetails);
+                $this->db->where('schoolCode',$schoolCode);
+                $this->db->where('test_edition',$edition[0]->test_edition);
+                $query = $this->db->get();
+                $check = $query->result();
+
+                if(count($check) == 0){
+
+                    $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'Analysis Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
+
+                }
+
                 return 1;
             }
 
@@ -249,18 +264,7 @@ class Vendors extends CI_Model{
                 }
             }
 
-            $this->db->select('srno');
-            $this->db->from($this->courierDispatchDetails);
-            $this->db->where('schoolCode',$schoolCode);
-            $this->db->where('test_edition',$edition[0]->test_edition);
-            $query = $this->db->get();
-            $check = $query->result();
-
-            if(count($check) == 0){
-
-                $this->db->insert($this->courierDispatchDetails,array('department' => 'Logistics','subCategory' => 'Analysis Dispatch','courierTo' => 'School','courier' => $courierCompany,'mode' => $mode,'dispatchDate' => date('Y-m-d',strtotime($despatchDate)),'material' => $material,'weight' => $weight,'partyName' => $schoolName,'schoolCode' => $schoolCode,'test_edition' => $edition[0]->test_edition,'city' => $city,'contactNo' => $contactNo,'consignmentNo' => $consignmentNumber,'comment' => $remark,'addedDate' => date('Y-m-d'),'addedBy' => 'Vendor'));
-
-            }
+            
         }
         
     }
@@ -272,6 +276,49 @@ class Vendors extends CI_Model{
         $this->db->where('schoolno',$schoolCode);
         $query = $this->db->get();
         return $query->result_array();
+
+    }
+
+    function checkVendorPassword($data){
+
+        $this->db->select('vendor_id,vendor_contact_person_1_email');
+        $this->db->from($this->vendorTbl);
+        $this->db->where('vendor_password',$data['vendor_old_password']);
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function updatePassword($data,$vendorId){
+
+        $this->db->where('vendor_id',$vendorId);
+        $this->db->update($this->vendorTbl,array('vendor_password' => $data['vendor_new_password']));
+        return $vendorId;
+    }
+
+    function updatePasswordFlag($vendorId,$flag,$password){
+
+        $this->db->where('vendor_id',$vendorId);
+        $this->db->update($this->vendorTbl,array('vendor_password_flag' => $flag,'vendor_update_password' => $password));
+        return $vendorId;
+
+    }
+
+    function checkVendorPasswordResetAuth($vendorId){
+
+        $this->db->select('vendor_id,vendor_update_password,vendor_password_flag');
+        $this->db->from($this->vendorTbl);
+        $this->db->where('vendor_id',$vendorId);
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function updatePasswordFlagWithPassword($vendorId,$flag,$password){
+
+        $this->db->where('vendor_id',$vendorId);
+        $this->db->update($this->vendorTbl,array('vendor_password_flag' => $flag,'vendor_password' => $password));
+        return $vendorId;
 
     }
 

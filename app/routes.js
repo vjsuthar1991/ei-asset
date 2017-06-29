@@ -2,6 +2,8 @@
 var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination','oc.lazyLoad','datatables']);
 
 app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$route) {
+  
+
   var username = $('#loginusername').val();
   var data = {username:username};
   data = JSON.stringify(data);
@@ -33,6 +35,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
               
             }
           });
+    
 
    $rootScope.$on('$viewContentLoaded', function() {
       $templateCache.removeAll();
@@ -41,14 +44,17 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
 
             
+            $('#vendor_userdescname span').html($('#vendorloginname').val());
+            
             //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            //checkCookie();
+            checkCookie();
 
             function checkCookie() {
                       var vendor = getCookie("vendor_id");
                       var vendor_auth = getCookie("vendor_authtoken");
 
                       if (vendor != "") {
+
                           // redirect to login page if not logged in and trying to access a restricted page
                           
                           var restrictedPage = $.inArray($location.path(), ['/dashboard','/create_vendor','/vendor_list','/edit_vendor','/packing_slips_list','/generate_packing_slips']) !== -1;
@@ -60,7 +66,7 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                           }
                           else{
                             if($location.path() == '/logout'){
-                                
+
                                 var data = {vendor_authtoken:vendor_auth};
                                 data = JSON.stringify(data);
 
@@ -81,22 +87,21 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                                 document.cookie = "vendor_authtoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                                 window.location = './vendor-login';
 
-
                             }
 
 
-                           
-                            //$location.path('/vendor_list');
-                          
                           }
 
                       } else {
-                         $location.path('/vendor-login');$route.reload();
-                         // user = prompt("Please enter your name:","");
-                         // if (user != "" && user != null) {
-                             
-                         //     //setCookie("username", user, 30);
-                         // }
+
+                         var loginuseradmin = getCookie("loginusername");
+
+                         if(loginuseradmin == ''){
+
+                            $location.path('/vendor-login');$route.reload();
+
+                          }
+
                       }
                   }
 
@@ -248,6 +253,7 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               controller: 'DashboardPenAndPaperController',
             })
             .when('/dashboard-pppretest',{
+              cache: false,
               templateUrl: 'views/dashboard-pppretest.html',
               controller: 'DashboardPenAndPaperPreTestController',
               resolve: {
@@ -261,6 +267,16 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                         }]);
                     }]
                 }
+            })
+            .when('/school-order-tracking',{
+              cache: false,
+              templateUrl: 'views/school-order-tracking.html',
+              controller: 'SchoolOrderTrackingController',
+            })
+            .when('/change-password',{
+              cache: false,
+              templateUrl: 'views/vendor-portal/change-password.html',
+              controller: 'VendorChangePasswordController',
             });
 
 

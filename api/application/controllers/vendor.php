@@ -370,7 +370,7 @@ class Vendor extends CI_Controller {
 							$message .= 'In case of any discrepancy regarding Question Papers/ Test Material, may we request the concerned person to inform us for expeditious corrective action on the e-mail - <a href="mailto:jignasha.mistry@ei-india.com">jignasha.mistry@ei-india.com</a> or <a href="mailto:mitul.patel@ei-india.com">mitul.patel@ei-india.com</a> or call us on toll free no. – 1800 102 8885.';
 							$message .= '<br><br>';
 							$message .= 'The dispatch details are mentioned below for your kind reference.';
-							$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.$value['Q'].'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
+							$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.date('d-m-Y',strtotime($value['Q'])).'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
 							$message .= '<br><br>';
 							$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
 							$message .= '<br><br>';
@@ -479,5 +479,130 @@ class Vendor extends CI_Controller {
 	      $this->email->clear(TRUE);
 
 	    }
+
+	public function setemailVendor($vendorEmailId,$subject,$message)
+
+        {
+        	
+        	$email = $vendorEmailId;
+			$subject = $subject;
+			$message = $message;
+			$this->sendEmailVendor($email,$subject,$message);
+		}
+
+		
+
+	public function sendEmailVendor($email,$subject,$message)
+	    
+	    {
+	    	
+	    $config = Array(
+	      'protocol' => 'smtp',
+	      'smtp_host' => 'ssl://smtp.googlemail.com',
+	      'smtp_port' => 465,
+	      'smtp_user' => 'suthar67@gmail.com', 
+	      'smtp_pass' => 'sumansuthar1991', 
+	      'mailtype' => 'html',
+	      'charset' => 'iso-8859-1',
+	      'wordwrap' => TRUE
+	    );
+
+
+
+	      $this->load->library('email', $config);
+	      $this->email->set_newline("\r\n");
+	      $this->email->from('abc@gmail.com');
+	      $this->email->to($email);
+	      $this->email->subject($subject);
+	      $this->email->message($message);
+	      
+	      if($this->email->send())
+	         {
+	          //echo json_encode(array('status' => 'success','message'=> 'Despatch Details Sent Successfully..!!'));
+	          //unlink($file1);
+	          //unlink($file2);
+	          
+	         }
+	      else
+	        {
+	         //show_error($this->email->print_debugger());
+	         //echo json_encode(array('status' => 'error','message'=> 'Error In Sending Despatch Details Try Again..!!'));
+	        }
+	      $this->email->clear(TRUE);
+
+	    }
+    
+
+	public function vendor_changepassword(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['checkpassword'] = $this->vendors->checkVendorPassword($inputRequest);
+
+		if(count($data['checkpassword']) > 0){
+			
+			$update = $this->vendors->updatePasswordFlag($data['checkpassword'][0]['vendor_id'],1,$inputRequest['vendor_new_password']);
+
+			$ci = get_instance();
+
+			$subject = 'Password Reset Link';
+
+			$message = 'Click on the below link to change password';
+
+			$message .= '<br><a href="'.base_url().'vendor/resetVendorPassword?vendor_id='.$data['checkpassword'][0]['vendor_id'].'">Click Here</a>';
+
+			$ci->setemailVendor($data['checkpassword'][0]['vendor_contact_person_1_email'],$subject,$message);
+
+			if($update != ''){
+				echo json_encode(array('status' => 'success','message' => 'Check Your Email-ID To Update Password Successfully!!'));
+
+			}
+			else{
+				echo json_encode(array('status' => 'error','message' => 'There was some error please try again!!'));
+			}
+		}	
+		else{
+			echo json_encode(array('status' => 'error','message' => 'Entered Old Password Is Not Correct!!'));
+		}	
+	}
+
+	public function resetVendorPassword(){
+
+		$vendorId = $_GET['vendor_id'];
+
+		$data['checkauth'] = $this->vendors->checkVendorPasswordResetAuth($vendorId);
+
+		if($data['checkauth'][0]['vendor_password_flag'] == 1){
+
+			$updatePassword = $this->vendors->updatePasswordFlagWithPassword($data['checkauth'][0]['vendor_id'],0,$data['checkauth'][0]['vendor_update_password']);
+
+			unset($_COOKIE['vendor_id']);
+			unset($_COOKIE['vendor_authtoken']);
+
+			setcookie('vendor_id', null, -1, '/');
+			setcookie('vendor_authtoken', null, -1, '/');
+
+			echo 'Your Password Updated Successfully!!';
+			echo '<br>';
+			echo 'Please Click <a href="'.str_replace('/api','',base_url()).'vendor-login">Here</a> to Login Again';
+			die;
+		
+		}
+		else{
+			
+			unset($_COOKIE['vendor_id']);
+			unset($_COOKIE['vendor_authtoken']);
+
+			setcookie('vendor_id', null, -1, '/');
+			setcookie('vendor_authtoken', null, -1, '/');
+
+			echo 'Your Password Cannot be Updated, This LInk Is Already Used!!';
+			echo '<br>';
+			echo 'Please Click <a href="'.str_replace('/api','',base_url()).'vendor-login">Here</a> to Login Again';
+
+			die;
+		}
+
+	}    
 
 }

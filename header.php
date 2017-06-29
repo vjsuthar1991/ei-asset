@@ -29,6 +29,8 @@
                   <li><a href="packing_slips_list">Packing Slip List</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="qb_mis_list">Test Material Status</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="school-order-tracking">School Order Tracking</a></li>
                 </ul>
               </li>
               
@@ -73,7 +75,7 @@
                       return "";
                   }
                   ;
-          $('#usernamespan').text(getCookie('loginusername'));
+          $('#usernamespan').text('Welcome! '+getCookie('loginusername'));
 
         </script>
       <!-- end: Header -->

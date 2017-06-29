@@ -90,6 +90,36 @@ p.quote{
     vertical-align: -.4em;
   }
 
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+.panel-heading a.collapsed:after {
+    content:"\e080";
+}
+
+span.line {
+    height: 5px;
+    width: 150px;
+    background-color:#F5998E;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+} 
+span.vertical-line {
+    height: 129px;
+    width: 5px;
+    background-color: #F5998E;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: 0px;
+} 
+
 
 .content-header .content-header-tab .active a{
   background: none !important;

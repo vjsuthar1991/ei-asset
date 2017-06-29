@@ -57,9 +57,6 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
                 $scope.vendors = response.vendors;
 
-                
-
-
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.packingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
@@ -982,8 +979,8 @@ app.controller('VendorLoginController', function($scope,$http,$routeParams,$loca
 
                 if(response.authtoken != ""){
 
-                  $('#vendor_userdescname').text(response.data[0].vendor_name);
-
+                  $('#vendorloginname').val('Welcome!! '+response.data[0].vendor_name);
+                  
                   function setCookie(cname,cvalue,exdays) {
                       var d = new Date();
                       d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -1026,7 +1023,7 @@ app.controller('VendorLoginController', function($scope,$http,$routeParams,$loca
 
                   $('#mimin').removeClass('form-signin-wrapper');
 
-                  $location.path('/vendor-dashboard');$scope.$apply();$route.reload();
+                  $location.path('/vendor-dashboard');$scope.$apply();
 
 
                 }
@@ -3060,10 +3057,360 @@ $scope.showSchoolDeilveryDateAlert = function(e){
 
 });
 
-// app.controller('AdminLogoutController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
+app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
+
+ 
+  $(window).resize(function() {
+
+  $('.line').each(function(i, obj) {
+
+      var linewidth = Math.abs($('#foo').offset().left - $('#bar').offset().left); 
+      
+          if(i == 4 || i == 5){
+
+             linewidth = 0;
+
+             $(obj).css('width',linewidth);
+             //$('.vertical-line').css('left',linewidth - 6);
+          }
+          else{
+
+             $(obj).css('width',linewidth);
+          
+          }
+    });
+
+    
+
+    $('.tabtitlecustom').each(function(i, obj) {
+      
+      var window_w = document.body.clientWidth;
+      if(window_w <= 768 && window_w > 585 ){
+
+        $(obj).css('font-size','11px');
+      }
+      else if(window_w < 1024){
+        
+        $(obj).css('font-size','13px');
+      }
+      else {
+       $(obj).css('font-size','15px'); 
+      }
+      
+    });
+
+
+
+
+  });
 
   
 
-  
+  $scope.schoolList = [];
+  $scope.rounds = [];
+  $scope.roundSelected = '';
 
-// });
+    $.ajax({
+    url: './api/schoolTracking/loadSchoolTrackingFilters',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        $scope.schoolList = response.school_registered;
+
+        $scope.rounds = response.rounds;
+
+        $scope.roundSelected = response.round_selected;
+
+        var schoolname = [];
+
+        jQuery.each( response.school_registered, function( i, val ) {
+          schoolname.push(val.schoolname+'-'+val.school_code);
+        });
+
+        
+        $( "#school_tracking_schoolname" ).autocomplete({
+          source: schoolname
+        });
+
+        
+      }
+      
+    }
+  });
+
+  $scope.filterschooltracking = function(e){
+
+    $scope.schoolName = '';
+    $scope.paymentDetails = [];
+    $scope.processTracking = [];
+    $scope.courierDetails = [];
+
+
+    var round =  $('#school_tracking_round').val();
+    var school = $('#school_tracking_schoolname').val();
+    var arr = school.split('-');
+    var stringLength = arr.length - 1;
+    var schoolCode = arr[stringLength];
+
+    var data = {round: round,school:schoolCode};
+    data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/schoolTracking/loadSchoolTrackingSchoolDetails',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        $scope.schoolCode = schoolCode;
+
+        $scope.testEdition = round;
+
+        $scope.schoolName = response.schoolName;
+
+        $scope.paymentDetails = response.paymentDetails[0];
+
+        $scope.processTracking = response.processTracking[0];
+
+        $scope.courierDetails = response.courierDetails[0];
+
+        $scope.finalBreakupFlag = response.finalbreakupflag;
+
+        if($scope.finalBreakupFlag == 1){
+          $scope.finalBreakupColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.finalBreakupColor = '#f1685e';
+        }
+
+        $scope.paymentflag = response.paymentflag;
+
+        if($scope.paymentflag == 1){
+          $scope.paymentColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.paymentColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+          if(response.processTracking[0].packlabel_date != ''){
+            $scope.packLabelColor = 'rgb(34, 194, 34)';
+          }
+          else{
+            $scope.packLabelColor = '#f1685e';
+          }
+
+        }
+        else{
+          $scope.packLabelColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+        if(response.processTracking[0].qb_despatch_date != ''){
+          $scope.qbDispatchColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.qbDispatchColor = '#f1685e';
+        }
+        }
+        else {
+          $scope.qbDispatchColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+        if(response.processTracking[0].qb_delivery_date != ''){
+          $scope.qbDeliveryColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.qbDeliveryColor = '#f1685e';
+        }
+      }
+      else{
+        $scope.qbDeliveryColor = '#f1685e';
+      }
+
+        $('.panel-body').removeAttr( 'style' );
+
+        $('.tabtitlecustom').each(function(i, obj) {
+      
+      var window_w = document.body.clientWidth;
+      
+      if(window_w <= 768 && window_w > 585 ){
+
+        $(obj).css('font-size','11px');
+      }
+      else if(window_w < 1024){
+        
+        $(obj).css('font-size','13px');
+      }
+      else {
+       $(obj).css('font-size','15px'); 
+      }
+      
+    });
+
+    setTimeout(function(){
+
+      $('.line').each(function(i, obj) {
+
+      var linewidth = Math.abs($('#foo').offset().left - $('#bar').offset().left); 
+
+          if(i == 4 || i == 5){
+
+             linewidth = 0;
+
+             $(obj).css('width',linewidth);
+             //$('.vertical-line').css('left',linewidth - 6);
+          }
+          else{
+
+             $(obj).css('width',linewidth);
+
+          
+          }
+      });
+
+    },1);
+
+      
+
+        
+      }
+      
+    }
+  });
+  };  
+
+  
+});
+
+app.controller('VendorChangePasswordController', function($scope,$http,$ocLazyLoad) {
+
+  $("#vendorchangepasswordform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+    $(element.parent("div").addClass("form-animate-error"));
+    error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+    $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      
+      vendor_old_password: { required: true },
+      vendor_new_password: { required: true,minlength: 5,equalTo: "#vendor_confirm_password" },
+      
+    },
+    messages: {
+    }
+    });
+
+  $(document).on('submit','#vendorchangepasswordform',function(event){
+
+    // code
+          jQuery('#changepasswordbtn').attr('disabled','disabled');
+          event.stopImmediatePropagation();
+
+          //disable the default form submission
+          event.preventDefault();
+          var jsonData = {};
+
+
+          //grab all form data  
+          var formData = jQuery('form#vendorchangepasswordform').serializeArray();
+          jQuery.each(formData, function() {
+
+           if (jsonData[this.name]) {
+
+             if (!jsonData[this.name].push) {
+
+               jsonData[this.name] = [jsonData[this.name]];
+
+             }
+
+             jsonData[this.name].push(this.value || '');
+           } else {
+
+             jsonData[this.name] = this.value || '';
+
+           }
+
+
+         });
+
+          jsonData = JSON.stringify(jsonData);
+
+          //console.log(JSON.parse(JSON.stringify(jsonData)));  
+          $.ajax({
+            url: './api/vendor/vendor_changepassword',
+            type: 'POST',
+            dataType : 'json', // data type
+            data: jsonData,
+            async: true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (returndata) {
+              var response = JSON.parse(JSON.stringify(returndata));
+
+              if(response.status == "success"){
+
+
+                  if($('#change_password_message_box').hasClass('alert-danger')){
+                    $('#change_password_message_box').removeClass('alert-danger');
+                  }
+                  $('#change_password_message_box').addClass('alert-success');
+                  $('#change_password_message_box').text('');
+                  $('#change_password_message_box').append(response.message);
+                  $('#change_password_message_box').removeClass('hide');
+                  $(window).scrollTop($('#change_password_message_box').offset().top);
+                  $('#vendorchangepasswordform')[0].reset();
+                  setTimeout(function(){ $('#change_password_message_box').addClass('hide');jQuery('#changepasswordbtn').removeAttr('disabled'); }, 3000);
+
+
+              }
+              else{
+
+                  $('#vendorchangepasswordform')[0].reset();
+
+                  if($('#change_password_message_box').hasClass('alert-success')){
+                    $('#change_password_message_box').removeClass('alert-success');
+                  }
+                  $('#change_password_message_box').addClass('alert-danger');
+                  $('#change_password_message_box').text('');
+                  $('#change_password_message_box').append(response.message);
+                  $('#change_password_message_box').removeClass('hide');
+                  $(window).scrollTop($('#change_password_message_box').offset().top);
+                  setTimeout(function(){ $('#change_password_message_box').addClass('hide'); jQuery('#changepasswordbtn').removeAttr('disabled');}, 3000);
+
+              }
+          }
+
+      });
+
+      return false;
+
+    });
+
+});

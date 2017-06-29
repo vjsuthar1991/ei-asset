@@ -1,0 +1,260 @@
+<div data-ng-include=" 'header.php' "></div>
+<!-- start: Content -->
+<div id="content">
+      
+  <div class="col-md-12" style="padding:20px;">
+        <div class="col-md-12" style="background-color: #FFF;padding:15px;">
+
+                              
+          <div class="col-md-12 card-wrap padding-0" style="position: relative;">
+              <div class="navbar-default col-md-12" style="border: 5px solid #e7e7e7;padding: 10px 0px;width: 100%;">
+                
+                <div class="col-md-3">
+                  <div class="" >
+                    <select tabindex="2" id="school_tracking_round" name="school_tracking_round" class="form-control">
+                      <option value="">Select Round</option>
+                      <option ng-selected="round.test_edition == roundSelected" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.description}}-{{round.test_edition}}</option>
+                    </select>
+                    <span class="bar"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-animate-text" style="margin:0px">
+                      <input tabindex="3" type="text" style="padding:5px 10px 5px 5px;" class="form-text" id="school_tracking_schoolname" name="school_tracking_schoolname" placeholder="Enter School Name" >
+                      <span class="bar"></span>
+                  </div>
+                </div>
+                <div class="col-md-3" tabindex="4">
+                   <button id="searchfilterschooltracking" ng-click="filterschooltracking()" type="button" class="btn ripple btn-raised btn-info">
+                                        <div>
+                                          <span>Search</span>
+                                        </div>
+                                      </button>
+                </div>
+              </div>
+              <div class="clear" style="clear:both;"></div>
+
+              <div class="panel-body" style="visibility: hidden;">
+              <div class="col-md-12">
+                <h3 class="animated fadeInLeft text-center">{{schoolName}}</h3>
+                <div class="animated fadeInLeft">
+                  
+                  <div class="col-md-12 padding-0 responsive-table" style="margin-top: 20px;">
+                    <h4 style="text-align:center;">SSF Details</h4>
+                    <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="font-size:15px;">
+
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#school-details">School Details</a></th>
+                        <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#order-details">Order Details</a></th>
+                        <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#rates">Rates</a></th>
+                        <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#student-breakup">Student Breakup</a></th>
+                        <th style="text-align:center;"><a target="_blank" href="">Content List</a></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                    </tbody>
+                  </table>
+
+                  </div>
+
+                  <div class="col-md-12 padding-0 responsive-table" style="margin-top: 20px;">
+                    <h4 style="text-align:center;">Payment Details</h4>
+                    <table class="table table-striped table-bordered text-center" width="100%" cellspacing="0" style="font-size:15px;">
+
+                    <thead>
+                      <tr>
+                        <th style="text-align:center;">Amount Payable</th>
+                        <th style="text-align:center;">Amount Paid</th>
+                        <th style="text-align:center;">(%) Paid</th>
+                        <th style="text-align:center;">Amount Pending</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{paymentDetails.amount_payable}}</td>
+                        <td>{{paymentDetails.paid}}</td>
+                        <td>{{paymentDetails.percentage_paid}}</td>
+                        <td>{{paymentDetails.difference}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  </div>
+
+                  <div class="col-md-12 padding-0">
+                    <h3 style="text-align:center;text-decoration:underline;">Pre Test</h3>
+                    <div class="col-md-12 padding-0" style="margin-bottom: 30px;">
+                      <ul class="nav nav-tabs nav-tabs-v5" style="background:none;border:none;" id="tabs-demo6">
+                        <li id="foo" class="text-center" style="margin-bottom: 30px;">
+                          <div class="tabtitlecustom">Final BreakUp Recieved</div>
+                         <a href="javascript:void(0)" data-toggle="tab" title="welcome" style="width:85px;height:85px;">
+                          <span class="round-tabs" style="background-color:{{finalBreakupColor}};color: white;border: 2px solid {{finalBreakupColor}};width:85px;height:85px;line-height: 80px;">
+                            <i class="glyphicon icon-docs"></i>
+                          </span> 
+                          <span class="line" style="background-color:{{finalBreakupColor}};"></span>
+                        </a>
+                        
+                      </li>
+
+                      <li id="bar" class="text-center" style="margin-bottom: 30px;">
+                        <div class="tabtitlecustom">Payment Recieved</div>
+                        <a href="javascript:void(0)" data-toggle="tab" title="profile" style="width:85px;height:85px;">
+                         <span class="round-tabs" style="background-color:{{paymentColor}};color: white;border: 2px solid {{paymentColor}};width:85px;height:85px;line-height: 80px;">
+                           <i class="glyphicon fa fa-inr"></i>
+                         </span> 
+                         <span class="line" style="background-color:{{paymentColor}};"></span>
+                       </a>
+                       
+                     </li>
+
+                     <li class="text-center" style="margin-bottom: 30px;">
+                      <div class="tabtitlecustom">Given For Packing</div>
+                      <a href="javascript:void(0)" data-toggle="tab" title="" style="width:85px;height:85px;">
+                       <span class="round-tabs" style="background-color:{{packLabelColor}};color: white;border: 2px solid {{packLabelColor}};width:85px;height:85px;line-height: 80px;">
+                        <i class="glyphicon glyphicon-gift"></i>
+                      </span> 
+                      <span class="line" style="background-color:{{packLabelColor}};"></span>
+                    </a>
+                    
+
+                    </li>
+
+                    <li class="text-center" style="margin-bottom: 30px;">
+                      <div class="tabtitlecustom">Given For Dispatch</div>
+                      <a href="javascript:void(0)" data-toggle="tab" title="" style="width:85px;height:85px;">
+                       <span class="round-tabs" style="background-color:{{qbDispatchColor}};color: white;border: 2px solid {{qbDispatchColor}};width:85px;height:85px;line-height: 80px;">
+                         <i class="glyphicon fa fa-truck"></i>
+                       </span> 
+                       <span class="line" style="background-color:{{qbDispatchColor}};"></span>
+                     </a>
+                     
+                   </li>
+
+                   <li class="text-center" style="margin-bottom:30px;">
+                    <div class="tabtitlecustom">Delivery Status</div>
+                    <a href="javascript:void(0)" data-toggle="tab" title="completed" style="width:85px;height:85px;">
+                     <span class="round-tabs" style="background-color:{{qbDeliveryColor}};color: white;border: 2px solid {{qbDeliveryColor}};width:85px;height:85px;line-height: 80px;">
+                      <i class="glyphicon glyphicon-ok"></i>
+                    </span> 
+                    <span class="line" style="background-color:{{qbDeliveryColor}};"></span>
+                  </a>
+                    
+                  </li> 
+                   <!-- <li class="text-center" style="margin-bottom: 30px;">
+                      <div class="tabtitlecustom">Given For Dispatch</div>
+                      <a href="#tabs-demo6-area4" data-toggle="tab" title="blah blah">
+                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                         <i class="glyphicon fa fa-plane"></i>
+                       </span> 
+                       <span class="line"></span>
+                       <span class="vertical-line"></span>
+                     </a>
+                     
+                   </li>
+
+                   <li class="text-center" style="float: right;margin-bottom:30px;">
+                      
+                      <a href="#tabs-demo6-area4" data-toggle="tab" title="blah blah">
+                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                         <i class="glyphicon fa fa-plane"></i>
+                       </span> 
+                       <span class="line"></span>
+                     </a>
+                     <div class="tabtitlecustom">Given For Dispatch</div>
+                   </li>
+
+                   <li class="text-center" style="float: right;margin-bottom:30px;">
+                    
+                    <a href="#tabs-demo6-area5" data-toggle="tab" title="completed">
+                     <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                      <i class="glyphicon glyphicon-ok"></i>
+                    </span> 
+                    <span class="line"></span>
+                  </a>
+                    <div class="tabtitlecustom">Delivery Status</div>
+                  </li> -->
+                </ul>
+                    </div>
+
+                  <div class="col-md-12 padding-0 responsive-table">  
+                    <h4 style="text-align:center;">Test Material Status</h4>
+                    <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="font-size:15px;">
+
+                    <thead>
+                      <tr>
+                        <th>Pack Label Date</th>
+                        <th>Lot No.</th>
+                        <th>Dispatch Date</th>
+                        <th>Delivery Date</th>
+                        <th>Received By</th>
+                        <th>Delivery Status</th>
+                        <th>CST Confirmation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{processTracking.packlabel_date}}</td>
+                        <td>{{processTracking.lot_no}}</td>
+                        <td>{{processTracking.qb_despatch_date}}</td>
+                        <td>{{processTracking.qb_delivery_date}}</td>
+                        <td>{{processTracking.qb_reciever_name}}</td>
+                        <td>{{processTracking.qb_delivery_status}}</td>
+                        <td>{{processTracking.school_confirm_date}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  </div>
+                  </div>
+
+                  <div class="col-md-12 padding-0 responsive-table" style="margin-top: 20px;">
+                    <h4 style="text-align:center;">Courier Details</h4>
+                    <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="font-size:15px;">
+
+                    <thead>
+                      <tr>
+                        <th>Courier Company</th>
+                        <th>AWB No.</th>
+                        <th>Mode</th>
+                        <th>No. Of Box</th>
+                        <th>Weight</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{courierDetails.courier}}</td>
+                        <td>{{courierDetails.consignmentNo}}</td>
+                        <td>{{courierDetails.mode}}</td>
+                        <td>{{courierDetails.material}}</td>
+                        <td>{{courierDetails.weight}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+              <div class="col-md-12" style="width: 100%;text-align: center;position: relative;margin-top: 30px;min-height:120px;">
+                
+              </div>
+
+            <div class="clear" style="clear:both;"></div>
+
+          </div>
+
+            <div class="clear" style="clear:both;"></div>
+          </div>
+        </div>
+                      
+  </div>
+</div>
+
+</div>
+<!-- start: Mobile -->
+ <!--  <div data-ng-include=" 'mobile_menu.html' "></div> -->
+<!-- end: Mobile -->

@@ -30,9 +30,9 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
   <script src="asset/js/plugins/datatables.bootstrap.min.js"></script>
 
   <!-- start: Css -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" type="text/css" href="asset/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
-
+  
   <!-- plugins -->
   <link rel="stylesheet" type="text/css" href="asset/css/plugins/font-awesome.min.css"/>
   <link rel="stylesheet" type="text/css" href="asset/css/ngReactGrid.css"/>
@@ -68,7 +68,8 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
 <!-- start: Header -->
 <!-- <div data-ng-include=" 'header.html' "></div> -->
 <!-- end: Header -->
-<input type="hidden" name="loginusername" id="loginusername" value="<?php echo $_SESSION['username'];?>">
+<input type="hidden" name="loginusername" id="loginusername" value="<?php echo @$_SESSION['username'];?>">
+<input type="hidden" name="vendorloginname" id="vendorloginname" value="">
           <ng-view></ng-view>
           <!-- start: Mobile -->
         <!-- <div data-ng-include=" 'mobile_menu.html' "></div> -->
@@ -114,7 +115,9 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
        <!-- end: Mobile -->
           <!-- start: Javascript -->
    <footer>
+
     <script src="asset/js/jquery.ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="asset/js/bootstrap.min.js"></script>
     <script src="asset/js/plugins/moment.min.js"></script>
     <script src="asset/js/plugins/jquery.nicescroll.js"></script>
