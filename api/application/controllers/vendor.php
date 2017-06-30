@@ -207,6 +207,7 @@ class Vendor extends CI_Controller {
 
 	public function qb_mis(){
 
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
 		$data['rounds'] = $this->vendors->getRounds();
 		echo json_encode(array('status' => 'success','rounds' => $data['rounds']));
 	}
@@ -447,8 +448,8 @@ class Vendor extends CI_Controller {
 	      'protocol' => 'smtp',
 	      'smtp_host' => 'ssl://smtp.googlemail.com',
 	      'smtp_port' => 465,
-	      'smtp_user' => 'suthar67@gmail.com', 
-	      'smtp_pass' => 'sumansuthar1991', 
+	      'smtp_user' => 'billingdesk@ei-india.com', 
+	      'smtp_pass' => 'billing123', 
 	      'mailtype' => 'html',
 	      'charset' => 'iso-8859-1',
 	      'wordwrap' => TRUE
@@ -458,7 +459,7 @@ class Vendor extends CI_Controller {
 
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
-	      $this->email->from('abc@gmail.com');
+	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
@@ -500,8 +501,8 @@ class Vendor extends CI_Controller {
 	      'protocol' => 'smtp',
 	      'smtp_host' => 'ssl://smtp.googlemail.com',
 	      'smtp_port' => 465,
-	      'smtp_user' => 'suthar67@gmail.com', 
-	      'smtp_pass' => 'sumansuthar1991', 
+	      'smtp_user' => 'billingdesk@ei-india.com', 
+	      'smtp_pass' => 'billing123', 
 	      'mailtype' => 'html',
 	      'charset' => 'iso-8859-1',
 	      'wordwrap' => TRUE
@@ -511,7 +512,7 @@ class Vendor extends CI_Controller {
 
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
-	      $this->email->from('abc@gmail.com');
+	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
 	      $this->email->subject($subject);
 	      $this->email->message($message);

@@ -70,6 +70,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
 <!-- end: Header -->
 <input type="hidden" name="loginusername" id="loginusername" value="<?php echo @$_SESSION['username'];?>">
 <input type="hidden" name="vendorloginname" id="vendorloginname" value="">
+          <div class="page-loading"></div>
           <ng-view></ng-view>
           <!-- start: Mobile -->
         <!-- <div data-ng-include=" 'mobile_menu.html' "></div> -->

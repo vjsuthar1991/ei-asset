@@ -3,7 +3,6 @@ var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagi
 
 app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$route) {
   
-
   var username = $('#loginusername').val();
   var data = {username:username};
   data = JSON.stringify(data);
@@ -25,12 +24,9 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                 d.setTime(d.getTime() + (1*24*60*60*1000));
                 var expires = "expires=" + d.toGMTString();
                 document.cookie = "loginusername=" + response.fullname[0]['fullname'] + ";" + expires + ";path=/";
-
-              }
-              else 
-              {
-                  
-                  
+                document.cookie = "loginuserregion=" + response.fullname[0]['region'] + ";" + expires + ";path=/";
+                document.cookie = "loginusercategory=" + response.fullname[0]['category'] + ";" + expires + ";path=/";
+                document.cookie = "loginuserlogname=" + response.fullname[0]['name'] + ";" + expires + ";path=/";
               }
               
             }
@@ -43,7 +39,9 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
 
    $rootScope.$on('$locationChangeStart', function (event, next, current) {
 
+            $('.page-loading').show();
             
+
             $('#vendor_userdescname span').html($('#vendorloginname').val());
             
             //document.cookie = "vendor_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -140,6 +138,9 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
 
                       // return false;
                       document.cookie = "loginusername=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      document.cookie = "loginuserregion=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      document.cookie = "loginusercategory=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      document.cookie = "loginuserlogname=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                       window.location = './';
                       
                     }
@@ -156,6 +157,12 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
             //     $location.path('/login');
             // }
         });
+
+      $rootScope.$on('$locationChangeSuccess', function(event, next, current) { 
+    
+        setTimeout(function(){ $('.page-loading').hide(); },1000);
+
+      });
 
 });
 

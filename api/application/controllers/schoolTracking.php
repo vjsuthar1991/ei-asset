@@ -14,6 +14,8 @@ class Schooltracking extends CI_Controller {
 
 	function loadSchoolTrackingFilters(){
 
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
 		$data['rounds'] = $this->vendors->getRounds();
 
 		$data['round_latest'] = $this->packingslips->getLatestRound();
@@ -39,7 +41,7 @@ class Schooltracking extends CI_Controller {
 			
 		}
 
-		$data['school_registered'] = $this->schooltrackingmodel->getRegisteredSchool($round);
+		$data['school_registered'] = $this->schooltrackingmodel->getRegisteredSchool($round,$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
 
 		echo json_encode(array('status' => 'success','rounds' => $data['rounds'],'round_selected' => $round,'school_registered' => $data['school_registered'],'round_description' => $description));
 
@@ -63,6 +65,7 @@ class Schooltracking extends CI_Controller {
 
 		$data['paymentflag'] = $this->schooltrackingmodel->getPaymentStatus($inputRequest);
 
+		
 
 
 		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount']));

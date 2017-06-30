@@ -13,12 +13,35 @@ class Dashboards extends CI_Model{
         $this->schoolProcessTracking = 'school_process_tracking';
         $this->marketingTbl = 'marketing';
         $this->courierDispatchDetails = 'courier_dispatch_details';
+        $this->salesAllotmentMasterTbl = 'sales_allotment_master';
 
+    }
+
+    /*
+     * get rows from the schools_status table
+     */
+    function getZones($region){
+        $this->db->distinct();
+        $this->db->select('region');
+        $this->db->from($this->schoolsTbl);
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("region IN ('$region')");
+
+        }
+        
+        $this->db->order_by("region","asc");
+        $query = $this->db->get(); 
+        
+        return $query->result();
     }
 
     function getUserDetails($userName){
 
-        $this->db->select('fullname');
+        $this->db->select('*');
         $this->db->from($this->marketingTbl);
         $this->db->where('name',$userName);
         $query = $this->db->get();
@@ -27,14 +50,29 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getRegisteredSchool($round,$zone){
+    function getRegisteredSchool($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "ssfcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+        
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
+        
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -44,15 +82,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestSSFReceived($round,$zone){
+    function getPreTestSSFReceived($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "ssfrecievedcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.ssf_number != ''");
-         $this->db->where("t1.dynamic_flag != 1");
+        $this->db->where("t1.dynamic_flag != 1");
+        
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -62,15 +115,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestSSFPending($round,$zone){
+    function getPreTestSSFPending($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "ssfpendingcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.ssf_number = ''");
-         $this->db->where("t1.dynamic_flag != 1");
+        $this->db->where("t1.dynamic_flag != 1");
+        
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -80,33 +148,64 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestSSFAlert($round,$zone){
+    function getPreTestSSFAlert($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "ssfalertcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         $this->db->where("t1.ssf_number != ''");
-         $this->db->where("t1.dynamic_flag != 1");
+        $this->db->where("t1.dynamic_flag != 1");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
         $query = $this->db->get();
+
         return $query->result();
 
     }
 
-    function getPreTestPaymentReceived($round,$zone){
+    function getPreTestPaymentReceived($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "paymentrecievedcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
-         $this->db->where("t1.dynamic_flag != 1");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -116,15 +215,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPaymentPending($round,$zone){
+    function getPreTestPaymentPending($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "paymentpendingcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -133,16 +247,31 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPaymentAlert($round,$zone){
+    function getPreTestPaymentAlert($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "paymentalertcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number = ''");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -151,15 +280,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPackLabelDateSet($round,$zone){
+    function getPreTestPackLabelDateSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "packlabelsetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -169,15 +313,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPackLabelDateNotSet($round,$zone){
+    function getPreTestPackLabelDateNotSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "packlabelnotsetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -187,18 +346,31 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPackLabelDateAlert($round,$zone){
+    function getPreTestPackLabelDateAlert($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "packlabelalertcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
-         $this->db->where("t1.dynamic_flag != 1");
+        $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t1.pack_label_date = 0000-00-00");
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number != ''");
 
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
 
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -208,17 +380,32 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestDispacthDateSet($round,$zone){
+    function getPreTestDispacthDateSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "dispatchsetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -226,17 +413,32 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDispacthDateNotSet($round,$zone){
+    function getPreTestDispacthDateNotSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "dispatchnotsetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -244,18 +446,32 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDispacthDateAlert($round,$zone){
+    function getPreTestDispacthDateAlert($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "dispatchalertcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 7 DAY)");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
         
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
@@ -267,18 +483,33 @@ class Dashboards extends CI_Model{
     }
 
 
-    function getPreTestDeliveryDateSet($round,$zone){
+    function getPreTestDeliveryDateSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "deliverysetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+        
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -286,18 +517,33 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDeliveryDateNotSet($round,$zone){
+    function getPreTestDeliveryDateNotSet($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "deliverynotsetcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -307,14 +553,29 @@ class Dashboards extends CI_Model{
     }
 
     
-    function getRegisteredSchoolList($round,$zone){
+    function getRegisteredSchoolList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.SSF_date,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -324,15 +585,30 @@ class Dashboards extends CI_Model{
     }
 
 
-    function getPreTestSSFReceivedList($round,$zone){
+    function getPreTestSSFReceivedList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.SSF_date,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.ssf_number != ''");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -343,15 +619,30 @@ class Dashboards extends CI_Model{
     }
 
 
-    function getPreTestSSFPendingList($round,$zone){
+    function getPreTestSSFPendingList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.ssf_number = ''");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -361,16 +652,31 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestSSFAlertList($round,$zone){
+    function getPreTestSSFAlertList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
         $this->db->where("t1.ssf_number != ''");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -379,15 +685,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPaymentReceivedList($round,$zone){
+    function getPreTestPaymentReceivedList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -396,15 +717,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPaymentPendingList($round,$zone){
+    function getPreTestPaymentPendingList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 < 90 )");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -413,16 +749,31 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPaymentAlertList($round,$zone){
+    function getPreTestPaymentAlertList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number = ''");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -432,15 +783,30 @@ class Dashboards extends CI_Model{
     }
 
 
-    function getPreTestPackLabelDateSetList($round,$zone){
+    function getPreTestPackLabelDateSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.SSF_date,t1.pack_label_date,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.pack_label_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -450,15 +816,30 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPackLabelDateNotSetList($round,$zone){
+    function getPreTestPackLabelDateNotSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.SSF_date,t1.pack_label_date,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t1.pack_label_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
+
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
         }
@@ -468,11 +849,17 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestPackLabelDateAlertList($round,$zone){
+    function getPreTestPackLabelDateAlertList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.SSF_date,t1.pack_label_date,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
@@ -480,6 +867,13 @@ class Dashboards extends CI_Model{
         $this->db->where("((t1.paid / t1.amount_payable) * 100 >= 90 )");
         $this->db->where("t1.ssf_number != ''");
 
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        } 
 
         if($zone != ""){
             $this->db->where("t2.region = '$zone'");    
@@ -488,18 +882,33 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDispatchDateSetList($round,$zone){
+    function getPreTestDispatchDateSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t1.SSF_date,t1.pack_label_date,t2.qb_despatch_date,t4.consignmentNo,t4.courier');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
         $this->db->join("$this->courierDispatchDetails as t4", 't1.school_code = t4.schoolCode', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t5", 't1.school_code = t5.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t5.keyAccount = '$username' OR t5.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -509,17 +918,32 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestDispatchDateNotSetList($round,$zone){
+    function getPreTestDispatchDateNotSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.packlabel_date');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -527,18 +951,32 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDispatchDateAlertList($round,$zone){
+    function getPreTestDispatchDateAlertList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.packlabel_date');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 3 DAY)");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
         
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
@@ -549,18 +987,33 @@ class Dashboards extends CI_Model{
     }
 
 
-    function getPreTestDeliveryDateSetList($round,$zone){
+    function getPreTestDeliveryDateSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.qb_delivery_date,t2.qb_delivery_status');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date != 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -568,18 +1021,33 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDeliveryDateNotSetList($round,$zone){
+    function getPreTestDeliveryDateNotSetList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.qb_despatch_date');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -587,12 +1055,18 @@ class Dashboards extends CI_Model{
         return $query->result();
     }
 
-    function getPreTestDeliveryDateAlert($round,$zone){
+    function getPreTestDeliveryDateAlert($round,$zone,$region,$category,$username){
 
         $this->db->select('count(*) as "deliveryalertcount"');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
@@ -600,6 +1074,15 @@ class Dashboards extends CI_Model{
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 10 DAY)");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }
@@ -608,12 +1091,18 @@ class Dashboards extends CI_Model{
 
     }
 
-    function getPreTestDeliveryDateAlertList($round,$zone){
+    function getPreTestDeliveryDateAlertList($round,$zone,$region,$category,$username){
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.qb_despatch_date');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1"); 
@@ -621,6 +1110,15 @@ class Dashboards extends CI_Model{
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
         $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 7 DAY)");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+        
         if($zone != ""){
             $this->db->where("t3.region = '$zone'");    
         }

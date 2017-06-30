@@ -120,6 +120,27 @@ span.vertical-line {
     right: 0px;
 } 
 
+.page-loading {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black url(../img/spinner.gif) center center no-repeat;
+    opacity: 1;
+    z-index: 9999999999;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black url(../img/spinner.gif) center center no-repeat;
+    opacity: 1;
+    z-index: 9999999999;
+
+}
+
 
 .content-header .content-header-tab .active a{
   background: none !important;

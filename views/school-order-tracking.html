@@ -49,7 +49,6 @@
                         <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#order-details">Order Details</a></th>
                         <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#rates">Rates</a></th>
                         <th style="text-align:center;"><a target="_blank" href="http://www.educationalinitiatives.com/aos_new/ssf.php?schoolCode={{schoolCode}}&test_edition={{testEdition}}#student-breakup">Student Breakup</a></th>
-                        <th style="text-align:center;"><a target="_blank" href="">Content List</a></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -220,6 +219,7 @@
                         <th>Mode</th>
                         <th>No. Of Box</th>
                         <th>Weight</th>
+                        <th>Content List</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -229,6 +229,7 @@
                         <td>{{courierDetails.mode}}</td>
                         <td>{{courierDetails.material}}</td>
                         <td>{{courierDetails.weight}}</td>
+                        <td><a ng-if="courierDetailsLength > 0" target="_blank" href="/PackingSlips/{{roundDescription}}/QB/{{schoolCode}}.tif">Download</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -252,6 +253,7 @@
         </div>
                       
   </div>
+  <div id="overlay"></div>
 </div>
 
 </div>

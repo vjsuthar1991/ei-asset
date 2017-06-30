@@ -41,11 +41,13 @@ class Mis_system extends CI_Controller {
 			
 		}
 
-		$data['zones'] = $this->vendors->getZones();
+		$data['zones'] = $this->qb_mis_list_model->getZones($inputRequest['region']);
+
 		$data['rounds'] = $this->packingslips->getRounds();
+		
 		$data['lotnos'] = $this->qb_mis_list_model->getPackingLotNos($round);
 		
-		$data['qb_mis_reports'] = $this->qb_mis_list_model->getQbMisReports($round);
+		$data['qb_mis_reports'] = $this->qb_mis_list_model->getQbMisReports($round,$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
 		
 		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'lotnos' => $data['lotnos'],'qb_mis_reports' => $data['qb_mis_reports'],'round_selected' => $round));
 		die;

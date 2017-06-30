@@ -13,18 +13,32 @@ class Schooltrackingmodel extends CI_Model{
         $this->schoolProcessTracking = 'school_process_tracking';
         $this->marketingTbl = 'marketing';
         $this->courierDispatchDetails = 'courier_dispatch_details';
+        $this->salesAllotmentMasterTbl = 'sales_allotment_master';
 
     }
 
-    function getRegisteredSchool($round){
+    function getRegisteredSchool($round,$region,$category,$username){
+
 
         $this->db->select('t1.school_code,t2.schoolname');
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
         $this->db->where('t1.test_edition',$round);
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.dynamic_flag != 1");
         
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
         $query = $this->db->get();
 
         return $query->result();
@@ -95,7 +109,7 @@ class Schooltrackingmodel extends CI_Model{
         $this->db->where("t1.status != 'cancelled'");
         $this->db->where("t1.ssf_number != ''");
         $this->db->where("t1.dynamic_flag != 1");
-        $this->db->where("((t1.paid / t1.amount_payable) * 100 > 90 )");
+        $this->db->where("((t1.paid / t1.amount_payable) * 100) > 90");
         $query = $this->db->get();
         return $query->result_array();
 

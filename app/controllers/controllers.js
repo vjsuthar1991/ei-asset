@@ -1068,6 +1068,7 @@ app.controller('VendorDashboardController', function($scope,$http,$ocLazyLoad) {
 app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$location,$window,$route){
    $scope.rounds = [];
 
+
    $.ajax({
     url: './api/vendor/qb_mis',
     type: 'POST',
@@ -1355,6 +1356,26 @@ app.controller('VendorPackingSlipListController', function($scope,$http,DTOption
 
 app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
 
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
   //script code to list all the schools of current round with rounds and country
   $scope.dtInstance = {};
   
@@ -1366,12 +1387,13 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
   var flag = 0;
   var userData = [];
   // var round = $('#qbroundfilter').val();
-  // var data = {round:'V'};
-  // data = JSON.stringify(data);
+  var data = {region:region,category:category,username:username};
+  data = JSON.stringify(data);
 
     $.ajax({
     url: './api/mis_system/qb_mis_list',
     type: 'POST',
+    data: data,
     dataType : 'json', // data type
     async: false,
     cache: false,
@@ -1598,6 +1620,27 @@ app.controller('DashboardPenAndPaperController', function($scope,$http){
 
 app.controller('DashboardPenAndPaperPreTestController', function($scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
   
+//$('#overlay').show();
+
+function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
 
 $scope.dtInstance = {};
 
@@ -1689,7 +1732,7 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {zone: zone};
+  var data = {zone: zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -1730,6 +1773,8 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
         $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
         $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
         $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
+
+        //setTimeout(function(){ $('#overlay').hide(); },2000);
         
 
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -1762,6 +1807,8 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
 
 $scope.filterPpPretestDashboardData = function(e){
 
+  $('#overlay').show();
+
   destroy();
 
   $('#ppPreTestDynamicTable').addClass('hide');
@@ -1775,7 +1822,7 @@ $scope.filterPpPretestDashboardData = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -1797,8 +1844,10 @@ $scope.filterPpPretestDashboardData = function(e){
         $scope.ssfRecievedCount = response.ssf_recieved[0]['ssfrecievedcount'];
         $scope.ssfPendingCount = response.ssf_pending[0]['ssfpendingcount'];
         $scope.ssfAlertCount = response.ssf_alert[0]['ssfalertcount'];
+
         $('.nav-tabs a[href="#tabs-demo6-area1"]').tab('show');
-         setTimeout(function(){ createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert'); }, 10);
+
+         setTimeout(function(){ createGraph('.pie-chart1',parseInt(response.ssf_recieved[0]['ssfrecievedcount']),'#27C24C','#03A9F4','Completed',parseInt(response.ssf_pending[0]['ssfpendingcount']),'#FFC107','#03A9F4','Pending',parseInt(response.payment_alert[0]['paymentalertcount']),'#F44336','#03A9F4','Alert'); }, 2000);
         
         $scope.paymentRecieved = response.payment_recieved[0]['paymentrecievedcount'];
         $scope.paymentPending = response.payment_pending[0]['paymentpendingcount'];
@@ -1815,11 +1864,9 @@ $scope.filterPpPretestDashboardData = function(e){
         $scope.deliveryDateSet = response.deliverydate_set[0]['deliverysetcount'];
         $scope.deliveryDateNotSet = response.deliverydate_notset[0]['deliverynotsetcount'];
         $scope.deliveryDateAlert = response.deliverydate_alert[0]['deliveryalertcount'];
-
-
+        
         $location.path('/dashboard-pppretest');
-
-
+        
         
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
   
@@ -1841,6 +1888,8 @@ $scope.filterPpPretestDashboardData = function(e){
             createGraph('.pie-chart5',parseInt(response.deliverydate_set[0]['deliverysetcount']),'#27C24C','#03A9F4','Completed',parseInt(response.deliverydate_notset[0]['deliverynotsetcount']),'#FFC107','#03A9F4','Pending',parseInt(response.deliverydate_alert[0]['deliveryalertcount']),'#F44336','#03A9F4','Alert');
           }        
         });
+
+        setTimeout(function(){ $('#overlay').hide(); },2000);
         
 
 
@@ -1864,7 +1913,7 @@ $scope.showSchoolRegistered = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -1922,9 +1971,6 @@ $scope.showSchoolRegistered = function(e){
 
             $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
 
-
-        
-
       }
       
     }
@@ -1941,7 +1987,7 @@ $scope.showSchoolSSFReceived = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -1998,10 +2044,6 @@ $scope.showSchoolSSFReceived = function(e){
             $('#ppPreTestDynamicTable').removeClass('hide');
 
             $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
-
-
-        
-
       }
       
     }
@@ -2018,7 +2060,7 @@ $scope.showSchoolSSFPending = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2093,7 +2135,7 @@ $scope.showSchoolSSFAlert = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2168,7 +2210,7 @@ $scope.showSchoolPaymentReceived = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2245,7 +2287,7 @@ $scope.showSchoolPaymentPending = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2322,7 +2364,7 @@ $scope.showSchoolPaymentAlert = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2399,7 +2441,7 @@ $scope.showSchoolPackLabelDateSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2474,7 +2516,7 @@ $scope.showSchoolPackLabelDateNotSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2549,7 +2591,7 @@ $scope.showSchoolPackLabelDateAlert = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2624,7 +2666,7 @@ $scope.showSchoolDispatchDateSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2703,7 +2745,7 @@ $scope.showSchoolDispatchDateNotSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2774,7 +2816,7 @@ $scope.showSchoolDispatchDateAlert = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2845,7 +2887,7 @@ $scope.showSchoolDeilveryDateSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2919,7 +2961,7 @@ $scope.showSchoolDeilveryDateNotSet = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -2991,7 +3033,7 @@ $scope.showSchoolDeilveryDateAlert = function(e){
   var round = $('#pppretest_dashboard_round').val();
   var zone = $('#pppretest_dashboard_zone').val();
 
-  var data = {round: round,zone:zone};
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
   data = JSON.stringify(data);
 
     $.ajax({
@@ -3104,15 +3146,39 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
 
   });
 
-  
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
 
   $scope.schoolList = [];
   $scope.rounds = [];
   $scope.roundSelected = '';
+  $scope.roundDescription = '';
 
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
+  var data = {region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+  $('#overlay').show();
     $.ajax({
     url: './api/schoolTracking/loadSchoolTrackingFilters',
     type: 'POST',
+    data: data,
     dataType : 'json', // data type
     async: false,
     cache: false,
@@ -3123,11 +3189,15 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
 
       if(response.status == "success"){
 
+        $('#overlay').hide();
+
         $scope.schoolList = response.school_registered;
 
         $scope.rounds = response.rounds;
 
         $scope.roundSelected = response.round_selected;
+
+        $scope.roundDescription = response.round_description;
 
         var schoolname = [];
 
@@ -3147,6 +3217,8 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
   });
 
   $scope.filterschooltracking = function(e){
+
+    $('#overlay').show();
 
     $scope.schoolName = '';
     $scope.paymentDetails = [];
@@ -3188,6 +3260,8 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         $scope.processTracking = response.processTracking[0];
 
         $scope.courierDetails = response.courierDetails[0];
+
+        $scope.courierDetailsLength = response.courierDetails.length;
 
         $scope.finalBreakupFlag = response.finalbreakupflag;
 
@@ -3249,6 +3323,8 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
       else{
         $scope.qbDeliveryColor = '#f1685e';
       }
+
+      setTimeout(function(){ $('#overlay').hide(); }, 3000); 
 
         $('.panel-body').removeAttr( 'style' );
 

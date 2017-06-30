@@ -332,6 +332,7 @@ class Packingslips extends CI_Model{
         $this->db->select('packingslip_lotno');
         $this->db->from($this->packingslipsListTbl);
         $this->db->where('test_edition',$testEdition);
+        $this->db->order_by('packingslip_lotno','desc');
         $query = $this->db->get();
         return $query->result();
 

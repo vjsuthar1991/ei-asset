@@ -17,7 +17,7 @@ class Vendors extends CI_Model{
     /*
      * get rows from the schools_status table
      */
-    function getZones($params = array()){
+    function getZones(){
         $this->db->distinct();
         $this->db->select('region');
         $this->db->from($this->schoolsTbl);
@@ -121,6 +121,7 @@ class Vendors extends CI_Model{
     function listVendorPackingSlips($vendorId)
     {
         $this->db->select('*');
+        $this->db->select('packingslip_sentdate');
         $this->db->from($this->packingslipsListTbl);
         $this->db->where('packingslip_vendorid',$vendorId);
         $this->db->order_by("packingslip_id","desc");

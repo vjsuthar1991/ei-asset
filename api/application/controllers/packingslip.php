@@ -143,7 +143,17 @@ class Packingslip extends CI_Controller {
 				$lotno = 1;
 			}
 
-        	$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData,$lotno);
+			function ordinal($number) {
+			    $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+			    if ((($number % 100) >= 11) && (($number%100) <= 13))
+			        return $number. 'th';
+			    else
+			        return $number. $ends[$number % 10];
+			}
+			//Example Usage
+			$lotno = ordinal($lotno);
+			
+			$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData,$lotno);
 
         	$filename1 = $lotno."-".date('d-m-Y-H:i:s').'_schools.csv';
         	$filename2 = $lotno."-".date('d-m-Y-H:i:s').'_orders.csv';
@@ -250,8 +260,8 @@ class Packingslip extends CI_Controller {
 	      'protocol' => 'smtp',
 	      'smtp_host' => 'ssl://smtp.googlemail.com',
 	      'smtp_port' => 465,
-	      'smtp_user' => 'suthar67@gmail.com', 
-	      'smtp_pass' => 'sumansuthar1991', 
+	      'smtp_user' => 'billingdesk@ei-india.com', 
+	      'smtp_pass' => 'billing123', 
 	      'mailtype' => 'html',
 	      'charset' => 'iso-8859-1',
 	      'wordwrap' => TRUE
@@ -260,7 +270,7 @@ class Packingslip extends CI_Controller {
 
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
-	      $this->email->from('abc@gmail.com');
+	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
