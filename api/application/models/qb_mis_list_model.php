@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Qb_mis_list_model extends CI_Model{
+    
     function __construct() {
         $this->schoolstatusTbl = 'school_status';
         $this->schoolsTbl = 'schools';
@@ -111,12 +112,27 @@ class Qb_mis_list_model extends CI_Model{
         return $query->result(); 
     }
 
-    function getFilteredQbReports($round,$zone,$lotno)
+    function getFilteredQbReports($round,$zone,$lotno,$region,$category,$username)
     {
         $this->db->select('t1.*,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo');
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
         
+        if($region != '' && $region != 'NULL'){
+
+            $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t3.region IN ('$region')");
+
+        }
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t4", 't1.school_code = t4.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t4.keyAccount = '$username' OR t4.buddyAccount = '$username')");
+        }
+
         if($round != ""){
             $this->db->where('t1.test_edition',$round);
         }

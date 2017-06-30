@@ -74,7 +74,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
           <ng-view></ng-view>
           <!-- start: Mobile -->
         <!-- <div data-ng-include=" 'mobile_menu.html' "></div> -->
-        
+        <?php if(@$_SESSION['username'] != ''){?>
         <div id="mimin-mobile" class="reverse">
         <div class="mimin-mobile-menu-list">
             <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
@@ -113,7 +113,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
         <span class="fa fa-bars"></span>
       </button>
        <!-- end: Mobile -->
-       <!-- end: Mobile -->
+       <?php } ?>
           <!-- start: Javascript -->
    <footer>
 

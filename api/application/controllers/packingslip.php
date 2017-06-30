@@ -2,17 +2,25 @@
 
 class Packingslip extends CI_Controller {
 
+	/*
+		Controller to control the packing slip related operations
+	*/
+
 	function __construct()
 	{
+		//load required models
 		parent::__construct();
 		$this->load->model('packingslips');
 		$this->load->model('dashboards');
 	}
 	
 	/*
+	
 		Function Name: list_Schools
-		Description: Action function to List all the schools of current round
-		Date Modified: 16-5-2017
+		Description: Action function to List all the schools of current round which are ready for packing
+		Output: All the schools of current round which are ready for packing
+		Output Format: JSON
+
 	*/
 
 	public function list_schools()
@@ -57,12 +65,16 @@ class Packingslip extends CI_Controller {
 	}
 
 	/*
+	
 		Function Name: schoolfilter
 		Description: Action function to filter all the schools list based on search parameters
-		Date Modified: 16-5-2017
-	*/
+		Output: All the schools of current round which are ready for packing based on search parameters
+		Output Format: JSON
 
+	*/
+	
 	public function schoolfilter()
+	
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
@@ -302,6 +314,3 @@ class Packingslip extends CI_Controller {
 
 	
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */

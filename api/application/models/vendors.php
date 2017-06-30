@@ -121,7 +121,8 @@ class Vendors extends CI_Model{
     function listVendorPackingSlips($vendorId)
     {
         $this->db->select('*');
-        $this->db->select('packingslip_sentdate');
+        $this->db->select("DATE_FORMAT(packingslip_sentdate,'%d-%c-%Y') as packingslip_sentdate",FALSE);
+        //$this->db->select("DATE_FORMAT(packingslip_acknowledge_date,'%d-%c-%Y %h:%i:%s %p') as packingslip_acknowledge_date",FALSE);
         $this->db->from($this->packingslipsListTbl);
         $this->db->where('packingslip_vendorid',$vendorId);
         $this->db->order_by("packingslip_id","desc");

@@ -70,8 +70,6 @@
     {
       $(document).on('click','.tree-toggle',function(e){
 
-      
-
             e.preventDefault();
             var $this = $(this).parent().children('ul.tree');
             $(".tree").not($this).slideUp(600);
@@ -278,6 +276,76 @@
                 $("#mimin-mobile .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
                 function(e){
                   $("#mimin-mobile-menu-opener span").removeClass("fa-close").addClass("fa-bars").css({"font-size":"1em"});
+                  $(".sub-mimin-mobile-menu-list").hide();
+                });
+        }
+    });
+
+ $(document).on('click','#mimin-mobile-vendor-menu-opener',function(e){
+        
+        $("#mimin-mobile-vendor").toggleClass("reverse");
+        
+        var rippler = $("#mimin-mobile-vendor");
+
+        if(!rippler.hasClass("reverse"))
+        {
+
+            if(rippler.find(".ink").length == 0) {
+              rippler.append("<div class='ink'></div>");
+            }
+            var ink = rippler.find(".ink");
+            ink.removeClass("animate");
+            if(!ink.height() && !ink.width())
+            {
+                var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
+                ink.css({height: d, width: d});
+
+            }
+            var x = e.pageX - rippler.offset().left - ink.width()/2;
+            var y = e.pageY - rippler.offset().top - ink.height()/2;
+            ink.css({
+              top: y+'px',
+              left:x+'px',
+            }).addClass("animate");
+                
+            rippler.css({'z-index':9999});
+            rippler.animate({
+              backgroundColor: "#2196F3",
+              width: '100%'
+            }, 750 );
+
+             $("#mimin-mobile-vendor .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+              function(e){
+                $(".sub-mimin-mobile-menu-list").show();
+                $("#mimin-mobile-vendor-menu-opener span").removeClass("fa-bars").addClass("fa-close").css({"font-size":"2em"});
+              });
+        }else{
+
+                if(rippler.find(".ink").length == 0) {
+                  rippler.append("<div class='ink'></div>");
+                }
+                var ink = rippler.find(".ink");
+                ink.removeClass("animate");
+                if(!ink.height() && !ink.width())
+                {
+                    var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
+                    ink.css({height: d, width: d});
+
+                }
+                var x = e.pageX - rippler.offset().left - ink.width()/2;
+                var y = e.pageY - rippler.offset().top - ink.height()/2;
+                ink.css({
+                  top: y+'px',
+                  left:x+'px',
+                }).addClass("animate");
+                rippler.animate({
+                  backgroundColor: "transparent",
+                  'z-index':'-1'
+                }, 750 );
+
+                $("#mimin-mobile-vendor .ink").on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+                function(e){
+                  $("#mimin-mobile-vendor-menu-opener span").removeClass("fa-close").addClass("fa-bars").css({"font-size":"1em"});
                   $(".sub-mimin-mobile-menu-list").hide();
                 });
         }

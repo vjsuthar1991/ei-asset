@@ -1020,6 +1020,7 @@ app.controller('VendorLoginController', function($scope,$http,$routeParams,$loca
 
                   setCookie("vendor_id", response.data[0].vendor_id,1);
                   setCookie("vendor_authtoken", response.authtoken,1);
+                  setCookie("vendor_name", response.data[0].vendor_name,1);
 
                   $('#mimin').removeClass('form-signin-wrapper');
 
@@ -1518,7 +1519,7 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
 
         var lotno = $('#packinglotnofilter').val();
 
-        var data = {round:round,lotno:lotno,zone:zone};
+        var data = {round:round,lotno:lotno,zone:zone,region:region,category:category,username:username};
         
         data = JSON.stringify(data);
 
@@ -3299,7 +3300,7 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         if(response.processTracking.length > 0)
         {
 
-        if(response.processTracking[0].qb_despatch_date != ''){
+        if(response.processTracking[0].qb_despatch_date != '0000-00-00'){
           $scope.qbDispatchColor = 'rgb(34, 194, 34)';
         }
         else{
@@ -3313,7 +3314,7 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         if(response.processTracking.length > 0)
         {
 
-        if(response.processTracking[0].qb_delivery_date != ''){
+        if(response.processTracking[0].qb_delivery_date != '0000-00-00'){
           $scope.qbDeliveryColor = 'rgb(34, 194, 34)';
         }
         else{
