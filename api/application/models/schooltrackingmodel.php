@@ -67,12 +67,17 @@ class Schooltrackingmodel extends CI_Model{
 
     function getSchoolProcessTrackingDetails($data){
 
-        $this->db->select('t1.*,t2.school_confirm_date');
+        $round = $data['round'];
+        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name');
+        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
-        $this->db->join("$this->schoolstatusTbl as t2", 't1.school_code = t2.school_code', 'JOIN');
+        $this->db->join("$this->schoolstatusTbl as t2", "t1.school_code = t2.school_code AND t2.test_edition = '$round'", 'JOIN');
         $this->db->where('t1.school_code',$data['school']);
         $this->db->where('t1.test_edition',$data['round']);
         $query = $this->db->get();
+    
         return $query->result_array();
     }
 

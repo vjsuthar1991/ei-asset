@@ -388,6 +388,20 @@ app.controller('CreateVendorController', function($scope,$http){
     }
   });
 
+  jQuery.validator.addMethod(
+    "multiemail",
+    function (value, element) {
+        var email = value.split(/[;,]+/); // split element by , and ;
+        valid = true;
+        for (var i in email) {
+            value = email[i];
+            valid = valid && jQuery.validator.methods.email.call(this, $.trim(value), element);
+        }
+        return valid;
+    },
+    jQuery.validator.messages.multiemail
+);
+
   $("#addvendorform").validate({
     errorElement: "em",
     errorPlacement: function(error, element) {
@@ -406,20 +420,22 @@ app.controller('CreateVendorController', function($scope,$http){
         required: true,
         minlength: 5
       },
-      vendor_phone: {required: true,number: true},
+      vendor_phone: {required: true},
       vendor_contact_person_1_name: "required",
-      vendor_contact_person_1_email: {required: true,email: true},
-      vendor_contact_person_1_contact_no: {required: true,number: true},
+      vendor_contact_person_1_email: {required: true,multiemail: true},
+      vendor_contact_person_1_contact_no: {required: true},
       vendor_coo_name: "required",
-      vendor_coo_email: {required: true,email:true},
-      vendor_coo_contactno: {required: true,number: true},
+      vendor_coo_email: {required: true,multiemail: true},
+      vendor_coo_contactno: {required: true},
       vendor_ceo_name: "required",
-      vendor_ceo_email: {required: true,email: true},
-      vendor_ceo_contact_no: {required: true,number: true},
+      vendor_ceo_email: {required: true,multiemail: true},
+      vendor_ceo_contact_no: {required: true},
 
     },
     messages: {
-    
+      vendor_contact_person_1_email: {
+        multiemail: 'Please Enter Proper Email Address'
+      }
     }
   });
 
@@ -727,6 +743,20 @@ app.controller('EditVendorController', function($scope,$http,$routeParams,$locat
             }
           });
 
+  jQuery.validator.addMethod(
+    "multiemail",
+    function (value, element) {
+        var email = value.split(/[;,]+/); // split element by , and ;
+        valid = true;
+        for (var i in email) {
+            value = email[i];
+            valid = valid && jQuery.validator.methods.email.call(this, $.trim(value), element);
+        }
+        return valid;
+    },
+    jQuery.validator.messages.multiemail
+);
+
 $("#editvendorform").validate({
     errorElement: "em",
     errorPlacement: function(error, element) {
@@ -745,20 +775,22 @@ $("#editvendorform").validate({
         required: true,
         minlength: 5
       },
-      vendor_phone: {required: true,number: true},
+      vendor_phone: {required: true},
       vendor_contact_person_1_name: "required",
-      vendor_contact_person_1_email: {required: true,email: true},
-      vendor_contact_person_1_contact_no: {required: true,number: true},
+      vendor_contact_person_1_email: {required: true,multiemail: true},
+      vendor_contact_person_1_contact_no: {required: true},
       vendor_coo_name: "required",
-      vendor_coo_email: {required: true,email:true},
-      vendor_coo_contactno: {required: true,number: true},
+      vendor_coo_email: {required: true,multiemail: true},
+      vendor_coo_contactno: {required: true},
       vendor_ceo_name: "required",
-      vendor_ceo_email: {required: true,email: true},
-      vendor_ceo_contact_no: {required: true,number: true},
+      vendor_ceo_email: {required: true,multiemail: true},
+      vendor_ceo_contact_no: {required: true},
 
     },
     messages: {
-    
+      vendor_contact_person_1_email: {
+        multiemail: 'Please Enter Proper Email Address'
+      }
     }
   });
 
@@ -858,7 +890,7 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                     packingSlipLotno: val.packingslip_lotno,
                     packingSlipSentDate: val.packingslip_sentdate,
                     vendorName: val.vendor_name,
-                    packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+                    packingslipSchoolsCSV: val.packingslip_schools_data_csv,
                     packingslipBreakupCSV: val.packingslip_breakup_data_csv,
                     packingslipAcknowledgeDate: val.packingslip_acknowledge_date
                   });
@@ -885,7 +917,7 @@ app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuil
                   DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
                   .renderWith(function (data, type, full, meta){
                     if(full.packingSlipId){
-                      return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+                      return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
                     }
                   }).withClass("text-center"),
                   DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date').withOption('title','Acknowledge Date'),
@@ -1414,7 +1446,7 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
         jQuery.each( response.schooldata, function( i, val ) {
          
            $scope.schoolCodes.push(val.school_code);
-           $scope.schoolNames.push(val.school_name);
+           $scope.schoolNames.push(val.schoolname);
         
         });
         
@@ -1445,9 +1477,9 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
           $scope.qbmisreports.push({
 
             schoolCode: val.school_code,
-            schoolName: val.school_name,
-            schoolCity: val.school_city,
-            schoolRegion: val.school_region,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
             schoolPackLabelDate: val.packlabel_date,
             schoolQbDispatchDate: val.qb_despatch_date,
             schoolCourierCompany: val.courier,
@@ -1537,7 +1569,7 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
              
                 if(response.status == "success"){
 
-                  console.log(response.filteredqbreports);
+                  
                     jQuery.each( response.filteredqbreports, function( i, val ) {
 
                         var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
@@ -1564,9 +1596,9 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
                         $scope.filteredqbReports.push({
 
                           schoolCode: val.school_code,
-                          schoolName: val.school_name,
-                          schoolCity: val.school_city,
-                          schoolRegion: val.school_region,
+                          schoolName: val.schoolname,
+                          schoolCity: val.city,
+                          schoolRegion: val.region,
                           schoolPackLabelDate: val.packlabel_date,
                           schoolQbDispatchDate: val.qb_despatch_date,
                           schoolCourierCompany: val.courier,
@@ -1614,6 +1646,265 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
 
   
 });
+
+app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var vendor_id = getCookie('vendor_id');  
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  $scope.rounds = [];
+  $scope.lotnos = [];
+  $scope.zones = [];
+  $scope.qbmisreports = [];
+
+  var flag = 0;
+  var userData = [];
+  
+  var data = {vendor_id:vendor_id};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/mis_system/vendor_qb_mis_list',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.lotnos = response.lotnos;
+        $scope.roundSelected = response.round_selected;
+
+        
+        jQuery.each( response.schooldata, function( i, val ) {
+         
+           $scope.schoolCodes.push(val.school_code);
+           $scope.schoolNames.push(val.schoolname);
+        
+        });
+
+        jQuery.each( response.qb_mis_reports, function( i, val ) {
+
+          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+          var firstDate = new Date(val.qb_despatch_date);
+          var secondDate = new Date(val.packlabel_date);
+
+          var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
+          
+          if(isNaN(diffDays)){
+            diffDays = 'Not Yet Dispatched';
+          }
+
+          var dispatchDate = new Date(val.qb_despatch_date);
+          var deliveryDate = new Date(val.qb_delivery_date);
+
+          var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+          
+          if(isNaN(deliverydiffDays)){
+            deliverydiffDays = 'Not Yet Delivered';
+          }
+
+
+          
+          $scope.qbmisreports.push({
+
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolPackLabelDate: val.packlabel_date,
+            schoolQbDispatchDate: val.qb_despatch_date,
+            schoolCourierCompany: val.courier,
+            schoolAwbNo: val.consignmentNo,
+            schoolMode: val.mode,
+            schoolQty: val.material,
+            schoolWeight: val.weight,
+            schoolTat: diffDays,
+            schoolQbDelivery_status: val.qb_delivery_status,
+            schoolQbDeliveryDate:val.qb_delivery_date,
+            schoolQbRecieverName: val.qb_reciever_name,
+            schoolDeliveryTime: deliverydiffDays
+
+          });
+        });
+
+        $scope.packingdates = response.packlabel_date;
+        $scope.citys = response.school_city;
+
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.qbmisreports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('schoolPackLabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+                DTColumnBuilder.newColumn('schoolQbDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+                DTColumnBuilder.newColumn('schoolCourierCompany').withTitle('Courier Company').withOption('title','Courier Company'),
+                DTColumnBuilder.newColumn('schoolAwbNo').withTitle('AWB No.').withOption('title','AWB No.'),
+                DTColumnBuilder.newColumn('schoolMode').withTitle('Mode').withOption('title','Mode'),
+                DTColumnBuilder.newColumn('schoolQty').withTitle('No. Of Box').withOption('title','No. Of Box'),
+                DTColumnBuilder.newColumn('schoolWeight').withTitle('Weight').withOption('title','Weight'),
+                DTColumnBuilder.newColumn('schoolQbDelivery_status').withTitle('Delivery Status').withOption('title','Delivery Status'),
+                DTColumnBuilder.newColumn('schoolQbDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+                DTColumnBuilder.newColumn('schoolQbRecieverName').withTitle('Reciever Name').withOption('title','Reciever Name'),
+                DTColumnBuilder.newColumn('schoolTat').withTitle('Days Taken For Dispatch').withOption('title','Days Taken For Dispatch'),
+                DTColumnBuilder.newColumn('schoolDeliveryTime').withTitle('Days Taken For Delivery').withOption('title','Days Taken For Delivery'),
+                ];  
+                
+                
+                $scope.dtColumns[12].visible = false;
+                $scope.dtColumns[13].visible = false;
+                $scope.dtColumns[14].visible = false;
+                $scope.dtColumns[16].visible = false;
+
+
+                
+      }
+      
+    }
+  });
+
+  $scope.filtervendorqbreports = function(e) {
+    
+    $scope.filteredqbReports = [];
+     
+      
+        var round = $('#qbroundfilter').val();
+        
+        var zone = $('#qbzonefilter').val();
+
+        var lotno = $('#packinglotnofilter').val();
+
+        var vendor_id = getCookie('vendor_id');  
+
+        var data = {round:round,lotno:lotno,zone:zone,vendor_id:vendor_id};
+        
+        data = JSON.stringify(data);
+
+        $.ajax({
+            url: "./api/mis_system/getQbMisVendorReportsFilter",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
+              
+             var response = returndata;
+             
+                if(response.status == "success"){
+
+                  
+                    jQuery.each( response.filteredqbreports, function( i, val ) {
+
+                        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+                        var firstDate = new Date(val.qb_despatch_date);
+                        var secondDate = new Date(val.packlabel_date);
+
+                        var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
+                        
+                        if(isNaN(diffDays)){
+                          diffDays = 'Not Yet Dispatched';
+                        }
+
+                        var dispatchDate = new Date(val.qb_despatch_date);
+                        var deliveryDate = new Date(val.qb_delivery_date);
+
+                        var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+                        
+                        if(isNaN(deliverydiffDays)){
+                          deliverydiffDays = 'Not Yet Delivered';
+                        }
+
+
+                        
+                        $scope.filteredqbReports.push({
+
+                          schoolCode: val.school_code,
+                          schoolName: val.schoolname,
+                          schoolCity: val.city,
+                          schoolRegion: val.region,
+                          schoolPackLabelDate: val.packlabel_date,
+                          schoolQbDispatchDate: val.qb_despatch_date,
+                          schoolCourierCompany: val.courier,
+                          schoolAwbNo: val.consignmentNo,
+                          schoolMode: val.mode,
+                          schoolQty: val.material,
+                          schoolWeight: val.weight,
+                          schoolTat: diffDays,
+                          schoolQbDelivery_status: val.qb_delivery_status,
+                          schoolQbDeliveryDate:val.qb_delivery_date,
+                          schoolQbRecieverName: val.qb_reciever_name,
+                          schoolDeliveryTime: deliverydiffDays
+
+                        });
+
+
+                      });  
+            
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('processing', true); 
+
+                $scope.dtInstance.rerender();
+               
+                }
+                else
+                {
+                  
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+
+                
+
+                $scope.dtInstance.rerender();
+                  
+
+                }
+
+               }
+             });
+  };
+
+  
+});
+
 
 app.controller('DashboardPenAndPaperController', function($scope,$http){
 
@@ -1780,6 +2071,10 @@ function createGraph(classname,val1,color1,highlightcolor1,label1,val2,color2,hi
 
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
   
+          destroy();
+
+          $('#ppPreTestDynamicTable').addClass('hide');
+
           var tabtarget = $(this).attr('href');
           
           if(tabtarget == '#tabs-demo6-area1'){
@@ -1871,6 +2166,10 @@ $scope.filterPpPretestDashboardData = function(e){
         
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
   
+          destroy();
+
+          $('#ppPreTestDynamicTable').addClass('hide');
+
           var tabtarget = $(this).attr('href');
           
           if(tabtarget == '#tabs-demo6-area1'){
@@ -2118,8 +2417,6 @@ $scope.showSchoolSSFPending = function(e){
             $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
 
 
-        
-
       }
       
     }
@@ -2189,9 +2486,6 @@ $scope.showSchoolSSFAlert = function(e){
             $('#ppPreTestDynamicTable').removeClass('hide');
 
             $(window).scrollTop($('#ppPreTestDynamicTable').offset().top);
-
-
-        
 
       }
       
@@ -3285,7 +3579,7 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         if(response.processTracking.length > 0)
         {
 
-          if(response.processTracking[0].packlabel_date != ''){
+          if(response.processTracking[0].packlabel_date != '00-00-0000' && response.processTracking[0].packlabel_date != ''){
             $scope.packLabelColor = 'rgb(34, 194, 34)';
           }
           else{
@@ -3300,7 +3594,7 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         if(response.processTracking.length > 0)
         {
 
-        if(response.processTracking[0].qb_despatch_date != '0000-00-00'){
+        if(response.processTracking[0].qb_despatch_date != '00-00-0000' && response.processTracking[0].qb_despatch_date != ''){
           $scope.qbDispatchColor = 'rgb(34, 194, 34)';
         }
         else{
@@ -3314,7 +3608,7 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         if(response.processTracking.length > 0)
         {
 
-        if(response.processTracking[0].qb_delivery_date != '0000-00-00'){
+        if(response.processTracking[0].qb_delivery_date != '00-00-0000' && response.processTracking[0].qb_delivery_date != ''){
           $scope.qbDeliveryColor = 'rgb(34, 194, 34)';
         }
         else{

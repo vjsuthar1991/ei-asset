@@ -65,9 +65,6 @@ class Schooltracking extends CI_Controller {
 
 		$data['paymentflag'] = $this->schooltrackingmodel->getPaymentStatus($inputRequest);
 
-		
-
-
 		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount']));
 	}
 

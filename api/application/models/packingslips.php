@@ -206,12 +206,8 @@ class Packingslips extends CI_Model{
 
         $this->db->order_by("t1.school_code","asc");
         $query = $this->db->get(); 
-        //echo $this->db->last_query();
+        
         return $query->result();
-        // $schools = json_decode(json_encode($schools),true);
-        
-        // return $this->filterClasses($schools,$round);
-        
         die;
         
 
@@ -222,12 +218,19 @@ class Packingslips extends CI_Model{
     {
         $schoolIds = implode(",",$schools);
         
-        $this->db->select("t1.schoolno, t1.schoolname, t1.city, t1.address, t1.std_code, t1.phones, t1.contact_person_1, t1.state, t1.pincode, t2.contact_person, t2.mobile_no, t2.contact_mail");
+        $this->db->select("t1.schoolno, t1.schoolname, t1.city, t1.address, CONCAT(t1.std_code,'-',t1.phones) as 'phones', t1.contact_person_1, t1.state, t1.pincode",FALSE);
         $this->db->from("$this->schoolsTbl as t1");
-        $this->db->join("$this->contactDetails as t2", "t1.schoolno = t2.school_code AND t2.designation = 'ASSET COORDINATOR'", 'LEFT');
         $this->db->where("t1.schoolno IN ($schoolIds)");
-        $this->db->group_by("t1.schoolno");
         $this->db->order_by("t1.schoolno","asc");
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getAdditionalContactDetails($schoolCode)
+    {
+        $this->db->select('contact_person,mobile_no');
+        $this->db->from("$this->contactDetails");
+        $this->db->where("school_code = $schoolCode AND designation = 'ASSET COORDINATOR'");
         $query = $this->db->get();
 
         return $query->result_array();
@@ -237,7 +240,7 @@ class Packingslips extends CI_Model{
     {
        $schoolIds = implode(",",$schools);
         
-        $this->db->select("t1.school_code, t2.schoolname, t2.city, t1.e3, t1.m3, t1.s3, t1.h3, t1.ss3, t1.e4, t1.m4, t1.s4, t1.h4, t1.ss4, t1.e5, t1.m5, t1.s5, t1.h5, t1.ss5, t1.e6, t1.m6, t1.s6, t1.h6, t1.ss6, t1.e7, t1.m7, t1.s7, t1.h7, t1.ss7, t1.e8, t1.m8, t1.s8, t1.h8, t1.ss8, t1.e9, t1.m9, t1.s9, t1.h9, t1.ss9, t1.e10, t1.m10, t1.s10, t1.h10, t1.ss10");
+        $this->db->select("t1.school_code, t2.schoolname, t2.city, t1.e3, t1.m3, t1.s3, t1.e4, t1.m4, t1.s4, t1.e5, t1.m5, t1.s5, t1.e6, t1.m6, t1.s6, t1.e7, t1.m7, t1.s7, t1.e8, t1.m8, t1.s8, t1.e9, t1.m9, t1.s9, t1.e10, t1.m10, t1.s10, t1.ss5, t1.ss6, t1.ss7, t1.ss8, t1.ss9, t1.ss10, t1.h4, t1.h5, t1.h6, t1.h7, t1.h8");
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", "t1.school_code = t2.schoolno", 'LEFT');
         $this->db->where("t1.school_code IN ($schoolIds)");
@@ -270,7 +273,7 @@ class Packingslips extends CI_Model{
 
     function getVendorDetails($vendorId)
     {
-        $this->db->select('vendor_contact_person_1_email,vendor_name');
+        $this->db->select('vendor_contact_person_1_email,vendor_name,vendor_contact_person_1_name');
         $this->db->from($this->vendorsTbl);
         $this->db->where('vendor_id',$vendorId);
         $query = $this->db->get();
@@ -291,7 +294,7 @@ class Packingslips extends CI_Model{
         $query = $this->db->get();
         $output = $query->result();
 
-        $insert = $this->db->insert($this->schoolProcessTracking, array('order_id' => $output[0]->sno,'school_code' => $schoolCode,'school_name' => $output[0]->schoolname,'school_city' => $output[0]->city,'school_region' => $output[0]->region,'packlabel_date' => date('Y-m-d'),'test_edition' => $round,'lot_no' => $lotno));
+        $insert = $this->db->insert($this->schoolProcessTracking, array('order_id' => $output[0]->sno,'school_code' => $schoolCode,'packlabel_date' => date('Y-m-d'),'test_edition' => $round,'lot_no' => $lotno));
          
     }
 

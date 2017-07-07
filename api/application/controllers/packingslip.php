@@ -104,6 +104,37 @@ class Packingslip extends CI_Controller {
 
 		$data['packingslipschoollist'] = $this->packingslips->getPackingSlipSchoolList($inputRequest['data']);
 
+		foreach ($data['packingslipschoollist'] as $key => $value) {
+			
+			$additionalContactDetails = $this->packingslips->getAdditionalContactDetails($value['schoolno']);
+			
+			
+			if(count($additionalContactDetails) > 0){
+
+				$data['packingslipschoollist'][$key]['co-ordinator1name'] = $additionalContactDetails[0]['contact_person'];
+				$data['packingslipschoollist'][$key]['co-ordinator1phone'] = $additionalContactDetails[0]['mobile_no'];	
+
+				if(count($additionalContactDetails) > 1){
+
+					$data['packingslipschoollist'][$key]['co-ordinator2name'] = $additionalContactDetails[1]['contact_person'];
+					$data['packingslipschoollist'][$key]['co-ordinator2phone'] = $additionalContactDetails[1]['mobile_no'];		
+				}
+				else {
+					$data['packingslipschoollist'][$key]['co-ordinator2name'] = '';
+					$data['packingslipschoollist'][$key]['co-ordinator2phone'] = '';
+				}
+
+			}
+			else {
+				$data['packingslipschoollist'][$key]['co-ordinator1name'] = '';
+				$data['packingslipschoollist'][$key]['co-ordinator1phone'] = '';
+				$data['packingslipschoollist'][$key]['co-ordinator2name'] = '';
+				$data['packingslipschoollist'][$key]['co-ordinator2phone'] = '';		
+
+			}
+
+		}
+
 		$data['schoolwisebreakup'] = $this->packingslips->getSchoolWiseBreakupList($inputRequest['data'],$inputRequest['round']);
 		
 		foreach ($data['schoolwisebreakup'] as $key => $value) {
@@ -113,16 +144,18 @@ class Packingslip extends CI_Controller {
 			$adclass = $adclasses[0]['dynamic_class'];
             $adclassArray = explode(',',$adclass);
             
-            foreach($adclassArray as $key2 => $value2) {
+            if($adclassArray[0] != ''){
+            
+	            foreach($adclassArray as $key2 => $value2) {
 
-            	
-            	$data['schoolwisebreakup'][0]['e'.$value2] = 0;
-            	$data['schoolwisebreakup'][0]['m'.$value2] = 0;
-            	$data['schoolwisebreakup'][0]['s'.$value2] = 0;
-            	$data['schoolwisebreakup'][0]['h'.$value2] = 0;
-            	$data['schoolwisebreakup'][0]['ss'.$value2] = 0;
-    			
-            }
+	            	$data['schoolwisebreakup'][0]['e'.$value2] = 0;
+	            	$data['schoolwisebreakup'][0]['m'.$value2] = 0;
+	            	$data['schoolwisebreakup'][0]['s'.$value2] = 0;
+	            	$data['schoolwisebreakup'][0]['h'.$value2] = 0;
+	            	$data['schoolwisebreakup'][0]['ss'.$value2] = 0;
+	    			
+	            }
+        	}
 
 		
 		}
@@ -179,7 +212,7 @@ class Packingslip extends CI_Controller {
 
             $handle1 = fopen("packingSlipSchoolsCSVFiles/".$filename1, 'w');
 
-            fputcsv($handle1, array('Sr.No','School Code', 'School Name', 'City', 'Address', 'STD Code', 'Phone Nos','Principal Name','State','Pincode','Co-ordinator1 Name','Co-ordinator1 Contact No.','Co-ordinator1 Email'));
+            fputcsv($handle1, array('Sr.No','School Code', 'School', 'City', 'Address', 'Phone Nos','Principal Name','State','Pincode','Co-ordinator1 Name','Co-ordinator1 Contact No.','Co-ordinator2 Name','Co-ordinator2 Contact No.'));
 
             $i = 1;
 
@@ -205,7 +238,7 @@ class Packingslip extends CI_Controller {
 
             $handle2 = fopen("packingslipbreakupCSVFiles/".$filename2, 'w');
 
-            fputcsv($handle2, array('Sr.No','School Code', 'School Name', 'City', 'E3', 'M3', 'S3','H3','SS3','E4', 'M4', 'S4','H4','SS4','E5', 'M5', 'S5', 'H5', 'SS5', 'E6', 'M6', 'S6','H6','SS6', 'E7', 'M7', 'S7','H7','SS7', 'E8', 'M8', 'S8','H8','SS8', 'E9', 'M9', 'S9','H9','SS9', 'E10', 'M10', 'S10','H10','SS10'));
+            fputcsv($handle2, array('Sr.No.','School Code', 'School Name', 'City', 'E3', 'M3', 'S3', 'E4', 'M4', 'S4','E5', 'M5', 'S5', 'E6', 'M6', 'S6', 'E7', 'M7', 'S7', 'E8', 'M8', 'S8', 'E9', 'M9', 'S9', 'E10', 'M10', 'S10', 'SS5', 'SS6', 'SS7', 'SS8', 'SS9', 'SS10', 'H4' ,'H5', 'H6', 'H7', 'H8', 'Flag')); 
 
             $i = 1;
 
@@ -232,7 +265,7 @@ class Packingslip extends CI_Controller {
                 
 
                 $subject = "$lotno LOT OF PACKING - $roundFullName";
-                $vendorName = $vendorEmailId[0]->vendor_name;
+                $vendorName = $vendorEmailId[0]->vendor_contact_person_1_name;
                 $message = 'Hello ';
                 $message .= $vendorName;
                 $message .= ' ji,';
@@ -284,6 +317,7 @@ class Packingslip extends CI_Controller {
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
+	      //$this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      $this->email->attach($file1);

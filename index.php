@@ -2,10 +2,22 @@
 $url = $_SERVER['REQUEST_URI'];
 $urlparts = explode('/',$url);
 
-if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list')){
+if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list')){
   require_once('support_files/check.php');
   $loginUserName = $_SESSION['username'];
   checkPermission('OPS');
+
+  if($urlparts['2'] == 'create_vendor' || $urlparts['2'] == 'vendor_list' || $urlparts['2'] == 'edit_vendor')
+  {
+
+
+    if($_SESSION['username'] != 'jignasha.mistry' && $_SESSION['username'] != 'rahul'  || @$_SESSION['username'] != 'mitul.patel'){
+
+      echo "<script language='JavaScript'>window.location.href='http://".$_SERVER['SERVER_NAME']."/ei-asset/'</script>";
+    
+    }
+    
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -61,7 +73,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
   <!-- App Controller -->
   <script src="app/controllers/controllers.js"></script>   
   
-  <base href="http://localhost/ei-asset/">
+  <base href="http://<?php echo $_SERVER['SERVER_NAME'];?>/ei-asset/">
 </head>
 
 <body id="mimin" class="dashboard topnav" ng-app="main-App">
@@ -80,13 +92,22 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
             <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
                 <ul class="nav nav-list">
                     <li class="active ripple">
-                      <a href="./" class="tree-toggle nav-header">
-                        <span class="fa-home fa"></span>Dashboard 
+                      <a href="/main.php" class="tree-toggle nav-header">
+                        <span class="fa-home fa"></span>Home
                       </a>
                     </li>
+                    <li class="active ripple">
+                      <a href="./" class="tree-toggle nav-header">
+                        <span class="fa-tachometer fa"></span>Dashboard 
+                      </a>
+                    </li>
+                    <?php 
+                      if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                      {
+                    ?>
                     <li class="ripple">
                       <a class="tree-toggle nav-header">
-                        <span class="fa-diamond fa"></span>Vendor Management
+                        <span class="fa-user fa"></span>Vendor Management
                         <span class="fa-angle-right fa right-arrow text-right"></span>
                       </a>
                       <ul class="nav nav-list tree">
@@ -94,15 +115,21 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
                         <li><a href="vendor_list">Vendor's List</a></li>
                       </ul>
                     </li>
+                    <?php } ?>
                     <li class="ripple">
                       <a class="tree-toggle nav-header">
                         <span class="fa-area-chart fa"></span>Pre Test
                         <span class="fa-angle-right fa right-arrow text-right"></span>
                       </a>
                       <ul class="nav nav-list tree">
+                        <?php 
+                      if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                      {
+                    ?>
                         <li><a href="generate_packing_slips">Generate Packing Slip</a></li>
                         <li><a href="packing_slips_list">Packing Slip List</a></li>
-                        <li><a href="qb_mis_list">QB MIS List</a></li>
+                      <?php } ?>
+                        <li><a href="school-order-tracking">School Order Tracking</a></li>
                       </ul>
                     </li>
                   </ul>

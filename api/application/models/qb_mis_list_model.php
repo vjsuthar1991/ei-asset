@@ -33,6 +33,7 @@ class Qb_mis_list_model extends CI_Model{
 
         }
         
+        $this->db->where("region != ''");
         $this->db->order_by("region","asc");
         $query = $this->db->get(); 
         
@@ -83,13 +84,15 @@ class Qb_mis_list_model extends CI_Model{
 
     function getQbMisReports($round,$region,$category,$username)
     {
-        $this->db->select('t1.*,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo');
+        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
-
+        $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+        
         if($region != '' && $region != 'NULL'){
-
-            $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
 
             $region = str_replace(',', "','", $region);
 
@@ -112,15 +115,46 @@ class Qb_mis_list_model extends CI_Model{
         return $query->result(); 
     }
 
-    function getFilteredQbReports($round,$zone,$lotno,$region,$category,$username)
+    function getVendorLotNos($round,$vendor_id){
+
+        $this->db->select('packingslip_lotno');
+        $this->db->from($this->packingslipsListTbl);
+        $this->db->where('packingslip_vendorid',$vendor_id);
+        $this->db->where('test_edition',$round);
+        $this->db->order_by('packingslip_sentdate','desc');
+        $query = $this->db->get();
+        return $query->result_array(); 
+
+    }
+
+    function getQbMisVendorReports($round,$lotnos)
     {
-        $this->db->select('t1.*,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo');
+        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
-        
-        if($region != '' && $region != 'NULL'){
+        $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
 
-            $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+        $this->db->where('t1.test_edition',$round);
+        $this->db->where("t1.lot_no IN ($lotnos)");
+        $this->db->order_by('t1.packlabel_date','desc');
+        $query = $this->db->get();
+        return $query->result(); 
+    }
+
+
+    function getFilteredQbReports($round,$zone,$lotno,$region,$category,$username)
+    {
+        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->from("$this->schoolProcessTracking as t1");
+        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
+        $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+        if($region != '' && $region != 'NULL'){
 
             $region = str_replace(',', "','", $region);
 
@@ -138,7 +172,7 @@ class Qb_mis_list_model extends CI_Model{
         }
 
         if($zone != ""){
-            $this->db->where('t1.school_region',$zone);
+            $this->db->where('t3.region',$zone);
         }
 
         if($lotno != ""){
@@ -148,6 +182,37 @@ class Qb_mis_list_model extends CI_Model{
         $this->db->order_by('t1.packlabel_date','desc');
         $query = $this->db->get();
 
+        return $query->result(); 
+
+    }
+
+    function getFilteredVendorQbReports($round,$zone,$lotno,$vendor_id,$lotnos)
+    {
+        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->from("$this->schoolProcessTracking as t1");
+        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
+        $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+        if($round != ""){
+            $this->db->where('t1.test_edition',$round);
+        }
+
+        if($zone != ""){
+            $this->db->where('t3.region',$zone);
+        }
+
+        if($lotno != ""){
+            $this->db->where('t1.lot_no',$lotno);
+        }
+        else{
+            $this->db->where("t1.lot_no IN ($lotnos)");
+        }
+
+        $this->db->order_by('t1.packlabel_date','desc');
+        $query = $this->db->get();
+        
         return $query->result(); 
 
     }

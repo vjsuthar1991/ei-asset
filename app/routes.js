@@ -23,6 +23,12 @@ app.run(function($rootScope, $templateCache, $routeParams,$location,$window,$rou
                 var d = new Date();
                 d.setTime(d.getTime() + (1*24*60*60*1000));
                 var expires = "expires=" + d.toGMTString();
+                if(response.fullname[0]['region'] == null || response.fullname[0]['region'] == 'NULL'){
+                  
+                  response.fullname[0]['region'] = 'NULL';
+                
+                }
+                
                 document.cookie = "loginusername=" + response.fullname[0]['fullname'] + ";" + expires + ";path=/";
                 document.cookie = "loginuserregion=" + response.fullname[0]['region'] + ";" + expires + ";path=/";
                 document.cookie = "loginusercategory=" + response.fullname[0]['category'] + ";" + expires + ";path=/";
@@ -284,6 +290,11 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/vendor-portal/change-password.html',
               controller: 'VendorChangePasswordController',
+            })
+            .when('/vendor_qb_mis_list',{
+              cache: false,
+              templateUrl: 'views/vendor-portal/vendor-qb-mis-list.html',
+              controller: 'VendorQbMisListController',
             });
 
 

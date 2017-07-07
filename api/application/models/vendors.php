@@ -12,6 +12,9 @@ class Vendors extends CI_Model{
         $this->courierCompany = 'courier';
         $this->schoolProcessTracking = 'school_process_tracking';
         $this->courierDispatchDetails = 'courier_dispatch_details';
+        $this->contactDetailsTbl = 'contact_details';
+        $this->salesAllotmentMasterTbl = 'sales_allotment_master';
+        $this->marketingTbl = 'marketing';
     }
 
     /*
@@ -21,6 +24,7 @@ class Vendors extends CI_Model{
         $this->db->distinct();
         $this->db->select('region');
         $this->db->from($this->schoolsTbl);
+        $this->db->where("region != ''");
         $this->db->order_by("region","asc");
         $query = $this->db->get(); 
         return $query->result();
@@ -42,6 +46,8 @@ class Vendors extends CI_Model{
      * inser vendor data in database
      */
     function insertVendor($data = array()){
+
+        $data['vendor_password'] = md5($data['vendor_password']);
         //insert user data to users table
         $insert = $this->db->insert($this->vendorTbl, $data);
         //return the status
@@ -75,7 +81,7 @@ class Vendors extends CI_Model{
     {
 
         $this->db->where('vendor_id', $data['vendor_id']);
-        $this->db->update($this->vendorTbl,array('vendor_name' => $data['vendor_name'],'vendor_address' => $data['vendor_address'],'vendor_zone' => $data['vendor_zone'],'vendor_username' => $data['vendor_username'],'vendor_password' => $data['vendor_password'],'vendor_phone' => $data['vendor_phone'],'vendor_contact_person_1_name' => $data['vendor_contact_person_1_name'],'vendor_contact_person_1_email' => $data['vendor_contact_person_1_email'],'vendor_contact_person_1_contactno' => $data['vendor_contact_person_1_contactno'],'vendor_coo_name' => $data['vendor_coo_name'],'vendor_coo_email' => $data['vendor_coo_email'],'vendor_coo_contactno' => $data['vendor_coo_contactno'],'vendor_ceo_name' => $data['vendor_ceo_name'],'vendor_ceo_email' => $data['vendor_ceo_email'],'vendor_ceo_contactno' => $data['vendor_ceo_contactno']));
+        $this->db->update($this->vendorTbl,array('vendor_name' => $data['vendor_name'],'vendor_address' => $data['vendor_address'],'vendor_zone' => $data['vendor_zone'],'vendor_username' => $data['vendor_username'],'vendor_password' => md5($data['vendor_password']),'vendor_phone' => $data['vendor_phone'],'vendor_contact_person_1_name' => $data['vendor_contact_person_1_name'],'vendor_contact_person_1_email' => $data['vendor_contact_person_1_email'],'vendor_contact_person_1_contactno' => $data['vendor_contact_person_1_contactno'],'vendor_coo_name' => $data['vendor_coo_name'],'vendor_coo_email' => $data['vendor_coo_email'],'vendor_coo_contactno' => $data['vendor_coo_contactno'],'vendor_ceo_name' => $data['vendor_ceo_name'],'vendor_ceo_email' => $data['vendor_ceo_email'],'vendor_ceo_contactno' => $data['vendor_ceo_contactno']));
         
         return $data['vendor_id'];            
     }
@@ -93,8 +99,9 @@ class Vendors extends CI_Model{
         $this->db->select('*');
         $this->db->from($this->vendorTbl);
         $this->db->where('vendor_username',$vendorusername);
-        $this->db->where('vendor_password',$vendorpassword);
+        $this->db->where('vendor_password',md5($vendorpassword));
         $query = $this->db->get();
+        
         return $query->result();
     }
 
@@ -171,13 +178,12 @@ class Vendors extends CI_Model{
             $this->db->where('school_code',$schoolCode);
             $this->db->where('test_edition',$edition[0]->test_edition);
             $query = $this->db->get();
+            
             $check = $query->result();
 
             if($deliveryDate == ''){
                 $deliveryDate = '0000-00-00';
             }
-
-            
 
             if($check[0]->qb_despatch_date == "0000-00-00"){
 
@@ -193,10 +199,7 @@ class Vendors extends CI_Model{
                 $this->db->where('test_edition',$edition[0]->test_edition);
                 $query = $this->db->get();
                 $check2 = $query->result();
-                // echo '<pre>';
-                // print_r($check2);
-                // echo count($check2);
-                // die;
+                
                 
                 if(count($check2) == 0){
 
@@ -279,6 +282,90 @@ class Vendors extends CI_Model{
         $query = $this->db->get();
         return $query->result_array();
 
+    }
+
+    function getSchoolRegion($schoolCode){
+
+        $this->db->select('region');
+        $this->db->from($this->schoolsTbl);
+        $this->db->where('schoolno',$schoolCode);
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function getSchoolPrincipalEmailId($schoolCode){
+
+        $this->db->select('contact_mail_1');
+        $this->db->from($this->schoolsTbl);
+        $this->db->where('schoolno',$schoolCode);
+        $this->db->where('designation_1','Principal');
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    
+
+    function getSchoolAssetCoordinatorEmailId($schoolCode){
+
+        $this->db->select('contact_mail');
+        $this->db->from($this->contactDetailsTbl);
+        $this->db->where('school_code',$schoolCode);
+        $this->db->where('designation','ASSET Coordinator');
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+
+    function getSchoolkeyAccountRM($schoolCode){
+
+        $this->db->select('keyAccount');
+        $this->db->from($this->salesAllotmentMasterTbl);
+        $this->db->where('schoolCode',$schoolCode);
+        $this->db->where('product','asset');
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function getSchoolkeyAccountRMEmailID($rmname){
+
+        $this->db->select('email');
+        $this->db->from($this->marketingTbl);
+        $this->db->where('name',$rmname);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getSchoolBuddyAccountRM($schoolCode){
+
+        $this->db->select('buddyAccount');
+        $this->db->from($this->salesAllotmentMasterTbl);
+        $this->db->where('schoolCode',$schoolCode);
+        $this->db->where('product','asset');
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function getSchoolBuddyRMEmailID($rmname){
+
+        $this->db->select('email');
+        $this->db->from($this->marketingTbl);
+        $this->db->where('name',$rmname);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getSchoolZMEmailID($region){
+        $this->db->select('email');
+        $this->db->from($this->marketingTbl);
+        $this->db->where('category','ZM');
+        $this->db->where("FIND_IN_SET('$region',region)");
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     function checkVendorPassword($data){

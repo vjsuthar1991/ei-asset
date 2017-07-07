@@ -9,9 +9,14 @@
 
               <ul class="nav navbar-nav search-nav">
               
-              <li class="active"><a href="./">Home</a></li>
+              <li class=""><a href="/main.php">Home</a></li>
+              <li class="active"><a href="./">Dashboard</a></li>
                
-
+              <?php 
+                session_start();
+                if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel' )
+                {
+              ?>
               <li class="dropdown">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Vendor Management <span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -20,14 +25,20 @@
                   <li><a href="vendor_list">Vendor's List</a></li>
                 </ul>
               </li>
+              <?php } ?>
 
               <li class="dropdown">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pre Test <span class="caret"></span></a>
                 <ul class="dropdown-menu">
+                  <?php 
+                if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                {
+              ?>
                   <li><a href="generate_packing_slips">Generate Packing Slip</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="packing_slips_list">Packing Slip List</a></li>
                   <li role="separator" class="divider"></li>
+                  <?php } ?>
                   <li><a href="qb_mis_list">Test Material Status</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="school-order-tracking">School Order Tracking</a></li>

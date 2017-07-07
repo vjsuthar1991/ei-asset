@@ -315,10 +315,23 @@ class Vendor extends CI_Controller {
 						else{
 							if($value['O'] != '' && $value['P'] != '' && $value['Q'] != '' && $value['R'] != '' && $value['S'] != '' && $value['T'] != '' && $value['U'] != '' && $value['V'] != '' && $value['W'] != ''){
 								//echo 'PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
-								$fileExist = file_exists('/Applications/XAMPP/xamppfiles/htdocs/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif');
+								$fileExist = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif');
 								
 								if($fileExist != 1 || $fileExist == ''){
-									$schoolContentListFlag = 1;
+									
+									$fileExist2 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.pdf');
+									
+									if($fileExist2 != 1 || $fileExist2 == ''){
+									
+										$fileExist3 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.jpg');
+
+										if($fileExist3 != 1 || $fileExist3 == ''){
+											$schoolContentListFlag = 1;
+										}
+
+									}	
+
+									
 								}
 
 								if($value['W'] == 'DELIVERED'){
@@ -345,8 +358,8 @@ class Vendor extends CI_Controller {
 						
 					if($value['P'] == 'QB') {
 
-						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
-
+						//$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
+						$mailFlag = 1;
 						if($mailFlag == 1){
 							$message = '';
 							$subject = '';
@@ -388,17 +401,131 @@ class Vendor extends CI_Controller {
 
 							$ci = get_instance();
 
+							$toEmail = array();
 							$school_email = $this->vendors->getSchoolEmailId($value['B']);
+							$school_principal_email = $this->vendors->getSchoolPrincipalEmailId($value['B']);
+							$school_assetcoordinator_email = $this->vendors->getSchoolAssetCoordinatorEmailId($value['B']);
 
-							$schoolEmail = $school_email[0]['email'];
+							if(count($school_email) > 0){
+								$schoolEmail = $school_email[0]['email'];	
+							}
+							else{
+								$schoolEmail = '';
+							}
+
+							if(count($school_principal_email) > 0){
+								$school_principal_email = $school_principal_email[0]['contact_mail_1'];
+							}
+							else{
+								$school_principal_email = '';
+							}
+
+							if(count($school_assetcoordinator_email) > 0){
+								$school_assetcoordinator_email = $school_assetcoordinator_email[0]['contact_mail'];
+							}
+							else{
+								$school_assetcoordinator_email = '';
+							}
+
 
 							if($schoolEmail == ''){
 								$schoolEmail = 'harit@ei-india.com';
+								array_push($toEmail, $schoolEmail);
+								$message .= '<br><br><b>Note:</b> We do not have schools email.';
+							}
+							else{
+								array_push($toEmail, $schoolEmail);
 							}
 
+							if($school_principal_email != ''){
+								array_push($toEmail, $school_principal_email);
+								
+							}
+
+							if($school_assetcoordinator_email != ''){
+								array_push($toEmail, $school_assetcoordinator_email);
+								
+							}
+							
+							$toEmail = array_unique($toEmail);
+
+							$toEmail = implode(',', $toEmail);
+
+							$ccEmail = array();
+
+							array_push($ccEmail, 'jignasha.mistry@ei-india.com');
+							array_push($ccEmail, 'mitul.patel@ei-india.com');
+
+							$schoolRegion = $this->vendors->getSchoolRegion($value['B']);
+
+							if($schoolRegion[0]['region'] == 'B-M-H'){
+								array_push($ccEmail, 'sherkhan.ei@gmail.com');
+								array_push($ccEmail, 'akbarshariff.ei@gmail.com');
+								array_push($ccEmail, 'harishkumar.ei@gmail.com');
+								array_push($ccEmail, 'kalpanarajan.ei@gmail.com');
+							}
+
+							$schoolKeyAccountRM = $this->vendors->getSchoolkeyAccountRM($value['B']);
+
+
+
+							if(count($schoolKeyAccountRM) > 0){
+								
+								$keyaccountrmEmailID = $this->vendors->getSchoolkeyAccountRMEmailID($schoolKeyAccountRM[0]['keyAccount']);
+
+								array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
+									
+							}
+
+							$schoolBuddyAccountRM = $this->vendors->getSchoolBuddyAccountRM($value['B']);
+
+							if(count($schoolBuddyAccountRM) > 0){
+								
+								$BuddyrmEmailID = $this->vendors->getSchoolBuddyRMEmailID($schoolBuddyAccountRM[0]['buddyAccount']);
+
+								array_push($ccEmail, $BuddyrmEmailID[0]['email']);
+									
+							}
+
+							$schoolZMEmail = $this->vendors->getSchoolZMEmailID($schoolRegion[0]['region']);
+							
+							if(count($schoolZMEmail) > 0){
+								array_push($ccEmail, $schoolZMEmail[0]['email']);
+							}
+
+							$ccEmail = array_unique($ccEmail);
+							
+							$ccEmail = implode(',', $ccEmail);
+							
 							$filename1 = '';
-							$filename1 = '/Applications/XAMPP/xamppfiles/htdocs/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
-							$ci->setemail($filename1,'vijay.suthar@ei-india.com',$subject,$message);
+
+							$fileExist = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif');
+								
+								if($fileExist != 1 || $fileExist == ''){
+									
+									$fileExist2 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.pdf');
+									
+									if($fileExist2 != 1 || $fileExist2 == ''){
+									
+										$fileExist3 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.jpg');
+
+										if($fileExist3 == 1 || $fileExist3 != ''){
+											$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.jpg';
+										}
+
+									}
+									else{
+										$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.pdf';
+									}	
+
+									
+								}
+								else{
+									$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';		
+								}
+
+							
+							$ci->setemail($filename1,$toEmail,$subject,$message,$ccEmail);
 						}
 					}
 					else {
@@ -428,19 +555,19 @@ class Vendor extends CI_Controller {
         die;
 	}
 
-	public function setemail($file1,$schoolEmailId,$subject,$message)
+	public function setemail($file1,$schoolEmailId,$subject,$message,$ccEmail)
 
         {
         	
         	$email = $schoolEmailId;
 			$subject = $subject;
 			$message = $message;
-			$this->sendEmail($email,$subject,$message,$file1);
+			$this->sendEmail($email,$subject,$message,$file1,$ccEmail);
 		}
 
 		
 
-	public function sendEmail($email,$subject,$message,$file1)
+	public function sendEmail($email,$subject,$message,$file1,$ccEmail)
 	    
 	    {
 	    	
@@ -455,12 +582,11 @@ class Vendor extends CI_Controller {
 	      'wordwrap' => TRUE
 	    );
 
-
-
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
+	      $this->email->cc($ccEmail);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      $this->email->attach($file1);
