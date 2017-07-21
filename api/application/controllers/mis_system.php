@@ -228,4 +228,96 @@ class Mis_system extends CI_Controller {
         die;
     }
 
+    /*
+	
+		Function Name: omr_receipt_status_list
+		Description: Action function to List OMR receipt status of all the schools
+		Params : @username - username of logged in user
+				 @region - region of the logged in user
+				 @category - category of the logged in user	
+		Input Format: JSON
+		Output: All the OMR receipt status from omr_receipt_reports table
+		Output Format: JSON
+
+	*/
+	
+	public function omr_receipt_status_list()
+	{
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		//get the latest round running in current session
+		$data['round_latest'] = $this->packingslips->getLatestRound();
+
+		//loop through the rounds selected
+		foreach ($data['round_latest'] as $key => $value) {
+
+			$date1 = '01-08-'.date('Y'); //date set to start winter round
+
+			$date2 = date('d-m-Y'); //get current date
+
+			if(new DateTime($date1) > new DateTime($date2)){
+				//condition to select summer round
+				if($value->description == 'Summer '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			else{
+				//condition to select winter round
+				if($value->description == 'Winter '.date('Y')){
+					$round = $value->test_edition;
+				}
+			}
+			
+		}
+
+		//call model function to return all zones as per the user region
+		$data['zones'] = $this->qb_mis_list_model->getZones($inputRequest['region']);
+
+		//call model function to get list of all the rounds from test_edition_details table
+		$data['rounds'] = $this->packingslips->getRounds();
+		
+		//call model function to get list of all the schools whose pack label date is set with dispatch and delivery status
+		$data['omr_receipt_list'] = $this->vendors->getOmrReceiptStatusList($round,$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+		
+		//output data in json array
+		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'omr_receipt_list' => $data['omr_receipt_list'],'round_selected' => $round));
+		die;
+	}
+
+	/*
+	
+		Function Name: omr_receipt_status_listFilter
+		Description: Action function to filter all the List OMR receipt status of all the schools based on search parameters
+		Params : @username - username of logged in user
+				 @region - region of the logged in user
+				 @category - category of the logged in user
+				 @round - selected round
+				 @zone - selected zone
+		Input Format: JSON
+		Output: All the OMR receipt status list based on search parameters
+		Output Format: JSON
+
+	*/    
+
+    public function omr_receipt_status_listFilter()
+    {
+        
+        $inputRequest = json_decode(file_get_contents("php://input"),true);
+
+        $data['filteredomrreceiptreports'] = $this->vendors->getFilteredOmrReceiptStatusList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+        
+        //check if data array is not blank
+        if(count($data['filteredomrreceiptreports']) > 0) {
+
+            echo json_encode(array('status' => 'success','filteredomrreceiptreports'=> $data['filteredomrreceiptreports']));
+
+        }
+        else{
+
+            echo json_encode(array('status' => 'error','message'=> 'No Records Found'));
+            
+        }
+        die;
+    }
+
 }

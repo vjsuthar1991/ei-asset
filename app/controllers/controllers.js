@@ -867,6 +867,7 @@ return false;
 });
 
 app.controller('PackingSlipsListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+  
   $scope.dtInstance = {};
   $scope.packingsliplist = [];
   
@@ -1099,10 +1100,27 @@ app.controller('VendorDashboardController', function($scope,$http,$ocLazyLoad) {
 });
 
 app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$location,$window,$route){
-   $scope.rounds = [];
+  
+  $("#uploadqbmisform").validate({
+    errorElement: "em",
+    errorPlacement: function(error, element) {
+      $(element.parent("div").addClass("form-animate-error"));
+      error.appendTo(element.parent("div"));
+    },
+    success: function(label) {
+      $(label.parent("div").removeClass("form-animate-error"));
+    },
+    rules: {
+      qbmis_csvfile: "required",
+    },
+    messages: {
+    
+    }
+  });
 
-
-   $.ajax({
+  $scope.rounds = [];
+  
+  $.ajax({
     url: './api/vendor/qb_mis',
     type: 'POST',
     dataType : 'json', // data type
@@ -1124,9 +1142,16 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
   });
 
    $(document).on('submit','#uploadqbmisform',function(event){
+
+    
+    event.stopImmediatePropagation();
+
     $('#uploadqbanalysismisbtn').attr('disabled','disabled');
-    var fileUpload = document.getElementById("qbmis_csvfile");
+    
     event.preventDefault();
+
+    var fileUpload = document.getElementById("qbmis_csvfile");
+    
 
     if (fileUpload .value != null) {
 
@@ -1453,27 +1478,23 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
         
         jQuery.each( response.qb_mis_reports, function( i, val ) {
 
-          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-          var firstDate = new Date(val.qb_despatch_date);
-          var secondDate = new Date(val.packlabel_date);
-
-          var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
+          //var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
           
-          if(isNaN(diffDays)){
+          var diffDays = val.qbtat;
+
+          
+          
+          
+          if(diffDays == null){
             diffDays = 'Not Yet Dispatched';
           }
 
-          var dispatchDate = new Date(val.qb_despatch_date);
-          var deliveryDate = new Date(val.qb_delivery_date);
-
-          var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+          var deliverydiffDays = val.analysistat;
           
-          if(isNaN(deliverydiffDays)){
+          if(deliverydiffDays == null){
             deliverydiffDays = 'Not Yet Delivered';
           }
 
-
-          
           $scope.qbmisreports.push({
 
             schoolCode: val.school_code,
@@ -1572,22 +1593,15 @@ app.controller('QbMisListController', function($scope,$http,DTOptionsBuilder, DT
                   
                     jQuery.each( response.filteredqbreports, function( i, val ) {
 
-                        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-                        var firstDate = new Date(val.qb_despatch_date);
-                        var secondDate = new Date(val.packlabel_date);
+                        var diffDays = val.qbtat;
 
-                        var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
-                        
-                        if(isNaN(diffDays)){
+                        if(diffDays == null){
                           diffDays = 'Not Yet Dispatched';
                         }
 
-                        var dispatchDate = new Date(val.qb_despatch_date);
-                        var deliveryDate = new Date(val.qb_delivery_date);
-
-                        var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+                        var deliverydiffDays = val.analysistat;
                         
-                        if(isNaN(deliverydiffDays)){
+                        if(deliverydiffDays == null){
                           deliverydiffDays = 'Not Yet Delivered';
                         }
 
@@ -1709,22 +1723,15 @@ app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuild
 
         jQuery.each( response.qb_mis_reports, function( i, val ) {
 
-          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-          var firstDate = new Date(val.qb_despatch_date);
-          var secondDate = new Date(val.packlabel_date);
+          var diffDays = val.qbtat;
 
-          var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
-          
-          if(isNaN(diffDays)){
+          if(diffDays == null){
             diffDays = 'Not Yet Dispatched';
           }
 
-          var dispatchDate = new Date(val.qb_despatch_date);
-          var deliveryDate = new Date(val.qb_delivery_date);
-
-          var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+          var deliverydiffDays = val.analysistat;
           
-          if(isNaN(deliverydiffDays)){
+          if(deliverydiffDays == null){
             deliverydiffDays = 'Not Yet Delivered';
           }
 
@@ -1830,22 +1837,15 @@ app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuild
                   
                     jQuery.each( response.filteredqbreports, function( i, val ) {
 
-                        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-                        var firstDate = new Date(val.qb_despatch_date);
-                        var secondDate = new Date(val.packlabel_date);
+                        var diffDays = val.qbtat;
 
-                        var diffDays = Math.round((firstDate.getTime() - secondDate.getTime())/(oneDay));
-                        
-                        if(isNaN(diffDays)){
+                        if(diffDays == null){
                           diffDays = 'Not Yet Dispatched';
                         }
 
-                        var dispatchDate = new Date(val.qb_despatch_date);
-                        var deliveryDate = new Date(val.qb_delivery_date);
-
-                        var deliverydiffDays = Math.round((deliveryDate.getTime() - dispatchDate.getTime())/(oneDay));
+                        var deliverydiffDays = val.analysistat;
                         
-                        if(isNaN(deliverydiffDays)){
+                        if(deliverydiffDays == null){
                           deliverydiffDays = 'Not Yet Delivered';
                         }
 
@@ -1891,11 +1891,8 @@ app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuild
                   return nRow;
                 }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
 
-                
-
                 $scope.dtInstance.rerender();
-                  
-
+              
                 }
 
                }
@@ -1908,9 +1905,21 @@ app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuild
 
 app.controller('DashboardPenAndPaperController', function($scope,$http){
 
+  $scope.openPretestdashboardtable = function(event){
+    
+    document.getElementById("myNav").style.width = "100%";
+
+  };
+
+  $scope.closePretestdashboardtable = function(event){
+    
+    document.getElementById("myNav").style.width = "0%";
+
+  };
+
 });
 
-app.controller('DashboardPenAndPaperPreTestController', function($scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
+app.controller('DashboardPenAndPaperPreTestController', function($rootScope,$scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
   
 //$('#overlay').show();
 
@@ -2254,7 +2263,8 @@ $scope.showSchoolRegistered = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            //DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2277,6 +2287,7 @@ $scope.showSchoolRegistered = function(e){
   });
 
 };
+
 
 $scope.showSchoolSSFReceived = function(e){
 
@@ -2328,7 +2339,7 @@ $scope.showSchoolSSFReceived = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2401,7 +2412,7 @@ $scope.showSchoolSSFPending = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2472,7 +2483,7 @@ $scope.showSchoolSSFAlert = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2547,7 +2558,7 @@ $scope.showSchoolPaymentReceived = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2624,7 +2635,7 @@ $scope.showSchoolPaymentPending = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2701,7 +2712,7 @@ $scope.showSchoolPaymentAlert = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2777,7 +2788,7 @@ $scope.showSchoolPackLabelDateSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2852,7 +2863,7 @@ $scope.showSchoolPackLabelDateNotSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -2927,7 +2938,7 @@ $scope.showSchoolPackLabelDateAlert = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3004,7 +3015,7 @@ $scope.showSchoolDispatchDateSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3079,7 +3090,7 @@ $scope.showSchoolDispatchDateNotSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3150,7 +3161,7 @@ $scope.showSchoolDispatchDateAlert = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3222,7 +3233,7 @@ $scope.showSchoolDeilveryDateSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3295,7 +3306,7 @@ $scope.showSchoolDeilveryDateNotSet = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3367,7 +3378,7 @@ $scope.showSchoolDeilveryDateAlert = function(e){
         $scope.dtColumns = [
 
             DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
-            DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
             DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
             DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
             DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
@@ -3396,7 +3407,164 @@ $scope.showSchoolDeilveryDateAlert = function(e){
 
 app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
 
- 
+  if($routeParams.round != '' && $routeParams.school != ''){
+
+    $scope.schoolName = '';
+    $scope.paymentDetails = [];
+    $scope.processTracking = [];
+    $scope.courierDetails = [];
+
+
+    var schoolCode = $routeParams.school;   
+    var round = $routeParams.round;
+
+    var data = {round: round,school:schoolCode};
+    data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/schoolTracking/loadSchoolTrackingSchoolDetails',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        $scope.schoolCode = schoolCode;
+
+        $scope.testEdition = round;
+
+        $scope.schoolName = response.schoolName;
+
+        $scope.paymentDetails = response.paymentDetails[0];
+
+        $scope.processTracking = response.processTracking[0];
+
+        $scope.courierDetails = response.courierDetails[0];
+
+        $scope.courierDetailsLength = response.courierDetails.length;
+
+        $scope.finalBreakupFlag = response.finalbreakupflag;
+
+        $scope.fileExtension = response.fileExtension;
+
+        if($scope.finalBreakupFlag == 1){
+          $scope.finalBreakupColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.finalBreakupColor = '#f1685e';
+        }
+
+        $scope.paymentflag = response.paymentflag;
+
+        if($scope.paymentflag == 1){
+          $scope.paymentColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.paymentColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+          if(response.processTracking[0].packlabel_date != '00-00-0000' && response.processTracking[0].packlabel_date != ''){
+            $scope.packLabelColor = 'rgb(34, 194, 34)';
+          }
+          else{
+            $scope.packLabelColor = '#f1685e';
+          }
+
+        }
+        else{
+          $scope.packLabelColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+        if(response.processTracking[0].qb_despatch_date != '00-00-0000' && response.processTracking[0].qb_despatch_date != ''){
+          $scope.qbDispatchColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.qbDispatchColor = '#f1685e';
+        }
+        }
+        else {
+          $scope.qbDispatchColor = '#f1685e';
+        }
+
+        if(response.processTracking.length > 0)
+        {
+
+        if(response.processTracking[0].qb_delivery_date != '00-00-0000' && response.processTracking[0].qb_delivery_date != ''){
+          $scope.qbDeliveryColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.qbDeliveryColor = '#f1685e';
+        }
+      }
+      else{
+        $scope.qbDeliveryColor = '#f1685e';
+      }
+
+        setTimeout(function(){ $('#overlay').hide(); }, 3000); 
+        
+          $('.panel-body').removeAttr( 'style' );
+
+          $('.tabtitlecustom').each(function(i, obj) {
+        
+        var window_w = document.body.clientWidth;
+        
+        if(window_w <= 768 && window_w > 585 ){
+
+          $(obj).css('font-size','11px');
+        }
+        else if(window_w < 1024){
+          
+          $(obj).css('font-size','13px');
+        }
+        else {
+         $(obj).css('font-size','15px'); 
+        }
+        
+      });
+
+      setTimeout(function(){
+
+        $('.line').each(function(i, obj) {
+
+        var linewidth = Math.abs($('#foo').offset().left - $('#bar').offset().left); 
+
+            if(i == 4 || i == 5){
+
+               linewidth = 0;
+
+               $(obj).css('width',linewidth);
+               //$('.vertical-line').css('left',linewidth - 6);
+            }
+            else{
+
+               $(obj).css('width',linewidth);
+
+            
+            }
+        });
+
+      },1);
+
+
+
+      }
+      
+    }
+  });
+  }
+
   $(window).resize(function() {
 
   $('.line').each(function(i, obj) {
@@ -3559,6 +3727,8 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         $scope.courierDetailsLength = response.courierDetails.length;
 
         $scope.finalBreakupFlag = response.finalbreakupflag;
+
+        $scope.fileExtension = response.fileExtension;
 
         if($scope.finalBreakupFlag == 1){
           $scope.finalBreakupColor = 'rgb(34, 194, 34)';
@@ -3783,5 +3953,408 @@ app.controller('VendorChangePasswordController', function($scope,$http,$ocLazyLo
       return false;
 
     });
+
+});
+
+app.controller('EscalationPreTestLogController', function($scope,$http,$ocLazyLoad,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
+
+   
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  
+  $scope.qbescalationloglist = [];
+
+  var flag = 0;
+  var userData = [];
+  // var round = $('#qbroundfilter').val();
+  
+    $.ajax({
+    url: './api/escalationlog/pretest_escalation_log_list',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        jQuery.each( response.pre_test_escalation_log, function( i, val ) {
+
+          
+          $scope.qbescalationloglist.push({
+
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            escalationTestEdition: val.test_edition,
+            escalationMailTo: val.mail_to,
+            escalationType: val.escalation_type,
+            escalationPriorityFlag: val.priority_flag,
+            escalationMailSentDate: val.mail_sent_date
+          
+          });
+        
+        });
+
+        
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.qbescalationloglist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('escalationTestEdition').withTitle('Test Edition').withOption('title','Test Edition'),
+                DTColumnBuilder.newColumn('escalationMailTo').withTitle('Mail Sent To').withOption('title','Mail Sent To'),
+                DTColumnBuilder.newColumn('escalationType').withTitle('Escalation Type').withOption('title','Escalation Type'),
+                DTColumnBuilder.newColumn('escalationPriorityFlag').withTitle('Escalation Level').withOption('title','Escalation Level'),
+                DTColumnBuilder.newColumn('escalationMailSentDate').withTitle('Mail Sent Date').withOption('title','Mail Sent Date'),
+                 ];  
+                
+                
+      }
+      
+    }
+  });
+
+});
+
+app.controller('VendorUploadOMRMISController', function($scope,$http,$routeParams,$location,$window,$route){
+
+    function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+  }
+
+  var vendor_id = getCookie('vendor_id');
+
+    $("#uploadomrreceiptmisform").validate({
+      errorElement: "em",
+      errorPlacement: function(error, element) {
+        $(element.parent("div").addClass("form-animate-error"));
+        error.appendTo(element.parent("div"));
+      },
+      success: function(label) {
+        $(label.parent("div").removeClass("form-animate-error"));
+      },
+      rules: {
+        omr_receiptmis_csvfile: "required",
+        omr_receipt_round: "required",
+      },
+      messages: {
+      
+      }
+    });
+
+    $scope.rounds = [];
+    
+    $.ajax({
+      url: './api/vendor/qb_mis',
+      type: 'POST',
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+
+
+            $scope.rounds = response.rounds;
+          
+        }
+        
+      }
+    });
+
+     $(document).on('submit','#uploadomrreceiptmisform',function(event){
+
+      
+      event.stopImmediatePropagation();
+
+      $('#uploadomrreceiptmisbtn').attr('disabled','disabled');
+      
+      event.preventDefault();
+
+      var fileUpload = document.getElementById("omr_receiptmis_csvfile");
+      
+      if (fileUpload.value != null) {
+
+        var uploadFile = new FormData();
+        var files = $("#omr_receiptmis_csvfile").get(0).files;
+        var round = $('#omr_receipt_round').val();
+
+        $scope.csvdata = [];
+          // Add the uploaded file content to the form data collection
+          if (files.length > 0) {
+
+            uploadFile.append("OMRRECEIPTMISCsv", files[0]);
+            uploadFile.append("round", round);
+            uploadFile.append("vendor_id", vendor_id);
+
+            $.ajax({
+              url: "./api/vendor/upload_omr_receipt_mis",
+              contentType: false,
+              processData: false,
+              data: uploadFile,
+              type: 'POST',
+              success: function (returndata) {
+
+               var response = JSON.parse(returndata);
+
+               if(response.status == "success"){
+
+                  if($('#upload_csv_message_box').hasClass('alert-danger')){
+                    $('#upload_csv_message_box').removeClass('alert-danger');
+                  }
+                  $('#upload_csv_message_box').addClass('alert-success');
+                  $('#upload_csv_message_box').text('');
+                  $('#upload_csv_message_box').append(response.message);
+                  $('#upload_csv_message_box').removeClass('hide');
+                  $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+                  setTimeout(function(){ window.location.reload(); }, 3000);   
+
+                }
+                else {
+
+                  $('#uploadqbmisform')[0].reset();
+                  $('#uploadqbanalysismisbtn').removeAttr('disabled');
+                  
+                  if($('#upload_csv_message_box').hasClass('alert-success')){
+                    $('#upload_csv_message_box').removeClass('alert-success');
+                  }
+                  
+                  $('#upload_csv_message_box').addClass('alert-danger');
+                  $('#upload_csv_message_box').text('');
+                  $('#upload_csv_message_box').append(response.message);
+                  $('#upload_csv_message_box').removeClass('hide');
+                  $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+                  setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 4000);
+                }
+
+              }
+            });
+    }
+  }
+
+  });
+
+});
+
+app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  
+  $scope.rounds = [];
+  $scope.lotnos = [];
+  $scope.zones = [];
+  $scope.omr_receipt_list = [];
+
+  var flag = 0;
+  var userData = [];
+  // var round = $('#qbroundfilter').val();
+  var data = {region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/mis_system/omr_receipt_status_list',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.roundSelected = response.round_selected;
+
+        
+        jQuery.each( response.omr_receipt_list, function( i, val ) {
+
+          
+          $scope.omr_receipt_list.push({
+
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolTestDate: val.test_date,
+            schoolTotalPapers: val.totalPapers,
+            schoolTotalPaperReceived: val.sum,
+            schoolOMRReceivedDate: val.inward_date,
+            schoolOMRScanningDate: val.scan_date,
+            schoolOMRDifference: val.difference,
+            schoolOMRPercentage: val.percentage 
+
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.omr_receipt_list).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          
+                  var el = $(nRow).find("td").eq(7);
+                  
+                  if(aData.schoolOMRPercentage < 85){
+                    $(el).addClass('red-alert');  
+                  }
+                  
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('schoolTestDate').withTitle('Test Date').withOption('title','Test Date'),
+                DTColumnBuilder.newColumn('schoolTotalPapers').withTitle('No. Of Papers').withOption('title','No. Of Papers'),
+                DTColumnBuilder.newColumn('schoolTotalPaperReceived').withTitle('No. Of OMR Received').withOption('title','No. Of OMR Received'),
+                DTColumnBuilder.newColumn('schoolOMRDifference').withTitle('OMR Pending').withOption('title','OMR Pending'),
+                DTColumnBuilder.newColumn('schoolOMRReceivedDate').withTitle('OMR Received Date').withOption('title','OMR Received Date'),
+                DTColumnBuilder.newColumn('schoolOMRScanningDate').withTitle('OMR Scanning Date').withOption('title','OMR Scanning Date'),];  
+                
+      }
+      
+    }
+  });
+
+  $scope.filteromrReceiptStatusList = function(e) {
+    
+    $scope.filteromrReceiptList = [];
+     
+      
+        var round = $('#omrreceiptroundfilter').val();
+        
+        var zone = $('#omrreceiptzonefilter').val();
+
+        var data = {round:round,zone:zone,region:region,category:category,username:username};
+        
+        data = JSON.stringify(data);
+
+        $.ajax({
+            url: "./api/mis_system/omr_receipt_status_listFilter",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
+              
+             var response = returndata;
+             
+                if(response.status == "success"){
+
+                  
+                    jQuery.each( response.filteredomrreceiptreports, function( i, val ) {
+
+                        $scope.filteromrReceiptList.push({
+
+                          schoolCode: val.school_code,
+                          schoolName: val.schoolname,
+                          schoolCity: val.city,
+                          schoolRegion: val.region,
+                          schoolTestDate: val.test_date,
+                          schoolTotalPapers: val.totalPapers,
+                          schoolTotalPaperReceived: val.sum,
+                          schoolOMRReceivedDate: val.inward_date,
+                          schoolOMRScanningDate: val.scan_date,
+                          schoolOMRDifference: val.difference,
+                          schoolOMRPercentage: val.percentage 
+
+                        });
+
+                    });
+            
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteromrReceiptList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  
+                  var el = $(nRow).find("td").eq(7);
+                  
+                  if(aData.schoolOMRPercentage < 85){
+                    $(el).addClass('red-alert');  
+                  }
+
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('processing', true); 
+
+                $scope.dtInstance.rerender();
+               
+                }
+                else
+                {
+                  
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteromrReceiptList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+
+                $scope.dtInstance.rerender();
+
+                }
+
+               }
+             });
+  };
+
+  
+});
+
+app.controller('LotGenerationController', function($scope,$http,$ocLazyLoad) {
+
+  
 
 });

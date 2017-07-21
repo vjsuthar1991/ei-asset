@@ -1,11 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+error_reporting(0);
 class Vendor extends CI_Controller {
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->model('vendors');
+		$this->load->model('schooltrackingmodel');
 	}
 	
 	/*
@@ -251,30 +252,10 @@ class Vendor extends CI_Controller {
 			$worksheet = $objPHPExcel->getSheet(0);
 			$sheetData = $worksheet->toArray(null,true,true,true);
 
-			// echo '<pre>';
-			// print_r($sheetData);
-			// die;
-
-			//get only the Cell Collection
-			
-			//$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
-
-
 			//extract to a PHP readable array format
 			$row = 1;
 			foreach ($sheetData as $key => $cell) {
-			 //    $column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
-			 //    $row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
-			 //    $cel = $objPHPExcel->getActiveSheet()->getCell($cell);
-			    // $data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
-			   
-			    
-    // 			 //echo date('d-M-Y H:i:s', $unixTimeStamp), PHP_EOL;
-			 //     //echo $phpDateTimeObject = PHPExcel_Shared_Date::ExcelToPHPObject($cell);
-				// //echo phpDateTimeObject->format('Y-m-d');
-
-
-			 //    //header will/should be in row 1 only. of course this can be modified to suit your need.
+			 
 			    if ($row == 1) {
 			        $header[$row] = $cell;
 			    } else {
@@ -307,6 +288,7 @@ class Vendor extends CI_Controller {
 					$schoolCodeFlag = 0;
 					$schoolRecordFlag = 0;
 					$schoolContentListFlag = 0;
+
 					foreach ($data['values'] as $key => $value) {
 						if($value['B'] == '')
 						{
@@ -350,7 +332,9 @@ class Vendor extends CI_Controller {
 					}
 					
 				}
-				
+
+				//$schoolContentListFlag = 0;
+
 				if($schoolCodeFlag == 0 && $schoolRecordFlag == 0 && $schoolContentListFlag == 0){
 					
 
@@ -358,8 +342,8 @@ class Vendor extends CI_Controller {
 						
 					if($value['P'] == 'QB') {
 
-						//$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
-						$mailFlag = 1;
+						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
+						
 						if($mailFlag == 1){
 							$message = '';
 							$subject = '';
@@ -524,7 +508,6 @@ class Vendor extends CI_Controller {
 									$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';		
 								}
 
-							
 							$ci->setemail($filename1,$toEmail,$subject,$message,$ccEmail);
 						}
 					}
@@ -559,7 +542,7 @@ class Vendor extends CI_Controller {
 
         {
         	
-        	$email = $schoolEmailId;
+        	echo $email = $schoolEmailId;
 			$subject = $subject;
 			$message = $message;
 			$this->sendEmail($email,$subject,$message,$file1,$ccEmail);
@@ -585,11 +568,66 @@ class Vendor extends CI_Controller {
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
-	      $this->email->to($email);
-	      $this->email->cc($ccEmail);
+	      //$this->email->to($email);
+	      //$this->email->cc($ccEmail);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
-	      $this->email->attach($file1);
+	      if($file1 != null){
+	      	$this->email->attach($file1);	
+	      }
+	      
+	      
+	      if($this->email->send())
+	         {
+	          //echo json_encode(array('status' => 'success','message'=> 'Despatch Details Sent Successfully..!!'));
+	          //unlink($file1);
+	          //unlink($file2);
+	          
+	         }
+	      else
+	        {
+	         //show_error($this->email->print_debugger());
+	         //echo json_encode(array('status' => 'error','message'=> 'Error In Sending Despatch Details Try Again..!!'));
+	        }
+	      $this->email->clear(TRUE);
+
+	    }
+
+
+    public function setOMRReceiptemail($schoolEmailId,$subject,$message,$ccEmail)
+
+    {
+    	
+    	$email = $schoolEmailId;
+		$subject = $subject;
+		$message = $message;
+		$this->sendEmail($email,$subject,$message,$ccEmail);
+	}
+
+		
+
+	public function sendOMRReceiptEmail($email,$subject,$message,$ccEmail)
+	    
+	    {
+	    	
+	    $config = Array(
+	      'protocol' => 'smtp',
+	      'smtp_host' => 'ssl://smtp.googlemail.com',
+	      'smtp_port' => 465,
+	      'smtp_user' => 'billingdesk@ei-india.com', 
+	      'smtp_pass' => 'billing123', 
+	      'mailtype' => 'html',
+	      'charset' => 'iso-8859-1',
+	      'wordwrap' => TRUE
+	    );
+
+	      $this->load->library('email', $config);
+	      $this->email->set_newline("\r\n");
+	      $this->email->from('jignasha.mistry@ei-india.com');
+	      //$this->email->to($email);
+	      //$this->email->cc($ccEmail);
+	      $this->email->subject($subject);
+	      $this->email->message($message);
 	      
 	      if($this->email->send())
 	         {
@@ -731,5 +769,264 @@ class Vendor extends CI_Controller {
 		}
 
 	}    
+
+	public function upload_omr_receipt_mis(){
+
+		$errors= array();
+
+		$round = $_REQUEST['round'];
+
+		$vendorId = $_REQUEST['vendor_id'];
+
+		if($_FILES['OMRRECEIPTMISCsv']['name'] != ""){
+
+		      $file_name = $_FILES['OMRRECEIPTMISCsv']['name'];
+		      $file_size =$_FILES['OMRRECEIPTMISCsv']['size'];
+		      $file_tmp =$_FILES['OMRRECEIPTMISCsv']['tmp_name'];
+		      $file_type=$_FILES['OMRRECEIPTMISCsv']['type'];
+		      $file_ext=strtolower(end(explode('.',$_FILES['OMRRECEIPTMISCsv']['name'])));
+		      
+		      $extensions= array("xlsx,xls");
+		      
+		      if(in_array($file_ext,$extensions)){
+
+		         $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+		      }
+		      
+		      if($file_size > 2097152){
+		         $errors[]='File size must be excately 2 MB';
+		      }
+		      
+		      if(empty($errors)==true){
+		         move_uploaded_file($file_tmp,"./MIS Reports/OMR Receipt/".$file_name);
+		         $success = '1';
+		          //echo "Success";
+		      }else{
+		          $success = '0';
+		         print_r($errors);
+		      }
+		}
+
+		if ($file_ext == "xlsx" || $file_ext == "xls") {
+    		//load the excel library
+			$this->load->library('excel');
+			//read file from path
+			$objPHPExcel = PHPExcel_IOFactory::load('./MIS Reports/OMR Receipt/'.$file_name);
+			$worksheet = $objPHPExcel->getSheet(0);
+			$sheetData = $worksheet->toArray(null,true,true,true);
+
+			//extract to a PHP readable array format
+			$row = 1;
+			foreach ($sheetData as $key => $cell) {
+			 
+			    if ($row == 1) {
+			        $header[$row] = $cell;
+			    } else {
+			        $arr_data[$row] = $cell;
+			    }
+			    $row++;
+			}
+			
+			//send the data in an array format
+			$data['header'] = $header;
+			$data['values'] = $arr_data;
+
+			$requiredColumns = array('Sr.no.','School Code','Courier-POD no, No of PKT','Total PKT','Test Date','Date of Inward(PROPOSED)','Date of scan','QC Done date','Data given to EI Date','NO of Records','POD NO / Date','Remark');
+			
+			//$courierCompany = array('Indian Post,DTDC,Seshasai Bangalore,Seshasai Ahmedabad,Seshasai Hyderabad,Seshasai Kolkata,Seshasai Mumbai,Aramex,Deccan 360,Cargo Escort,Blue Dart,Blazeflash,TNT,Spot-on,Overnite,SAFEXPRESS,Srichakra Trans Tech,Gati Courier,TRACKON,First Flight');
+			
+			$columnFlag = 0;
+			foreach ($requiredColumns as $key => $column) {
+				if(in_array($column, $data['header'][1]))
+				{
+					$columnFlag = 0;
+				}
+ 				else {
+					$columnFlag = 1;
+				}
+			}
+			
+			if($columnFlag != 1){
+				if(count($data['values']) > 0){
+					$schoolCodeFlag = 0;
+					$schoolRecordFlag = 0;
+					
+					foreach ($data['values'] as $key => $value) {
+						
+						if($value['B'] == '')
+						{
+							// echo $value['B'];
+							// echo $schoolCodeFlag = 1;
+						}
+						else{
+							if($value['C'] != '' && $value['D'] != '' && $value['E'] != '' && $value['F'] != '' && $value['G'] != '' && $value['H'] != '' && $value['I'] != '' && $value['J'] != '' && $value['K'] != ''){
+							
+								//echo 'PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
+							
+							}
+							else {
+								$schoolRecordFlag = 1;
+							}
+						}
+					}
+					
+				}
+
+				if($schoolCodeFlag == 0 && $schoolRecordFlag == 0){
+					
+					foreach ($data['values'] as $key => $value) {
+						
+					$mailFlag = $this->vendors->updateSchoolStatusOmrReceiptInfo($value,$round,$vendorId);
+					
+						if($mailFlag > 0) {
+							$message = '';
+							$subject = '';
+							$schoolDetails = $this->schooltrackingmodel->getSchoolName($value['B']);
+							$roundDescription = $this->schooltrackingmodel->getRoundDescription($round);
+							$resultDate = date('F Y', strtotime("+35 days", strtotime($value['F'])));
+							$totalOrder = $this->vendors->getTotalOrder($value['B'],$round);
+							
+							$subject .= 'Receipt of ASSET OMR sheets: '.$schoolDetails[0]['schoolname'].' - '.$value['B'].'';
+							$message .= 'Respected Sir/ Madam,' ;
+							$message .= '<br><br>';
+							$message .= 'Greetings from Educational Initiatives!';
+							$message .= '<br><br>';
+							$message .= 'We are writing this mail to confirm that we have received the ASSET answer sheets from your school. Please let us know if there is any discrepancies.';
+							$message .= '<br><br>';
+							$message .= '<b>Number of registered papers: '.$totalOrder.'</b>';
+							$message .= '<br>';
+							$message .= '<b>Number of OMR sheets received: '.$value['J'].'</b>';
+							$message .= '<br><br>';
+							$message .= 'We would like to take this opportunity to thank you for participating in ASSET. The results of '.$roundDescription[0]['description'].' will be sent to you in the month of '.$resultDate.'.';
+							$message .= '<br><br>';
+							$message .= 'The School Name will appear on all the certificates and reports as below:';
+							$message .= '<br><br>';
+							$message .= '<b>'.$schoolDetails[0]['schoolname'].' ('.$schoolDetails[0]['city'].')</b><br><br>';
+							$message .= 'If there is any change in the school name, please contact us at the earliest. You can write to us at <a href="mailto:info@ei-india.com">info@ei-india.com</a> or at our mailing address. The city name in bracket at the end cannot be removed.';
+							$message .= '<br><br>';
+							$message .= 'We require a written mail from the school to change the school name.';
+							$message .= '<br><br>';
+							$message .= 'Thank you for your cooperation. We look forward to your continuous support and keen interest in all activities of EI.';
+							$message .= '<br><br>';
+							$message .= 'Thanking you with warm regards,<br>';
+							$message .= 'Customer Support<br>';							
+							$message .= 'Educational Initiatives Pvt. Ltd.<br>';
+							$message .= '<a href="mailto:info@ei-india.com">info@ei-india.com</a><br>';
+							$message .= 'Customer Support Toll Free: 1800-102-8885<br><br>';
+							
+							//echo $message;
+
+							$ci = get_instance();
+
+							$toEmail = array();
+							$school_email = $this->vendors->getSchoolEmailId($value['B']);
+							$school_principal_email = $this->vendors->getSchoolPrincipalEmailId($value['B']);
+							$school_assetcoordinator_email = $this->vendors->getSchoolAssetCoordinatorEmailId($value['B']);
+
+							if(count($school_email) > 0){
+								$schoolEmail = $school_email[0]['email'];	
+							}
+							else{
+								$schoolEmail = '';
+							}
+
+							if(count($school_principal_email) > 0){
+								$school_principal_email = $school_principal_email[0]['contact_mail_1'];
+							}
+							else{
+								$school_principal_email = '';
+							}
+
+							if(count($school_assetcoordinator_email) > 0){
+								$school_assetcoordinator_email = $school_assetcoordinator_email[0]['contact_mail'];
+							}
+							else{
+								$school_assetcoordinator_email = '';
+							}
+
+
+							if($schoolEmail == ''){
+								$schoolEmail = 'harit@ei-india.com';
+								array_push($toEmail, $schoolEmail);
+								$message .= '<br><br><b>Note:</b> We do not have schools email.';
+							}
+							else{
+								array_push($toEmail, $schoolEmail);
+							}
+
+							if($school_principal_email != ''){
+								array_push($toEmail, $school_principal_email);
+								
+							}
+
+							if($school_assetcoordinator_email != ''){
+								array_push($toEmail, $school_assetcoordinator_email);
+								
+							}
+							
+							$toEmail = array_unique($toEmail);
+
+							$toEmail = implode(',', $toEmail);
+
+							$ccEmail = array();
+
+							array_push($ccEmail, 'jignasha.mistry@ei-india.com');
+							array_push($ccEmail, 'mitul.patel@ei-india.com');
+
+							$schoolRegion = $this->vendors->getSchoolRegion($value['B']);
+
+							if($schoolRegion[0]['region'] == 'B-M-H'){
+								array_push($ccEmail, 'sherkhan.ei@gmail.com');
+								array_push($ccEmail, 'akbarshariff.ei@gmail.com');
+								array_push($ccEmail, 'harishkumar.ei@gmail.com');
+								array_push($ccEmail, 'kalpanarajan.ei@gmail.com');
+							}
+
+							$schoolKeyAccountRM = $this->vendors->getSchoolkeyAccountRM($value['B']);
+
+							if(count($schoolKeyAccountRM) > 0){
+								
+								$keyaccountrmEmailID = $this->vendors->getSchoolkeyAccountRMEmailID($schoolKeyAccountRM[0]['keyAccount']);
+
+								array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
+									
+							}
+
+							$schoolBuddyAccountRM = $this->vendors->getSchoolBuddyAccountRM($value['B']);
+
+							if(count($schoolBuddyAccountRM) > 0){
+								
+								$BuddyrmEmailID = $this->vendors->getSchoolBuddyRMEmailID($schoolBuddyAccountRM[0]['buddyAccount']);
+
+								array_push($ccEmail, $BuddyrmEmailID[0]['email']);
+									
+							}
+
+							$schoolZMEmail = $this->vendors->getSchoolZMEmailID($schoolRegion[0]['region']);
+							
+							if(count($schoolZMEmail) > 0){
+								array_push($ccEmail, $schoolZMEmail[0]['email']);
+							}
+
+							$ccEmail = array_unique($ccEmail);
+							
+							$ccEmail = implode(',', $ccEmail);
+							
+							$ci->setOMRReceiptemail($toEmail,$subject,$message,$ccEmail);
+						}
+					
+					}
+					echo json_encode(array('status' => 'success','message' => 'Dispatch Details Sent Successfully To Logistic..Thank You!!' ));
+				}
+				
+			}
+			else{
+				echo json_encode(array('status' => 'error','message' => 'The Format Of Excel Sheet Is Not Correct..!! Please Correct It And Upload Again.' ));					
+			}
+
+		}
+        die;
+
+	}
 
 }

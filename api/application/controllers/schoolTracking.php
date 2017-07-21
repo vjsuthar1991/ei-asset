@@ -65,7 +65,38 @@ class Schooltracking extends CI_Controller {
 
 		$data['paymentflag'] = $this->schooltrackingmodel->getPaymentStatus($inputRequest);
 
-		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount']));
+		$description = $this->schooltrackingmodel->getRoundDescription($inputRequest['round']);
+
+		$fileExist = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/QB/'.$inputRequest['school'].'.tif');
+								
+		$fileExtension = '';
+		
+		if($fileExist != 1 || $fileExist == ''){
+			
+			$fileExist2 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/QB/'.$inputRequest['school'].'.pdf');
+			
+			if($fileExist2 != 1 || $fileExist2 == ''){
+			
+				$fileExist3 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/QB/'.$inputRequest['school'].'.jpg');
+
+				if($fileExist3 != 1 || $fileExist3 == ''){
+					
+				}
+				else{
+					$fileExtension = '.jpg';
+				}		
+
+			}
+			else{
+				$fileExtension = '.pdf';
+			}		
+
+		}
+		else{
+			$fileExtension = '.tif';
+		}
+
+		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount'],'fileExtension' => $fileExtension));
 	}
 
 }

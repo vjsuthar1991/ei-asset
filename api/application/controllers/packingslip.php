@@ -221,7 +221,7 @@ class Packingslip extends CI_Controller {
             foreach ($records1 as $data) {
             	
 				$ci = get_instance();
-				$ci->packingslips->updatePackLabelDate($data['schoolno'],$round,$lotno);
+				$ci->packingslips->updatePackLabelDate($vendorId,$data['schoolno'],$round,$lotno);
             	array_unshift($data, $i);
             	//$data['serial'] = $i;
                 fputcsv($handle1, $data);
@@ -317,7 +317,7 @@ class Packingslip extends CI_Controller {
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
-	      //$this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
+	      $this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      $this->email->attach($file1);

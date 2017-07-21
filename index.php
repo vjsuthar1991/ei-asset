@@ -2,8 +2,9 @@
 $url = $_SERVER['REQUEST_URI'];
 $urlparts = explode('/',$url);
 
-if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list')){
+if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list') && ($urlparts['2'] != 'vendor-omr-receipt-mis')){
   require_once('support_files/check.php');
+
   $loginUserName = $_SESSION['username'];
   checkPermission('OPS');
 
@@ -18,7 +19,9 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
     }
     
   }
+  
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +32,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
 	<meta name="author" content="Vijay Suthar">
 	<meta name="keyword" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ASSET Automation System</title>
+  <title>ASSET Logistic System</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="asset/js/plugins/jquery.validate.min.js"></script>
 

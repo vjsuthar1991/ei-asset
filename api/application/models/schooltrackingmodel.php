@@ -47,7 +47,7 @@ class Schooltrackingmodel extends CI_Model{
 
     function getSchoolName($schoolCode){
 
-        $this->db->select('schoolname');
+        $this->db->select('schoolname,city');
         $this->db->from($this->schoolsTbl);
         $this->db->where('schoolno',$schoolCode);
         $query = $this->db->get();
@@ -57,7 +57,8 @@ class Schooltrackingmodel extends CI_Model{
 
     function getSchoolPaymentDetails($data){
 
-        $this->db->select('amount_payable,paid,ROUND((paid/amount_payable) * 100) as "percentage_paid", amount_payable - paid as "difference"');
+        $this->db->select('amount_payable,paid, amount_payable - paid as "difference"');
+        $this->db->select('ROUND(paid/amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from($this->schoolstatusTbl);
         $this->db->where('school_code',$data['school']);
         $this->db->where('test_edition',$data['round']);
@@ -115,6 +116,16 @@ class Schooltrackingmodel extends CI_Model{
         $this->db->where("t1.ssf_number != ''");
         $this->db->where("t1.dynamic_flag != 1");
         $this->db->where("((t1.paid / t1.amount_payable) * 100) > 90");
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function getRoundDescription($round){
+        
+        $this->db->select('description');
+        $this->db->from("$this->testEditionTbl");
+        $this->db->where('test_edition',$round);
         $query = $this->db->get();
         return $query->result_array();
 

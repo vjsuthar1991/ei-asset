@@ -295,6 +295,26 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/vendor-portal/vendor-qb-mis-list.html',
               controller: 'VendorQbMisListController',
+            })
+            .when('/pretest-escalation-log',{
+              cache: false,
+              templateUrl: 'views/pretest-escalation-log.html',
+              controller: 'EscalationPreTestLogController',
+            })
+            .when('/vendor-omr-receipt-mis',{
+              cache: false,
+              templateUrl: 'views/vendor-portal/upload-omr-receipt-mis.html',
+              controller: 'VendorUploadOMRMISController',
+            })
+            .when('/omr-receipt-status',{
+              cache: false,
+              templateUrl: 'views/omr-receipt-status.html',
+              controller: 'OmrReceiptStatusController',
+            })
+            .when('/lot-generation',{
+              cache: false,
+              templateUrl: 'views/lot-generation.html',
+              controller: 'LotGenerationController',
             });
 
 

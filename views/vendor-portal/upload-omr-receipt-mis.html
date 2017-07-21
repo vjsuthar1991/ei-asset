@@ -1,0 +1,103 @@
+  <div data-ng-include=" 'vendor-header.html' "></div>
+<!-- end: Header -->
+<div id="content">
+<div class="panel box-shadow-none content-header padding-1">
+                  
+                    <div class="col-md-12">
+                        <h3 class="animated fadeInLeft">Upload OMR Receipt MIS</h3>
+                        <p class="animated fadeInDown">
+                          Home <span class="fa-angle-right fa"></span> Pre Test <span class="fa-angle-right fa"></span> OMR Receipt MIS
+                        </p>
+                    </div>
+                  
+                </div>
+                <div class="form-element">
+                <div class="col-md-12 padding-0">
+                  
+                <div class="col-md-12">
+                  <div class="col-md-12 panel">
+                    
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                      <div class="col-md-12">
+                        <form class="cmxform" id="uploadomrreceiptmisform" enctype="multipart/form-data" method="post" action="" autocomplete="off">
+
+                          <div class="col-md-6">
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <select name="omr_receipt_round" id="omr_receipt_round" class="form-control">
+                                    <option>Select Round</option>
+                                    <option ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.description}}-{{round.test_edition}}</option>
+                                  </select>
+                              <span class="bar"></span>
+                            </div>
+
+                            <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <input type="file" class="form-text" id="omr_receiptmis_csvfile" name="omr_receiptmis_csvfile" >
+                              <span class="bar"></span>
+                              <label>Upload EXCEL File</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                          <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                              <a href="asset/Samples/dispatch_mis_format.xlsx" download="dispatch_mis_format.xlsx" target="_blank" title="Click To Download Sample Format"><img src="asset/img/CSV_download.png" style="width:45px;"> Download Sample Format</a>
+                              <p style="margin-top: 10px;font-size: 14px;">If you want sample MIS format click on the above link to download.</p>
+                          </div>
+                        </div>
+                          
+
+                          <div class="col-md-12" style="padding: 0;">
+                            <div class="col-md-3">
+                              <button type="submit" id="uploadomrreceiptmisbtn" class="btn ripple btn-raised btn-info">
+                                      <div>
+                                        <span>Submit</span>
+                                      </div>
+                                    </button>
+                            </div>
+
+                              
+                          </div>
+
+                          <div class="col-md-12" style="padding: 0;margin-top: 20px;font-size: 15px;">
+                            <ol>
+                              <li>Only Excel File Can Be Uploaded.</li>
+                              <li>Kinldy maintain the column title format and serial as per the sample format given to avoid validation errors.</li>
+                              <li>Before uploading the Excel file please check the content list of all the schools in the file are uploaded to avoid validation errors.</li>
+                              <!-- <li>Please be specfic in 'Type' column of Excel file. For Question paper dispatch and delivery use 'QB' and for Analysis dispatch and delivery use 'Analysis'.</li>
+                              <li>If AWB No. is not received please leave it blank. Kindly do not mention 'AWB Awaited'.</li> -->
+
+                            </ol>
+                            
+                              
+                          </div>
+                          <div class="col-md-12" style="padding: 0;margin-top: 45px;">
+                            <div class="col-md-9">
+                              <div id="upload_csv_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                              
+                            </div>
+                            </div>
+                            
+                              
+                          </div>
+                      </form>
+                      <div class="responsive-table" id="uploadedcsvdata">
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+              </div>
+            </div>
+          </div>
+          <!-- end: content -->
+         
+
+     <!-- start: Mobile -->
+      <div data-ng-include=" 'mobile_menu.html' "></div>
+     <!-- end: Mobile -->
+
+
+<!-- end: Javascript

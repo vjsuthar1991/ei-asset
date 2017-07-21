@@ -28,7 +28,7 @@
               <?php } ?>
 
               <li class="dropdown">
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pre Test <span class="caret"></span></a>
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PRE Test <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <?php 
                 if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
@@ -42,6 +42,21 @@
                   <li><a href="qb_mis_list">Test Material Status</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="school-order-tracking">School Order Tracking</a></li>
+                  <?php 
+                  if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                    {
+                  ?>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="pretest-escalation-log">Escalation Log</a></li>
+                 <?php } ?> 
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">POST Test <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="omr-receipt-status">OMR Receipt Status</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="lot-generation">Lot Generation</a></li>
                 </ul>
               </li>
               

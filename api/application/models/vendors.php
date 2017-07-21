@@ -15,6 +15,7 @@ class Vendors extends CI_Model{
         $this->contactDetailsTbl = 'contact_details';
         $this->salesAllotmentMasterTbl = 'sales_allotment_master';
         $this->marketingTbl = 'marketing';
+        $this->omrReceiptReports = 'omr_receipt_reports';
     }
 
     /*
@@ -169,8 +170,6 @@ class Vendors extends CI_Model{
         $query = $this->db->get();
         $edition = $query->result();
 
-
-
         if($contentType == "QB") {
 
             $this->db->select('qb_despatch_date,qb_delivery_date');
@@ -190,8 +189,22 @@ class Vendors extends CI_Model{
                 $this->db->where("school_code",$schoolCode);
                 $this->db->where("test_edition",$edition[0]->test_edition);
 
+                $editionTest = $edition[0]->test_edition;
+
                 $this->db->update($this->schoolProcessTracking,array('qb_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'qb_delivery_status' => $despatchStatus,'qb_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'qb_reciever_name' => $recieverName));
+                
+                
+                $this->db->where("school_code",$schoolCode);
+                $this->db->where("test_edition",$edition[0]->test_edition);      
+
                 $this->db->update($this->schoolstatusTbl,array('despatch_date' => date('Y-m-d',strtotime($despatchDate))));
+                
+                
+                $this->db->query("insert into asset_breakup_log (school_code,test_edition,all_compulsory,accurate_breakup,aro_form_date,
+            e3,m3,s3,e4,m4,s4,e5,m5,s5,e6,m6,s6,e7,m7,s7,e8,m8,s8,e9,m9,s9,e10,m10,s10,h4,h5,h6,h7,h8,ss5,ss6,ss7,ss8,ss9,ss10,
+            no_of_students,no_of_papers,order_date,dynamic_class,type) select school_code,test_edition,all_compulsory,accurate_breakup,aro_form_date,
+            e3,m3,s3,e4,m4,s4,e5,m5,s5,e6,m6,s6,e7,m7,s7,e8,m8,s8,e9,m9,s9,e10,m10,s10,h4,h5,h6,h7,h8,ss5,ss6,ss7,ss8,ss9,ss10,
+            no_of_students,no_of_papers,order_date,dynamic_class,'Final' from school_status where test_edition='$editionTest' and school_code=$schoolCode");
                 
                 $this->db->select('srno');
                 $this->db->from($this->courierDispatchDetails);
@@ -225,8 +238,7 @@ class Vendors extends CI_Model{
 
         }
         elseif($contentType == "Analysis"){
-            die($contentType);
-
+            
             $this->db->select('analysis_despatch_date,analysis_delivery_date');
             $this->db->from($this->schoolProcessTracking);
             $this->db->where('school_code',$schoolCode);
@@ -238,13 +250,30 @@ class Vendors extends CI_Model{
                 $deliveryDate = '0000-00-00';
             }
 
-            $this->db->where("school_code",$schoolCode);
-            $this->db->where("test_edition",$edition[0]->test_edition);
+            
 
             if($check[0]->analysis_despatch_date == "0000-00-00"){
 
+                $this->db->where("school_code",$schoolCode);
+                
+                $this->db->where("test_edition",$edition[0]->test_edition);
+
+                $editionTest = $edition[0]->test_edition;
+
                 $this->db->update($this->schoolProcessTracking,array('analysis_despatch_date' => date('Y-m-d',strtotime($despatchDate)),'analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));
-            
+                
+                $this->db->where("school_code",$schoolCode);
+                
+                $this->db->where("test_edition",$edition[0]->test_edition);
+
+                $this->db->update($this->schoolstatusTbl,array('reports_despatched_date' => date('Y-m-d',strtotime($despatchDate))));
+                
+                $this->db->query("insert into asset_breakup_log (school_code,test_edition,all_compulsory,accurate_breakup,aro_form_date,
+            e3,m3,s3,e4,m4,s4,e5,m5,s5,e6,m6,s6,e7,m7,s7,e8,m8,s8,e9,m9,s9,e10,m10,s10,h4,h5,h6,h7,h8,ss5,ss6,ss7,ss8,ss9,ss10,
+            no_of_students,no_of_papers,order_date,dynamic_class,type) select school_code,test_edition,all_compulsory,accurate_breakup,aro_form_date,
+            e3,m3,s3,e4,m4,s4,e5,m5,s5,e6,m6,s6,e7,m7,s7,e8,m8,s8,e9,m9,s9,e10,m10,s10,h4,h5,h6,h7,h8,ss5,ss6,ss7,ss8,ss9,ss10,
+            no_of_students,no_of_papers,order_date,dynamic_class,'Actual' from school_status where test_edition='$editionTest' and school_code=$schoolCode");
+
                 $this->db->select('srno');
                 $this->db->from($this->courierDispatchDetails);
                 $this->db->where('schoolCode',$schoolCode);
@@ -411,5 +440,289 @@ class Vendors extends CI_Model{
 
     }
 
+    function updateSchoolStatusOmrReceiptInfo($data,$round,$vendorId){
+
+        $this->db->select('omr_received');
+        $this->db->from($this->schoolstatusTbl);
+        $this->db->where('school_code',$data['B']);
+        $this->db->where('test_edition',$round);
+        $this->db->where('answers_date',date('Y-m-d',strtotime($data['F'])));
+        $query = $this->db->get();
+        $result = $query->result_array();    
+
+        if(count($result) == 0){
+
+            $this->db->select('omr_received');
+            $this->db->from($this->schoolstatusTbl);
+            $this->db->where('school_code',$data['B']);
+            $this->db->where('test_edition',$round);
+            
+            $query = $this->db->get();
+            $omrResult = $query->result_array();    
+            
+            if($omrResult[0]['omr_received'] != NULL){
+                $initialOMRCount = $omrResult[0]['omr_received'];
+                $totalOMRCount = $initialOMRCount + $data['J'];
+            }
+            else{
+                $totalOMRCount = $data['J'];
+            }
+
+
+            $this->db->where('school_code',$data['B']);
+            $this->db->where('test_edition',$round);
+            $this->db->update($this->schoolstatusTbl,array('eng_test_date' => date('Y-m-d',strtotime($data['E'])),'answers_date' => date('Y-m-d',strtotime($data['F'])),'omr_received' => $totalOMRCount,'ans_sent_date' => date('Y-m-d',strtotime($data['G'])),'scan_party' => $vendorId));
+            
+            $update = $this->db->affected_rows();
+
+            if($update > 0){
+
+                $insertIntoOMRReceipt = $this->db->insert($this->omrReceiptReports,array('school_code' => $data['B'],'test_edition' => $round,'courier_details' => $data['C'],'total_packets' => $data['D'],'test_date' => date('Y-m-d',strtotime($data['E'])),'inward_date' => date('Y-m-d',strtotime($data['F'])),'scan_date' => date('Y-m-d',strtotime($data['G'])),'qc_done_date' => date('Y-m-d',strtotime($data['H'])),'data_to_ei_date' => date('Y-m-d',strtotime($data['I'])),'no_of_records' => $data['J'],'pod_no' => $data['K'],'remarks' => $data['L']));
+                
+                $insert_id = $this->db->insert_id();
+
+                return $insert_id;
+
+            }
+
+        }
+        else {
+            return 0;
+        }
+
+        
+
+    }
+
+    function getTotalOrder($schoolCode,$round){
+        
+        $this->db->select('e3,m3,s3,h3,ss3,e4,m4,s4,h4,ss4,e5,m5,s5,h5,ss5,e6,m6,s6,h6,ss6,e7,m7,s7,h7,ss7,e8,m8,s8,h8,ss8,e9,m9,s9,h9,ss9,e10,m10,s10,h10,ss10,dynamic_class');
+        $this->db->from($this->schoolstatusTbl);
+        $this->db->where('school_code',$schoolCode);
+        $this->db->where('test_edition',$round);
+        $this->db->where('dynamic_flag',0);
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+        $result = $query->result_array();
+        
+        if(count($result) > 0){
+            
+            return $this->filterClasses($result,$round,$schoolCode);
+
+        }
+
+    }
+
+    function filterClasses($result,$round,$schoolCode){
+
+         $classArray = array('3','4','5','6','7','8','9','10');
     
+  
+         $selectedFinalSchools = array();
+     
+  
+         $selectedschool = array();
+     
+  
+         if($result[0]['dynamic_class'] != "" && $result[0]['dynamic_class'] != NULL)
+             
+             {
+                 $classes = explode(",",$result[0]['dynamic_class']);
+                 $pnpclasses = array_diff($classArray,$classes);
+                  
+                    if(count($pnpclasses) > 0){
+     
+                     foreach ($pnpclasses as $key => $value) {
+     
+                         $this->db->select("e$value+m$value+s$value+h$value+ss$value as total",FALSE);
+                         $this->db->from($this->schoolstatusTbl);
+                         $this->db->where("school_code",$schoolCode);
+                         $this->db->where("test_edition",$round);
+                         $query = $this->db->get(); 
+                         $schoolResult = $query->result_array();
+                         $total[] = $schoolResult[0]['total'];
+                         
+                     }
+                     
+                     return array_sum($total);
+                 }
+    
+             }
+             else {
+                  unset($result[0]['dynamic_class']);
+                  
+                  return array_sum($result[0]);
+                  
+             } 
+     
+              
+     }
+
+     function getOmrReceiptStatusList($round,$region,$category,$username){
+
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region');
+        $this->db->select("DATE_FORMAT(t1.test_date,'%d-%m-%Y') as test_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.inward_date,'%d-%m-%Y') as inward_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.scan_date,'%d-%m-%Y') as scan_date",FALSE);
+        $this->db->select("SUM(t1.no_of_records) as sum");
+
+        $this->db->from("$this->omrReceiptReports as t1");
+        $this->db->join("$this->schoolsTbl as t2","t1.school_code = t2.schoolno","LEFT");
+        $this->db->join("$this->schoolstatusTbl as t3","t1.school_code = t3.school_code AND t3.test_edition = 'X'","LEFT");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
+        if($round != ""){
+            $this->db->where('t1.test_edition',$round);
+        }
+
+        $this->db->group_by('t1.school_code');
+
+        $query = $this->db->get();
+
+        //echo $this->db->last_query();
+
+        $results = $query->result_array();
+
+
+        foreach ($results as $key => $result) {
+
+            $schoolCode = $result['school_code'];
+            $totalPapers = $this->filterOMRReceiptClasses($round,$schoolCode);
+            $results[$key]['totalPapers'] = $totalPapers;
+            $difference = $totalPapers - $result['sum'];    
+            $results[$key]['difference'] = $difference;
+            $percentage = round(($result['sum']/$totalPapers) * 100);
+            $results[$key]['percentage'] = $percentage;
+
+        }
+        
+        return $results;
+
+         
+     }
+
+     function filterOMRReceiptClasses($round,$schoolCode){
+
+         $classArray = array('3','4','5','6','7','8','9','10');
+    
+  
+         $selectedFinalSchools = array();
+     
+  
+         $selectedschool = array();
+
+         $this->db->select("e3,m3,s3,h3,ss3,e4,m4,s4,h4,ss4,e5,m5,s5,h5,ss5,e6,m6,s6,h6,ss6,e7,m7,s7,h7,ss7,e8,m8,s8,h8,ss8,e9,m9,s9,h9,ss9,e10,m10,s10,h10,ss10,dynamic_class");
+         $this->db->from($this->schoolstatusTbl);
+         $this->db->where("school_code",$schoolCode);
+         $this->db->where("test_edition",$round);
+         $query = $this->db->get();
+         $result = $query->result_array();
+         
+         if(count($result) > 0){ 
+
+             if($result[0]['dynamic_class'] != "" && $result[0]['dynamic_class'] != NULL)
+                 
+                 {
+                     $classes = explode(",",$result['dynamic_class']);
+                     $pnpclasses = array_diff($classArray,$classes);
+                      
+                        if(count($pnpclasses) > 0){
+         
+                         foreach ($pnpclasses as $key => $value) {
+         
+                             $this->db->select("e$value+m$value+s$value+h$value+ss$value as total",FALSE);
+                             $this->db->from($this->schoolstatusTbl);
+                             $this->db->where("school_code",$schoolCode);
+                             $this->db->where("test_edition",$round);
+                             $query = $this->db->get(); 
+                             $schoolResult = $query->result_array();
+                             $total[] = $schoolResult[0]['total'];
+                             
+                         }
+                         
+                         return array_sum($total);
+                     }
+        
+                 }
+                 else {
+
+                      unset($result[0]['dynamic_class']);
+                      
+                      return array_sum($result[0]);
+                      
+                 } 
+        }
+     
+              
+     }
+    
+    function getFilteredOmrReceiptStatusList($round,$zone,$region,$category,$username){
+
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region');
+        $this->db->select("DATE_FORMAT(t1.test_date,'%d-%m-%Y') as test_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.inward_date,'%d-%m-%Y') as inward_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.scan_date,'%d-%m-%Y') as scan_date",FALSE);
+        $this->db->select("SUM(t1.no_of_records) as sum");
+
+        $this->db->from("$this->omrReceiptReports as t1");
+        $this->db->join("$this->schoolsTbl as t2","t1.school_code = t2.schoolno","LEFT");
+        $this->db->join("$this->schoolstatusTbl as t3","t1.school_code = t3.school_code AND t3.test_edition = 'X'","LEFT");
+
+        if($region != '' && $region != 'NULL'){
+
+            $region = str_replace(',', "','", $region);
+
+            $this->db->where("t2.region IN ('$region')");
+
+        }
+
+        if($category == 'RM' || $category == 'SRM' || $category == 'STL' || $category == 'EA'){
+            $this->db->join("$this->salesAllotmentMasterTbl as t3", 't1.school_code = t3.schoolCode AND product = "asset"', 'JOIN');
+            $this->db->where("(t3.keyAccount = '$username' OR t3.buddyAccount = '$username')");
+        }
+
+        if($round != ""){
+            $this->db->where('t1.test_edition',$round);
+        }
+
+        if($zone != ""){
+            $this->db->where('t2.region',$zone);
+        }
+
+        $this->db->group_by('t1.school_code');
+
+        $query = $this->db->get();
+
+        //echo $this->db->last_query();
+
+        $results = $query->result_array();
+
+
+        foreach ($results as $key => $result) {
+
+            $schoolCode = $result['school_code'];
+            $totalPapers = $this->filterOMRReceiptClasses($round,$schoolCode);
+            $results[$key]['totalPapers'] = $totalPapers;
+            $difference = $totalPapers - $result['sum'];    
+            $results[$key]['difference'] = $difference;
+            $percentage = round(($result['sum']/$totalPapers) * 100);
+            $results[$key]['percentage'] = $percentage;
+
+        }
+        
+        return $results;
+
+    }
 }

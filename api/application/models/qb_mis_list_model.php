@@ -88,6 +88,8 @@ class Qb_mis_list_model extends CI_Model{
         $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
@@ -133,6 +135,8 @@ class Qb_mis_list_model extends CI_Model{
         $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
@@ -151,6 +155,8 @@ class Qb_mis_list_model extends CI_Model{
         $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
@@ -192,6 +198,8 @@ class Qb_mis_list_model extends CI_Model{
         $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
         $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');

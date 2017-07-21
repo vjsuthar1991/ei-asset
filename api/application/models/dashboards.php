@@ -412,6 +412,7 @@ class Dashboards extends CI_Model{
             $this->db->where("t3.region = '$zone'");    
         }
         $query = $this->db->get();
+        
         return $query->result();
     }
 
@@ -445,6 +446,7 @@ class Dashboards extends CI_Model{
             $this->db->where("t3.region = '$zone'");    
         }
         $query = $this->db->get();
+
         return $query->result();
     }
 
@@ -465,7 +467,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 7 DAY)");
+        $this->db->where("CURDATE() > DATE_ADD(t2.packlabel_date, INTERVAL 3 DAY)");
 
         if($region != '' && $region != 'NULL'){
 
@@ -557,8 +559,9 @@ class Dashboards extends CI_Model{
     
     function getRegisteredSchoolList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -590,8 +593,9 @@ class Dashboards extends CI_Model{
 
     function getPreTestSSFReceivedList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.ssf_number,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -625,7 +629,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestSSFPendingList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -658,7 +663,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestSSFAlertList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -691,7 +697,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestPaymentReceivedList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -723,7 +730,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestPaymentPendingList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -755,7 +763,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestPaymentAlertList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid,(t1.paid/t1.amount_payable) * 100 as "percentage_paid", t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,t1.amount_payable,t1.paid, t1.amount_payable - t1.paid as "difference"');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolsTbl as t2", 't1.school_code = t2.schoolno', 'JOIN');
 
@@ -789,8 +798,9 @@ class Dashboards extends CI_Model{
 
     function getPreTestPackLabelDateSetList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region');
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->select("DATE_FORMAT(t1.pack_label_date,'%d-%m-%Y') as pack_label_date",FALSE);
         
         $this->db->from("$this->schoolstatusTbl as t1");
@@ -825,7 +835,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestPackLabelDateNotSetList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.pack_label_date,'%d-%m-%Y') as pack_label_date",FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
@@ -860,7 +871,8 @@ class Dashboards extends CI_Model{
 
     function getPreTestPackLabelDateAlertList($round,$zone,$region,$category,$username){
 
-        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region,(t1.paid/t1.amount_payable) * 100 as "percentage_paid"');
+        $this->db->select('t1.school_code,t2.schoolname,t2.city,t2.region');
+        $this->db->select('ROUND(t1.paid/t1.amount_payable * 100,2) as "percentage_paid"',FALSE);
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.pack_label_date,'%d-%m-%Y') as pack_label_date",FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
@@ -897,7 +909,7 @@ class Dashboards extends CI_Model{
 
         $this->db->select('t1.school_code,t3.schoolname,t3.city,t3.region,t2.qb_despatch_date,t4.consignmentNo,t4.courier');
         $this->db->select("DATE_FORMAT(t1.SSF_date,'%d-%m-%Y') as SSF_date",FALSE);
-        $this->db->select("DATE_FORMAT(t2.pack_label_date,'%d-%m-%Y') as pack_label_date",FALSE);
+        $this->db->select("DATE_FORMAT(t2.packlabel_date,'%d-%m-%Y') as pack_label_date",FALSE);
         $this->db->from("$this->schoolstatusTbl as t1");
         $this->db->join("$this->schoolProcessTracking as t2", 't1.school_code = t2.school_code AND t2.test_edition = "'.$round.'"', 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", 't1.school_code = t3.schoolno', 'JOIN');
@@ -926,6 +938,7 @@ class Dashboards extends CI_Model{
             $this->db->where("t3.region = '$zone'");    
         }
         $query = $this->db->get();
+
         return $query->result();
 
 
@@ -984,7 +997,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t1.dynamic_flag != 1"); 
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.packlabel_date, INTERVAL 3 DAY)");
+        $this->db->where("CURDATE() > DATE_ADD(t2.packlabel_date, INTERVAL 3 DAY)");
 
         if($region != '' && $region != 'NULL'){
 
@@ -1091,7 +1104,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 10 DAY)");
+        $this->db->where("CURDATE() > DATE_ADD(t2.qb_despatch_date, INTERVAL 10 DAY)");
 
         if($region != '' && $region != 'NULL'){
 
@@ -1128,7 +1141,7 @@ class Dashboards extends CI_Model{
         $this->db->where("t2.packlabel_date != 0000-00-00");
         $this->db->where("t2.qb_despatch_date != 0000-00-00");
         $this->db->where("t2.qb_delivery_date = 0000-00-00");
-        $this->db->where("CURDATE() < DATE_ADD(t2.qb_despatch_date, INTERVAL 7 DAY)");
+        $this->db->where("CURDATE() > DATE_ADD(t2.qb_despatch_date, INTERVAL 10 DAY)");
 
         if($region != '' && $region != 'NULL'){
 

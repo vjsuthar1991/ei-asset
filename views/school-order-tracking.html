@@ -87,7 +87,7 @@
                     <div class="col-md-12 padding-0" style="margin-bottom: 30px;">
                       <ul class="nav nav-tabs nav-tabs-v5" style="background:none;border:none;" id="tabs-demo6">
                         <li id="foo" class="text-center" style="margin-bottom: 30px;">
-                          <div class="tabtitlecustom">Final BreakUp Recieved</div>
+                          <div class="tabtitlecustom">Final BreakUp Received</div>
                          <a href="javascript:void(0)" data-toggle="tab" title="welcome" style="width:85px;height:85px;">
                           <span class="round-tabs" style="background-color:{{finalBreakupColor}};color: white;border: 2px solid {{finalBreakupColor}};width:85px;height:85px;line-height: 80px;">
                             <i class="glyphicon icon-docs"></i>
@@ -98,7 +98,7 @@
                       </li>
 
                       <li id="bar" class="text-center" style="margin-bottom: 30px;">
-                        <div class="tabtitlecustom">Payment Recieved</div>
+                        <div class="tabtitlecustom">Payment Received</div>
                         <a href="javascript:void(0)" data-toggle="tab" title="profile" style="width:85px;height:85px;">
                          <span class="round-tabs" style="background-color:{{paymentColor}};color: white;border: 2px solid {{paymentColor}};width:85px;height:85px;line-height: 80px;">
                            <i class="glyphicon fa fa-inr"></i>
@@ -229,7 +229,7 @@
                         <td>{{courierDetails.mode}}</td>
                         <td>{{courierDetails.material}}</td>
                         <td>{{courierDetails.weight}}</td>
-                        <td><a ng-if="courierDetailsLength > 0" target="_blank" href="/PackingSlips/{{roundDescription}}/QB/{{schoolCode}}.tif">Download</a></td>
+                        <td><a ng-if="courierDetailsLength > 0" target="_blank" href="/PackingSlips/{{roundDescription}}/QB/{{schoolCode}}{{fileExtension}}">Download</a></td>
                       </tr>
                     </tbody>
                   </table>
