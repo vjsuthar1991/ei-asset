@@ -4355,6 +4355,124 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
 
 app.controller('LotGenerationController', function($scope,$http,$ocLazyLoad) {
 
-  
+  $scope.rounds = [];
+  $scope.vendors = [];
+
+    $.ajax({
+      url: './api/lotgeneration/getRoundAndVendorList',
+      type: 'POST',
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+
+            $scope.rounds = response.rounds;
+
+            $scope.vendors = response.vendors;
+
+        }
+        
+      }
+    });
+
+    $("#lotgeneratioform").validate({
+      errorElement: "em",
+      errorPlacement: function(error, element) {
+        $(element.parent("div").addClass("form-animate-error"));
+        error.appendTo(element.parent("div"));
+      },
+      success: function(label) {
+        $(label.parent("div").removeClass("form-animate-error"));
+      },
+      rules: {
+        analysislot_generation_round: "required"
+      },
+      messages: {
+      
+      }
+    });
+
+  //   $(document).on('submit','#analysislotgenerationform',function(event){
+      
+  //     event.stopImmediatePropagation();
+
+  //     $('#lotgenerationbtn').attr('disabled','disabled');
+      
+  //     event.preventDefault();
+
+  //     var excelfileUpload = document.getElementById("lot_generation_excelfile");
+
+  //     var htmlfileUpload = document.getElementById("lot_generation_htmlfile");
+      
+  //     if (excelfileUpload.value != null) {
+
+  //       var uploadFile = new FormData();
+  //       var files = $("#lot_generation_excelfile").get(0).files;
+  //       var filesCsv = $("#lot_generation_htmlfile").get(0).files;
+  //       var round = $('#analysislot_generation_excelfile').val();
+  //       var vendor = $('#analysislot_generation_vendor').val();
+
+  //       $scope.csvdata = [];
+  //         // Add the uploaded files content to the form data collection
+  //         if (files.length > 0) {
+
+  //           uploadFile.append("LOTGENERATIONEXCELFile", files[0]);
+  //           uploadFile.append("LOTGENERATIONCSVFile", filesCsv[0]);
+  //           uploadFile.append("round", round);
+  //           uploadFile.append("vendor_id", vendor);
+
+  //           $.ajax({
+  //             url: "./api/lotgeneration/upload_lot_generation_files",
+  //             contentType: false,
+  //             processData: false,
+  //             data: uploadFile,
+  //             type: 'POST',
+  //             success: function (returndata) {
+
+  //              var response = JSON.parse(returndata);
+
+  //              if(response.status == "success"){
+
+  //                 // if($('#upload_csv_message_box').hasClass('alert-danger')){
+  //                 //   $('#upload_csv_message_box').removeClass('alert-danger');
+  //                 // }
+  //                 // $('#upload_csv_message_box').addClass('alert-success');
+  //                 // $('#upload_csv_message_box').text('');
+  //                 // $('#upload_csv_message_box').append(response.message);
+  //                 // $('#upload_csv_message_box').removeClass('hide');
+  //                 // $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+  //                 // setTimeout(function(){ window.location.reload(); }, 3000);   
+
+  //               }
+  //               else {
+
+  //                 // $('#uploadqbmisform')[0].reset();
+  //                 // $('#uploadqbanalysismisbtn').removeAttr('disabled');
+                  
+  //                 // if($('#upload_csv_message_box').hasClass('alert-success')){
+  //                 //   $('#upload_csv_message_box').removeClass('alert-success');
+  //                 // }
+                  
+  //                 // $('#upload_csv_message_box').addClass('alert-danger');
+  //                 // $('#upload_csv_message_box').text('');
+  //                 // $('#upload_csv_message_box').append(response.message);
+  //                 // $('#upload_csv_message_box').removeClass('hide');
+  //                 // $(window).scrollTop($('#upload_csv_message_box').offset().top);
+
+  //                 // setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 4000);
+  //               }
+
+  //             }
+  //           });
+  //   }
+  // }
+
+  // });
 
 });
