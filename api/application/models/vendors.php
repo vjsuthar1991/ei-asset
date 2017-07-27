@@ -16,6 +16,8 @@ class Vendors extends CI_Model{
         $this->salesAllotmentMasterTbl = 'sales_allotment_master';
         $this->marketingTbl = 'marketing';
         $this->omrReceiptReports = 'omr_receipt_reports';
+        $this->analysisLotListTbl = 'analysis_lot_list';
+
     }
 
     /*
@@ -723,6 +725,35 @@ class Vendors extends CI_Model{
         }
         
         return $results;
+
+    }
+
+    function updateSchoolQCLot($schoolCode,$round,$vendor,$lotno){
+
+        $this->db->where('school_code',$schoolCode);
+        $this->db->where('test_edition',$round);
+        $this->db->update($this->schoolProcessTracking,array('analysis_lotno' => $lotno,'analysis_vendorid' => $vendor));
+
+    }
+
+    function checkLotNo($round){
+
+        $this->db->select('lotno');
+        $this->db->from($this->analysisLotListTbl);
+        $this->db->where('test_edition',$round);
+        $query = $this->db->get();
+
+        return $query->result_array();
+
+    }
+
+    function insertAnalysisLotDetails($round,$vendor,$lotno){
+
+        $this->db->insert($this->analysisLotListTbl,array('lotno' => $lotno,'test_edition' => $round,'vendor_id' => $vendor,'lot_sent_date' => date('Y-m-d')),'lot_approve_status' => 0);
+        
+        $insert_id = $this->db->insert_id();
+
+        return $insert_id;
 
     }
 }

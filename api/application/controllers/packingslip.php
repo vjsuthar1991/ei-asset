@@ -195,11 +195,13 @@ class Packingslip extends CI_Controller {
 			    else
 			        return $number. $ends[$number % 10];
 			}
-			//Example Usage
-			$lotno = ordinal($lotno);
+			
 			
 			$insert_id = $ci->packingslips->insertPackingSlip($vendorId,$round,$schoolsData,$breakupData,$lotno);
 
+        	//Example Usage
+			$lotno = ordinal($lotno);
+			
         	$filename1 = $lotno."-".date('d-m-Y-H:i:s').'_schools.csv';
         	$filename2 = $lotno."-".date('d-m-Y-H:i:s').'_orders.csv';
 			
