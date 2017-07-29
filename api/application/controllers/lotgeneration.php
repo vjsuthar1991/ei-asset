@@ -39,10 +39,19 @@ class Lotgeneration extends CI_Controller {
 
 	public function upload_lot_generation_files(){
 
+		function ordinal($number) {
+		    $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+		    if ((($number % 100) >= 11) && (($number%100) <= 13))
+		        return $number. 'th';
+		    else
+		        return $number. $ends[$number % 10];
+		}
+
 		$errors= array();
 
-		$round = $_REQUEST['analysislot_generation_round'];	
-		$vendor = $_REQUEST['analysislot_generation_vendor'];
+		$round = $_REQUEST['round'];	
+		$vendor = $_REQUEST['vendor_id'];
+		$lot_pendrive_sent_date = $_REQUEST['lot_pendrive_sent_date'];
 
 		if($_FILES['LOTGENERATIONEXCELFile']['name'] != ""){
 		      $file_name = $_FILES['LOTGENERATIONEXCELFile']['name'];
@@ -79,7 +88,7 @@ class Lotgeneration extends CI_Controller {
 		      $file_type2 = $_FILES['LOTGENERATIONCSVFile']['type'];
 		      $file_ext2 = strtolower(end(explode('.',$_FILES['LOTGENERATIONCSVFile']['name'])));
 		      
-		      $extensions= array("html,csv");
+		      $extensions= array("html,csv,htm");
 		      
 		      if(in_array($file_ext2,$extensions)){
 
@@ -104,6 +113,7 @@ class Lotgeneration extends CI_Controller {
     		//load the excel library
 			$this->load->library('excel');
 			//read file from path
+
 			$objPHPExcel = PHPExcel_IOFactory::load('./MIS Reports/Analysis Lot Files/'.$file_name);
 			$worksheet = $objPHPExcel->getSheet(0);
 			$sheetData = $worksheet->toArray(null,true,true,true);
@@ -145,13 +155,12 @@ class Lotgeneration extends CI_Controller {
 					$schoolCodeFlag = 0;
 					
 					foreach ($data['values'] as $key => $value) {
+					
 						if($value['B'] == '')
 						{
 							$schoolCodeFlag = 1;
 						}
-						else{
-							
-						}
+					
 					}
 					
 				}
@@ -161,22 +170,24 @@ class Lotgeneration extends CI_Controller {
 				if($schoolCodeFlag == 0){
 					
 					$checkLot = $this->vendors->checkLotNo($round);
+					print_r($checkLot);
 
 					if(count($checkLot) > 0) {
-						if($checkLot[0]->packingslip_lotno == 0){
+						if($checkLot[0]->lotno == 0){
 							$lotno = 1;
 						}
 						else {
-							$lotno = $checkLot[0]->packingslip_lotno + 1;
+							$lotno = $checkLot[0]->lotno + 1;
 						}
 					}
 					else {
 						$lotno = 1;
 					}
 
-					$insert = $this->vendors->insertAnalysisLotDetails($round,$vendor,$lotno);
+					$insert = $this->vendors->insertAnalysisLotDetails($round,$vendor,$lotno,$file_name,$file_name2,$lot_pendrive_sent_date);
 
-					if($insert > 1){
+
+					if($insert > 0){
 					
 						foreach ($data['values'] as $key => $value) {
 							
@@ -187,26 +198,25 @@ class Lotgeneration extends CI_Controller {
 						//Example Usage
 						$lotno = ordinal($lotno);
 
-						$attachFile1 = "./MIS Reports/Analysis Lot Files/".$filename;
-		                $attachFile2 = "./MIS Reports/Analysis Lot Files/".$filename2;
+						// $attachFile1 = "./MIS Reports/Analysis Lot Files/".$filename;
+		    //             $attachFile2 = "./MIS Reports/Analysis Lot Files/".$filename2;
 
-		                $roundName = $this->packingslips->getRoundName($round);
-		                $roundFullName = $roundName[0]->description;
+		    //             $roundName = $this->packingslips->getRoundName($round);
+		    //             $roundFullName = $roundName[0]->description;
 
-		                $data['vendorDetails'] = $this->packingslips->getVendorDetails($vendor);
+		    //             $data['vendorDetails'] = $this->packingslips->getVendorDetails($vendor);
 		                
+		    //             $subject = "$lotno LOT OF Analysis Printing - $roundFullName";
+		    //             $vendorName = $vendorEmailId[0]->vendor_contact_person_1_name;
+		    //             $message = 'Hello ';
+		    //             $message .= $vendorName;
+		    //             $message .= ' ji,';
+		    //             $message .= '<br><br>';
+		    //             $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
+		    //             $message .= '<br><br>Regards,<br>';
+		    //             $message .= $senderName;
 
-		                $subject = "$lotno LOT OF Analysis Printing - $roundFullName";
-		                $vendorName = $vendorEmailId[0]->vendor_contact_person_1_name;
-		                $message = 'Hello ';
-		                $message .= $vendorName;
-		                $message .= ' ji,';
-		                $message .= '<br><br>';
-		                $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
-		                $message .= '<br><br>Regards,<br>';
-		                $message .= $senderName;
-
-		                $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
+		    //             $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
 						
 						echo json_encode(array('status' => 'success','message' => 'Analysis Lot Sent To Vendor Successfully'));
 

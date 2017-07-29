@@ -1,4 +1,9 @@
 <div data-ng-include=" 'header.php' "></div>
+<style type="text/css">
+  .dtp > .dtp-content {
+    max-width: 345px;
+  }
+</style>
 <!-- end: Header -->
 <div id="content">
 <div class="panel box-shadow-none content-header padding-1">
@@ -19,12 +24,12 @@
                     
                     <div class="col-md-12 panel-body" style="padding-bottom:30px;">
                       <div class="col-md-12">
-                        <form class="cmxform" id="lotgeneratioform" name="lotgeneratioform" enctype="multipart/form-data" method="post" action="" autocomplete="off">
+                        <form class="cmxform" id="analysislotgenerationform" name="analysislotgenerationform" enctype="multipart/form-data" method="post" action="" autocomplete="off">
 
                           <div class="col-md-6">
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
                               <select name="analysislot_generation_round" id="analysislot_generation_round" class="form-control">
-                                    <option>Select Round</option>
+                                    <option value="">Select Round</option>
                                     <option ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.description}}-{{round.test_edition}}</option>
                                   </select>
                               <span class="bar"></span>
@@ -32,10 +37,16 @@
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
                               <select name="analysislot_generation_vendor" id="analysislot_generation_vendor" class="form-control">
-                                    <option>Select Vendor</option>
+                                    <option value="">Select Vendor</option>
                                     <option ng-repeat="vendor in vendors" value="{{vendor.vendor_id}}">{{vendor.vendor_name}}</option>
                                   </select>
                               <span class="bar"></span>
+                            </div>
+
+                            <div class="form-group form-animate-text">
+                                <input type="text" id="lot_pendrive_sent_date" name="lot_pendrive_sent_date" class="form-text dateAnimate" required>
+                                <span class="bar"></span>
+                                <label><span class="fa fa-calendar"></span> Pen Drive Sent Date</label>
                             </div>
 
                             <div class="form-group form-animate-text" style="margin-top:40px !important;">
@@ -78,7 +89,7 @@
                           </div>
                           <div class="col-md-12" style="padding: 0;margin-top: 45px;">
                             <div class="col-md-9">
-                              <div id="upload_csv_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
+                              <div id="upload_analysisqc_html_message_box" class="hide alert alert-success alert-dismissible fade in" role="alert">
                               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                               
                             </div>

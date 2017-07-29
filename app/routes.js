@@ -315,6 +315,17 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/lot-generation.html',
               controller: 'LotGenerationController',
+              resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.datetimpicker',
+                            // add UI select css / js for this state
+                            files: [
+                                'asset/js/plugins/bootstrap-material-datetimepicker.js',
+                            ] 
+                        }]);
+                    }]
+                }
             });
 
 

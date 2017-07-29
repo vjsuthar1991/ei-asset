@@ -747,9 +747,9 @@ class Vendors extends CI_Model{
 
     }
 
-    function insertAnalysisLotDetails($round,$vendor,$lotno){
+    function insertAnalysisLotDetails($round,$vendor,$lotno,$file1,$file2,$lot_pendrive_sent_date){
 
-        $this->db->insert($this->analysisLotListTbl,array('lotno' => $lotno,'test_edition' => $round,'vendor_id' => $vendor,'lot_sent_date' => date('Y-m-d')),'lot_approve_status' => 0);
+        $this->db->insert($this->analysisLotListTbl,array('lotno' => $lotno,'test_edition' => $round,'vendor_id' => $vendor,'lot_sent_date' => date('Y-m-d'),'lot_pendrive_sent_date' =>  date('Y-m-d',strtotime($lot_pendrive_sent_date)),'lot_qc_file_path' => $file1,'lot_qc_html_file_path' => $file2,'lot_approve_status' => 0));
         
         $insert_id = $this->db->insert_id();
 

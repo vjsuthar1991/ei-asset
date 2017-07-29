@@ -4353,7 +4353,30 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
   
 });
 
-app.controller('LotGenerationController', function($scope,$http,$ocLazyLoad) {
+app.controller('LotGenerationController', function($scope,$http,$routeParams,$location,$window,$route) {
+
+  $('.dateAnimate').bootstrapMaterialDatePicker({ weekStart : 0, time: false,animation:true,format: 'DD-MM-YYYY' });
+
+  $("#analysislotgenerationform").validate({
+      errorElement: "em",
+      errorPlacement: function(error, element) {
+        $(element.parent("div").addClass("form-animate-error"));
+        error.appendTo(element.parent("div"));
+      },
+      success: function(label) {
+        $(label.parent("div").removeClass("form-animate-error"));
+      },
+      rules: {
+        analysislot_generation_round: "required",
+        analysislot_generation_vendor: "required",
+        lot_pendrive_sent_date: "required",
+        lot_generation_excelfile: "required",
+        lot_generation_htmlfile: "required",
+      },
+      messages: {
+        
+      }
+    });
 
   $scope.rounds = [];
   $scope.vendors = [];
@@ -4380,99 +4403,87 @@ app.controller('LotGenerationController', function($scope,$http,$ocLazyLoad) {
       }
     });
 
-    $("#lotgeneratioform").validate({
-      errorElement: "em",
-      errorPlacement: function(error, element) {
-        $(element.parent("div").addClass("form-animate-error"));
-        error.appendTo(element.parent("div"));
-      },
-      success: function(label) {
-        $(label.parent("div").removeClass("form-animate-error"));
-      },
-      rules: {
-        analysislot_generation_round: "required"
-      },
-      messages: {
+    
+
+    $(document).on('submit','#analysislotgenerationform',function(event){
       
-      }
-    });
+      event.stopImmediatePropagation();
 
-  //   $(document).on('submit','#analysislotgenerationform',function(event){
+      $('#lotgenerationbtn').attr('disabled','disabled');
       
-  //     event.stopImmediatePropagation();
+      event.preventDefault();
 
-  //     $('#lotgenerationbtn').attr('disabled','disabled');
+      var excelfileUpload = document.getElementById("lot_generation_excelfile");
+
+      var htmlfileUpload = document.getElementById("lot_generation_htmlfile");
       
-  //     event.preventDefault();
+      if (excelfileUpload.value != null) {
 
-  //     var excelfileUpload = document.getElementById("lot_generation_excelfile");
+        var uploadFile = new FormData();
+        var files = $("#lot_generation_excelfile").get(0).files;
+        var filesCsv = $("#lot_generation_htmlfile").get(0).files;
+        var round = $('#analysislot_generation_round').val();
+        var vendor = $('#analysislot_generation_vendor').val();
+        var lot_pendrive_sent_date = $('#lot_pendrive_sent_date').val();
 
-  //     var htmlfileUpload = document.getElementById("lot_generation_htmlfile");
-      
-  //     if (excelfileUpload.value != null) {
+        $scope.csvdata = [];
+          // Add the uploaded files content to the form data collection
+          if (files.length > 0) {
 
-  //       var uploadFile = new FormData();
-  //       var files = $("#lot_generation_excelfile").get(0).files;
-  //       var filesCsv = $("#lot_generation_htmlfile").get(0).files;
-  //       var round = $('#analysislot_generation_excelfile').val();
-  //       var vendor = $('#analysislot_generation_vendor').val();
+            uploadFile.append("LOTGENERATIONEXCELFile", files[0]);
+            uploadFile.append("LOTGENERATIONCSVFile", filesCsv[0]);
+            uploadFile.append("round", round);
+            uploadFile.append("vendor_id", vendor);
+            uploadFile.append("lot_pendrive_sent_date", lot_pendrive_sent_date);
 
-  //       $scope.csvdata = [];
-  //         // Add the uploaded files content to the form data collection
-  //         if (files.length > 0) {
+            $.ajax({
+              url: "./api/lotgeneration/upload_lot_generation_files",
+              contentType: false,
+              processData: false,
+              data: uploadFile,
+              type: 'POST',
+              success: function (returndata) {
 
-  //           uploadFile.append("LOTGENERATIONEXCELFile", files[0]);
-  //           uploadFile.append("LOTGENERATIONCSVFile", filesCsv[0]);
-  //           uploadFile.append("round", round);
-  //           uploadFile.append("vendor_id", vendor);
+               var response = JSON.parse(returndata);
 
-  //           $.ajax({
-  //             url: "./api/lotgeneration/upload_lot_generation_files",
-  //             contentType: false,
-  //             processData: false,
-  //             data: uploadFile,
-  //             type: 'POST',
-  //             success: function (returndata) {
+               if(response.status == "success"){
 
-  //              var response = JSON.parse(returndata);
+                  if($('#upload_analysisqc_html_message_box').hasClass('alert-danger')){
+                    $('#upload_analysisqc_html_message_box').removeClass('alert-danger');
+                  }
+                  $('#upload_analysisqc_html_message_box').addClass('alert-success');
+                  $('#upload_analysisqc_html_message_box').text('');
+                  $('#upload_analysisqc_html_message_box').append(response.message);
+                  $('#upload_analysisqc_html_message_box').removeClass('hide');
+                  $(window).scrollTop($('#upload_analysisqc_html_message_box').offset().top);
 
-  //              if(response.status == "success"){
+                  setTimeout(function(){ window.location.reload(); }, 3000);   
 
-  //                 // if($('#upload_csv_message_box').hasClass('alert-danger')){
-  //                 //   $('#upload_csv_message_box').removeClass('alert-danger');
-  //                 // }
-  //                 // $('#upload_csv_message_box').addClass('alert-success');
-  //                 // $('#upload_csv_message_box').text('');
-  //                 // $('#upload_csv_message_box').append(response.message);
-  //                 // $('#upload_csv_message_box').removeClass('hide');
-  //                 // $(window).scrollTop($('#upload_csv_message_box').offset().top);
+                }
+                else {
 
-  //                 // setTimeout(function(){ window.location.reload(); }, 3000);   
-
-  //               }
-  //               else {
-
-  //                 // $('#uploadqbmisform')[0].reset();
-  //                 // $('#uploadqbanalysismisbtn').removeAttr('disabled');
+                  $('#analysislotgenerationform')[0].reset();
+                  $('#lotgenerationbtn').removeAttr('disabled');
                   
-  //                 // if($('#upload_csv_message_box').hasClass('alert-success')){
-  //                 //   $('#upload_csv_message_box').removeClass('alert-success');
-  //                 // }
+                  if($('#upload_analysisqc_html_message_box').hasClass('alert-success')){
+                    $('#upload_analysisqc_html_message_box').removeClass('alert-success');
+                  }
                   
-  //                 // $('#upload_csv_message_box').addClass('alert-danger');
-  //                 // $('#upload_csv_message_box').text('');
-  //                 // $('#upload_csv_message_box').append(response.message);
-  //                 // $('#upload_csv_message_box').removeClass('hide');
-  //                 // $(window).scrollTop($('#upload_csv_message_box').offset().top);
+                  $('#upload_analysisqc_html_message_box').addClass('alert-danger');
+                  $('#upload_analysisqc_html_message_box').text('');
+                  $('#upload_analysisqc_html_message_box').append(response.message);
+                  $('#upload_analysisqc_html_message_box').removeClass('hide');
+                  $(window).scrollTop($('#upload_analysisqc_html_message_box').offset().top);
 
-  //                 // setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 4000);
-  //               }
+                  setTimeout(function(){ $('#upload_analysisqc_html_message_box').addClass('hide'); }, 4000);
 
-  //             }
-  //           });
-  //   }
-  // }
+                }
 
-  // });
+              }
+            });
+    }
+  }
+
+  });
 
 });

@@ -6,6 +6,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
   require_once('support_files/check.php');
 
   $loginUserName = $_SESSION['username'];
+
   checkPermission('OPS');
 
   if($urlparts['2'] == 'create_vendor' || $urlparts['2'] == 'vendor_list' || $urlparts['2'] == 'edit_vendor')
@@ -55,6 +56,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
   <link rel="stylesheet" type="text/css" href="asset/css/plugins/simple-line-icons.css"/>
   <link rel="stylesheet" type="text/css" href="asset/css/plugins/mediaelementplayer.css"/>
   <link rel="stylesheet" type="text/css" href="asset/css/plugins/animate.min.css"/>
+  <link rel="stylesheet" type="text/css" href="asset/css/plugins/bootstrap-material-datetimepicker.css"/>
   <link href="asset/css/style.css" rel="stylesheet">
   <!-- end: Css -->
 
