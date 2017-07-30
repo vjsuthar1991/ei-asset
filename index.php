@@ -2,7 +2,7 @@
 $url = $_SERVER['REQUEST_URI'];
 $urlparts = explode('/',$url);
 
-if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list') && ($urlparts['2'] != 'vendor-omr-receipt-mis')){
+if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list') && ($urlparts['2'] != 'vendor-omr-receipt-mis') && ($urlparts['2'] != "vendor-analysis-lot-list")){
   require_once('support_files/check.php');
 
   $loginUserName = $_SESSION['username'];

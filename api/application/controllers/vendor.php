@@ -1029,4 +1029,16 @@ class Vendor extends CI_Controller {
 
 	}
 
+	public function list_vendor_analysislot(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['analysis_lot_list'] = $this->vendors->analysisVendorLotList($inputRequest['vendor_id']);
+
+		echo json_encode(array('status' => 'success','analysis_lot_list' => $data['analysis_lot_list']));
+
+		die;
+
+	}
+
 }

@@ -326,6 +326,11 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                         }]);
                     }]
                 }
+            })
+            .when('/vendor-analysis-lot-list',{
+              cache: false,
+              templateUrl: 'views/vendor-portal/vendor-analysis-lot-list.html',
+              controller: 'VendorAnalysisLotListController',
             });
 
 

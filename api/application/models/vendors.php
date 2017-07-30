@@ -741,6 +741,8 @@ class Vendors extends CI_Model{
         $this->db->select('lotno');
         $this->db->from($this->analysisLotListTbl);
         $this->db->where('test_edition',$round);
+
+        
         $query = $this->db->get();
 
         return $query->result_array();
@@ -754,6 +756,18 @@ class Vendors extends CI_Model{
         $insert_id = $this->db->insert_id();
 
         return $insert_id;
+
+    }
+
+    function analysisVendorLotList($vendorId){
+
+        $this->db->select('*');
+        $this->db->from($this->analysisLotListTbl);
+        $this->db->where('vendor_id',$vendorId);
+        $this->db->order_by("lotno","desc");
+        $query = $this->db->get();
+
+        return $query->result_array();
 
     }
 }

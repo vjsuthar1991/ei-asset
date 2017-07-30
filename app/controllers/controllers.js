@@ -4487,3 +4487,211 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
   });
 
 });
+
+app.controller('VendorAnalysisLotListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  $scope.dtInstance = {};
+  $scope.vendoranalysislotlist = [];
+  
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+  }
+
+  var vendor_id = getCookie('vendor_id');
+  var vendor_authtoken = getCookie('vendor_authtoken');                  
+
+  var data = {vendor_id : vendor_id,vendor_authtoken: vendor_authtoken};
+  
+  data = JSON.stringify(data);
+  
+  $.ajax({
+    url: './api/vendor/list_vendor_analysislot',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+
+        jQuery.each( response.data, function( i, val ) {
+          
+          $scope.vendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
+          });
+
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('analysisLotSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+          DTColumnBuilder.newColumn('analysisLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('analysisTestEdition').withTitle('Test Edition').withOption('title','Test Edition'),
+          DTColumnBuilder.newColumn('analysisLotPendriveSentDate').withTitle('Pen Drive Sent Date').withOption('title','Pen Drive Sent Date'),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Excel File').withOption('title','Download QC Excel File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysisLotQcFilePath+'" download="'+full.analysisLotQcFilePath+'" target="_blank" title="Download Excel"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Html File').withOption('title','Download QC Html File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysislotQcHtmlFilePath+'" download="'+full.analysislotQcHtmlFilePath+'" title="Download HTML"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('analysisLotAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotAcknowledgeDate == ""){
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.lotId+'"><div><span>Click Here</span></div></button>';
+            }
+            else {
+              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
+        
+        
+      }
+      else {
+        jQuery.each( response.data, function( i, val ) {
+          $scope.vendorpackingsliplist.push({
+            packingSlipId: val.packingslip_id,
+            packingSlipLotNo: val.packingslip_lotno,
+            packingSlipSentDate: val.packingslip_sentdate,
+            packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+            packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+            packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+          });
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date And Time').withOption('title','Sent Date And Time'),
+          DTColumnBuilder.newColumn('packingSlipLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingSlipId){
+              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.packingslipAcknowledgeDate == ""){
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.packingSlipId+'"><div><span>Click Here</span></div></button>';
+            }
+            else {
+              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
+      }
+      
+    }
+  });
+
+  $(document).on('click','.acknowledgePackingslip',function(event){
+   
+    var packingslip = $(this).attr('packingslip-id');
+    var vendor_id = getCookie('vendor_id');
+    var data = {packingslip_id : packingslip,vendor_id: vendor_id};
+    data = JSON.stringify(data);
+    $scope.newvendorpackingsliplist = [];
+      $.ajax({
+      url: './api/vendor/acknowledge_packingslip',
+      type: 'POST',
+      data: data,
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+
+          jQuery.each( response.data, function( i, val ) {
+            $scope.newvendorpackingsliplist.push({
+              packingSlipId: val.packingslip_id,
+              packingSlipLotNo: val.packingslip_lotno,
+              packingSlipSentDate: val.packingslip_sentdate,
+              packingslipSchoolsCSV: val. packingslip_schools_data_csv,
+              packingslipBreakupCSV: val.packingslip_breakup_data_csv,
+              packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+            });
+          });
+
+          $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newvendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+            $("td:first", nRow).html(iDisplayIndex +1);
+            return nRow;
+          }).withOption('processing', true);
+
+          $scope.dtInstance.rerender(); 
+        }
+        
+      }
+    });
+  });
+
+});
