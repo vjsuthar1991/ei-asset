@@ -31,7 +31,7 @@ class Packingslip extends CI_Controller {
 
 		foreach ($data['round_latest'] as $key => $value) {
 
-			$date1 = '01-08-'.date('Y');
+			$date1 = '01-10-'.date('Y');
 
 			$date2 = date('d-m-Y');
 

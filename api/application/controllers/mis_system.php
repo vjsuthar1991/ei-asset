@@ -39,7 +39,7 @@ class Mis_system extends CI_Controller {
 		//loop through the rounds selected
 		foreach ($data['round_latest'] as $key => $value) {
 
-			$date1 = '01-08-'.date('Y'); //date set to start winter round
+			$date1 = '01-10-'.date('Y'); //date set to start winter round
 
 			$date2 = date('d-m-Y'); //get current date
 
@@ -96,7 +96,7 @@ class Mis_system extends CI_Controller {
 		//loop through the rounds selected
 		foreach ($data['round_latest'] as $key => $value) {
 
-			$date1 = '01-08-'.date('Y'); //date set to start winter round
+			$date1 = '01-10-'.date('Y'); //date set to start winter round
 
 			$date2 = date('d-m-Y'); //get current date
 
@@ -251,7 +251,7 @@ class Mis_system extends CI_Controller {
 		//loop through the rounds selected
 		foreach ($data['round_latest'] as $key => $value) {
 
-			$date1 = '01-08-'.date('Y'); //date set to start winter round
+			$date1 = '01-10-'.date('Y'); //date set to start winter round
 
 			$date2 = date('d-m-Y'); //get current date
 

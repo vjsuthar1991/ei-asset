@@ -4785,7 +4785,6 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
     var data = {analysislotid : analysislotid,vendor_id: vendor_id,printingDate:printingDate,kittingDate:kittingDate,estimatedDisptachDate:estimatedDisptachDate};
     
     if(printingDate == ''){
-      console.log("er");
       $("#lot_printing_date"+analysislotid).attr('style','box-shadow:0px 0px 3px 2px #FF968B !important');
       return false;
     }

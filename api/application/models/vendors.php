@@ -741,6 +741,7 @@ class Vendors extends CI_Model{
         $this->db->select('lotno');
         $this->db->from($this->analysisLotListTbl);
         $this->db->where('test_edition',$round);
+        $this->db->order_by('lotno','desc');
 
         
         $query = $this->db->get();
@@ -807,7 +808,7 @@ class Vendors extends CI_Model{
 
         }
         else if($status == 0){
-            
+
             $this->db->where("id",$analysislotid);
             $this->db->update($this->analysisLotListTbl,array('lot_approve_status' => $status,'lot_acknowledge_date' => '0000-00-00','lot_printing_date' => '0000-00-00','lot_kittingpacking_date' => '0000-00-00','lot_expected_dispatch_date' => '0000-00-00'));            
 
