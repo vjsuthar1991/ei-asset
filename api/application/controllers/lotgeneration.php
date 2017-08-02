@@ -52,6 +52,7 @@ class Lotgeneration extends CI_Controller {
 		$round = $_REQUEST['round'];	
 		$vendor = $_REQUEST['vendor_id'];
 		$lot_pendrive_sent_date = $_REQUEST['lot_pendrive_sent_date'];
+		$data['user_details'] = $this->dashboards->getUserDetails($_REQUEST['username']);
 
 		if($_FILES['LOTGENERATIONEXCELFile']['name'] != ""){
 		      $file_name = $_FILES['LOTGENERATIONEXCELFile']['name'];
@@ -168,21 +169,23 @@ class Lotgeneration extends CI_Controller {
 				//$schoolContentListFlag = 0;
 
 				if($schoolCodeFlag == 0){
+
+					$totalSchools = count($data['values']);
 					
 					$checkLot = $this->vendors->checkLotNo($round);
-					print_r($checkLot);
-
+					
 					if(count($checkLot) > 0) {
-						if($checkLot[0]->lotno == 0){
+						if($checkLot[0]['lotno'] == 0){
 							$lotno = 1;
 						}
 						else {
-							$lotno = $checkLot[0]->lotno + 1;
+							$lotno = $checkLot[0]['lotno'] + 1;
 						}
 					}
 					else {
 						$lotno = 1;
 					}
+
 
 					$insert = $this->vendors->insertAnalysisLotDetails($round,$vendor,$lotno,$file_name,$file_name2,$lot_pendrive_sent_date);
 
@@ -198,28 +201,27 @@ class Lotgeneration extends CI_Controller {
 						//Example Usage
 						$lotno = ordinal($lotno);
 
-						// $attachFile1 = "./MIS Reports/Analysis Lot Files/".$filename;
-		    //             $attachFile2 = "./MIS Reports/Analysis Lot Files/".$filename2;
+						$attachFile1 = "./MIS Reports/Analysis Lot Files/".$file_name;
+		                $attachFile2 = "./MIS Reports/Analysis Lot Files/".$file_name2;
 
-		    //             $roundName = $this->packingslips->getRoundName($round);
-		    //             $roundFullName = $roundName[0]->description;
+		                $roundName = $this->packingslips->getRoundName($round);
+		                $roundFullName = $roundName[0]->description;
 
-		    //             $data['vendorDetails'] = $this->packingslips->getVendorDetails($vendor);
+		                $data['vendorDetails'] = $this->packingslips->getVendorDetails($vendor);
 		                
-		    //             $subject = "$lotno LOT OF Analysis Printing - $roundFullName";
-		    //             $vendorName = $vendorEmailId[0]->vendor_contact_person_1_name;
-		    //             $message = 'Hello ';
-		    //             $message .= $vendorName;
-		    //             $message .= ' ji,';
-		    //             $message .= '<br><br>';
-		    //             $message .= "Sharing the $lotno Lot packing slips for $roundFullName. It contains $schoolsCount schools.";
-		    //             $message .= '<br><br>Regards,<br>';
-		    //             $message .= $senderName;
+		                $subject = "$lotno LOT ANALYSIS $roundFullName - QC FILES";
+		                $vendorName = $data['vendorDetails'][0]->vendor_contact_person_1_name;
+		                $message = 'Hello ';
+		                $message .= $vendorName;
+		                $message .= ' ji,';
+		                $message .= '<br><br>';
+		                $penDriveSentDate = date('l jS F Y',strtotime($lot_pendrive_sent_date));
+		                $message .= "Sharing the qc files of $lotno lot for Analysis $roundFullName. It contains $totalSchools schools.Pen drive of reports was sent to you on $penDriveSentDate.";
+		                $message .= '<br><br>Regards,<br>';
+		                $message .= $data['user_details'][0]->fullname;
 
-		    //             $ci->setemail($attachFile1,$attachFile2,$vendorEmailId,$subject,$message);
+		                $this->setemail($attachFile1,$attachFile2,$data['vendorDetails'][0]->vendor_contact_person_1_email,$subject,$message);
 						
-						echo json_encode(array('status' => 'success','message' => 'Analysis Lot Sent To Vendor Successfully'));
-
 					}
 				}
 				else {
@@ -233,5 +235,92 @@ class Lotgeneration extends CI_Controller {
 		}
 
 	}
+
+	public function setemail($file1,$file2,$vendorEmailId,$subject,$message)
+
+        {
+        	
+        	$email=$vendorEmailId;
+			$subject=$subject;
+			$message=$message;
+			$this->sendEmail($email,$subject,$message,$file1,$file2);
+		}
+
+		
+
+	public function sendEmail($email,$subject,$message,$file1,$file2)
+	    
+	    {
+
+	    $config = Array(
+	      'protocol' => 'smtp',
+	      'smtp_host' => 'ssl://smtp.googlemail.com',
+	      'smtp_port' => 465,
+	      'smtp_user' => 'billingdesk@ei-india.com', 
+	      'smtp_pass' => 'billing123', 
+	      'mailtype' => 'html',
+	      'charset' => 'iso-8859-1',
+	      'wordwrap' => TRUE
+	    );
+
+
+	      $this->load->library('email', $config);
+	      $this->email->set_newline("\r\n");
+	      $this->email->from('jignasha.mistry@ei-india.com');
+	      $this->email->to($email);
+	      //$this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
+	      $this->email->subject($subject);
+	      $this->email->message($message);
+	      $this->email->attach($file1);
+	      $this->email->attach($file2);
+	      
+	      if($this->email->send())
+	         {
+	         echo json_encode(array('status' => 'success','message' => 'Analysis Lot Sent To Vendor Successfully'));
+
+	          //unlink($file1);
+	          //unlink($file2);
+	          
+	         }
+	      else
+	        {
+	         //show_error($this->email->print_debugger());
+	         echo json_encode(array('status' => 'error','message'=> 'Error In Sending Analysis Lot To Vendor Try Again..!!'));
+	        }
+
+	    }
+
+	    public function list_analysislot(){
+
+			$inputRequest = json_decode(file_get_contents("php://input"),true);
+			
+			$data['analysis_lot_list'] = $this->vendors->analysisLotList();	
+
+			if(count($data['analysis_lot_list']) > 0){
+				echo json_encode(array('status' => 'success','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+			else {
+				echo json_encode(array('status' => 'error','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+		
+
+		}
+
+		public function approve_analysislot(){
+
+			$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+			$update = $this->vendors->approveAnalysisLot($inputRequest['analysislotid'],$inputRequest['status']);
+
+			$data['analysis_lot_list'] = $this->vendors->analysisLotList();	
+
+			if(count($data['analysis_lot_list']) > 0){
+				echo json_encode(array('status' => 'success','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+			else {
+				echo json_encode(array('status' => 'error','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+
+		}
 
 }

@@ -26,7 +26,7 @@
                           
                         </table>
                       </div>
-                       <!-- <div ng-repeat="column in dtColumns">{{column.title}} Visible: <input type="checkbox" ng-model="column.visible" /></div> -->
+                       <div ng-repeat="column in dtColumns" ng-if="column.title != 'S.No'">{{column.title}} Visible: <input type="checkbox" ng-model="column.visible" /></div>
          <!-- <tr ng-repeat="user in users" user="user" columns="columns"> -->
                   </div>
                 </div>

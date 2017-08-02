@@ -57,6 +57,8 @@
                   <li><a href="omr-receipt-status">OMR Receipt Status</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="lot-generation">Lot Generation</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="analysis-lot-list">Analysis Lot List</a></li>
                 </ul>
               </li>
               

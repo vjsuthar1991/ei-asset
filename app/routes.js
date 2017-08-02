@@ -331,6 +331,22 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/vendor-portal/vendor-analysis-lot-list.html',
               controller: 'VendorAnalysisLotListController',
+               resolve: {
+                    deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: 'ui.datetimpicker',
+                            // add UI select css / js for this state
+                            files: [
+                                'asset/js/plugins/bootstrap-material-datetimepicker.js',
+                            ] 
+                        }]);
+                    }]
+                }
+            })
+            .when('/analysis-lot-list',{
+              cache: false,
+              templateUrl: 'views/analysis-lot-list.html',
+              controller: 'AnalysisLotListController',
             });
 
 

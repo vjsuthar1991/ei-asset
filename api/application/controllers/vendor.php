@@ -542,7 +542,7 @@ class Vendor extends CI_Controller {
 
         {
         	
-        	echo $email = $schoolEmailId;
+        	$email = $schoolEmailId;
 			$subject = $subject;
 			$message = $message;
 			$this->sendEmail($email,$subject,$message,$file1,$ccEmail);
@@ -1040,5 +1040,31 @@ class Vendor extends CI_Controller {
 		die;
 
 	}
+
+	public function acknowledge_analysislot(){
+		
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+		
+		
+		$update = $this->vendors->acknowledgeAnalysisLot($inputRequest['analysislotid'],$inputRequest['printingDate'],$inputRequest['kittingDate'],$inputRequest['estimatedDisptachDate']);
+		
+		if($update)
+		{
+			$data['analysis_lot_list'] = $this->vendors->analysisVendorLotList($inputRequest['vendor_id']);
+			
+			if(count($data['analysis_lot_list']) > 0){
+				echo json_encode(array('status' => 'success','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+			else {
+				echo json_encode(array('status' => 'error','analysis_lot_list' => $data['analysis_lot_list']));
+			}
+			
+		}
+
+	}
+
+	
+
+	
 
 }

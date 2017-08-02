@@ -4357,6 +4357,8 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
 
   $('.dateAnimate').bootstrapMaterialDatePicker({ weekStart : 0, time: false,animation:true,format: 'DD-MM-YYYY' });
 
+  var username = $('#loginusername').val();    
+
   $("#analysislotgenerationform").validate({
       errorElement: "em",
       errorPlacement: function(error, element) {
@@ -4435,6 +4437,7 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
             uploadFile.append("round", round);
             uploadFile.append("vendor_id", vendor);
             uploadFile.append("lot_pendrive_sent_date", lot_pendrive_sent_date);
+            uploadFile.append("username", username);
 
             $.ajax({
               url: "./api/lotgeneration/upload_lot_generation_files",
@@ -4492,25 +4495,26 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
 
   $scope.dtInstance = {};
   $scope.vendoranalysislotlist = [];
-  
-  function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-  }
 
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+  
   var vendor_id = getCookie('vendor_id');
-  var vendor_authtoken = getCookie('vendor_authtoken');                  
+  var vendor_authtoken = getCookie('vendor_authtoken');  
+                
 
   var data = {vendor_id : vendor_id,vendor_authtoken: vendor_authtoken};
   
@@ -4530,8 +4534,7 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
 
       if(response.status == "success"){
 
-
-        jQuery.each( response.data, function( i, val ) {
+        jQuery.each( response.analysis_lot_list, function( i, val ) {
           
           $scope.vendoranalysislotlist.push({
             lotId: val.id,
@@ -4565,24 +4568,72 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
           DTColumnBuilder.newColumn('analysisLotPendriveSentDate').withTitle('Pen Drive Sent Date').withOption('title','Pen Drive Sent Date'),
           DTColumnBuilder.newColumn('null').withTitle('Download QC Excel File').withOption('title','Download QC Excel File').notSortable()
           .renderWith(function (data, type, full, meta){
-            if(full.packingSlipId){
+            if(full.lotId){
               return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysisLotQcFilePath+'" download="'+full.analysisLotQcFilePath+'" target="_blank" title="Download Excel"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
             }
           }).withClass("text-center"),
           DTColumnBuilder.newColumn('null').withTitle('Download QC Html File').withOption('title','Download QC Html File').notSortable()
           .renderWith(function (data, type, full, meta){
-            if(full.packingSlipId){
+            if(full.lotId){
               return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysislotQcHtmlFilePath+'" download="'+full.analysislotQcHtmlFilePath+'" title="Download HTML"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Printing Date').withOption('title','Printing Date')
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotPrintingDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_printing_date'+full.lotId+'" name="lot_printing_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
+            }
+            else {
+          
+              return full.analysisLotPrintingDate;
+          
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Kitting And Packing Date').withOption('title','Kitting And Packing Date')
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotKittingPackingDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_kittingpacking_date'+full.lotId+'" name="lot_kittingpacking_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
+            }
+            else {
+          
+              return full.analysisLotKittingPackingDate;
+          
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Expected Dispatch Date').withOption('title','Expected Dispatch Date')
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotExpectedDispatchDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_expected_dispatch_date'+full.lotId+'" name="lot_expected_dispatch_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
+            }
+            else {
+          
+              return full.analysisLotExpectedDispatchDate;
+          
             }
           }).withClass("text-center"),
           DTColumnBuilder.newColumn('analysisLotAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
           DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
           .renderWith(function (data, type, full, meta){
-            if(full.analysisLotAcknowledgeDate == ""){
-              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.lotId+'"><div><span>Click Here</span></div></button>';
+            if(full.analysisLotLotApproveStatus == 0){
+
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgeAnalysisLot" analysislot-id="'+full.lotId+'"><div><span>SAVE</span></div></button>';
+            
             }
-            else {
-              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+            else if(full.analysisLotLotApproveStatus == 1) {
+
+              return '<button class="btn btn-raised btn-warning" disabled="disabled"><div><span>Pending</span></div></button>';
+            
+            }
+            else{
+
+             return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>'; 
+            
             }
           }).withClass("text-center")
         ];  
@@ -4591,23 +4642,39 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
         $scope.dtColumns[1].visible = true;
         $scope.dtColumns[2].visible = true;
         $scope.dtColumns[3].visible = true;
+        $scope.dtColumns[4].visible = false;
+        $scope.dtColumns[5].visible = false;
+        $scope.dtColumns[6].visible = false;
+        $scope.dtColumns[7].visible = true;
+        $scope.dtColumns[8].visible = true;
+        $scope.dtColumns[9].visible = true;
+        $scope.dtColumns[10].visible = false;
+        $scope.dtColumns[11].visible = true;
         
         
       }
       else {
-        jQuery.each( response.data, function( i, val ) {
-          $scope.vendorpackingsliplist.push({
-            packingSlipId: val.packingslip_id,
-            packingSlipLotNo: val.packingslip_lotno,
-            packingSlipSentDate: val.packingslip_sentdate,
-            packingslipSchoolsCSV: val. packingslip_schools_data_csv,
-            packingslipBreakupCSV: val.packingslip_breakup_data_csv,
-            packingslipAcknowledgeDate: val.packingslip_acknowledge_date
+        jQuery.each( response.analysis_lot_list, function( i, val ) {
+          
+          $scope.vendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
           });
+
         });
         
         
-        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
           $("td:first", nRow).html(iDisplayIndex +1);
           return nRow;
         }).withOption('processing', true);   
@@ -4615,28 +4682,78 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
 
         $scope.dtColumns = [
           DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
-          DTColumnBuilder.newColumn('packingSlipSentDate').withTitle('Sent Date And Time').withOption('title','Sent Date And Time'),
-          DTColumnBuilder.newColumn('packingSlipLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
-          DTColumnBuilder.newColumn('null').withTitle('Download Schools CSV').withOption('title','Download Schools CSV').notSortable()
+          DTColumnBuilder.newColumn('analysisLotSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+          DTColumnBuilder.newColumn('analysisLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('analysisTestEdition').withTitle('Test Edition').withOption('title','Test Edition'),
+          DTColumnBuilder.newColumn('analysisLotPendriveSentDate').withTitle('Pen Drive Sent Date').withOption('title','Pen Drive Sent Date'),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Excel File').withOption('title','Download QC Excel File').notSortable()
           .renderWith(function (data, type, full, meta){
-            if(full.packingSlipId){
-              return '<a href="api/packingSlipSchoolsCSVFiles/'+full.packingslipSchoolsCSV+'" download="'+full.packingslipSchoolsCSV+'" target="_blank" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysisLotQcFilePath+'" download="'+full.analysisLotQcFilePath+'" target="_blank" title="Download Excel"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
             }
           }).withClass("text-center"),
-          DTColumnBuilder.newColumn('null').withTitle('Download Schools Order CSV').withOption('title','Download Schools Order CSV').notSortable()
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Html File').withOption('title','Download QC Html File').notSortable()
           .renderWith(function (data, type, full, meta){
-            if(full.packingSlipId){
-              return '<a href="api/packingslipbreakupCSVFiles/'+full.packingslipBreakupCSV+'" download="'+full.packingslipBreakupCSV+'" title="Download CSV"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysislotQcHtmlFilePath+'" download="'+full.analysislotQcHtmlFilePath+'" title="Download HTML"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
             }
           }).withClass("text-center"),
-          DTColumnBuilder.newColumn('packingslipAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
-          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          DTColumnBuilder.newColumn('null').withTitle('Printing Date').withOption('title','Printing Date')
           .renderWith(function (data, type, full, meta){
-            if(full.packingslipAcknowledgeDate == ""){
-              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgePackingslip" packingslip-id="'+full.packingSlipId+'"><div><span>Click Here</span></div></button>';
+            if(full.analysisLotPrintingDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_printing_date'+full.lotId+'" name="lot_printing_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
             }
             else {
-              return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>';
+          
+              return full.analysisLotPrintingDate;
+          
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Kitting And Packing Date').withOption('title','Kitting And Packing Date')
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotKittingPackingDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_kittingpacking_date'+full.lotId+'" name="lot_kittingpacking_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
+            }
+            else {
+          
+              return full.analysisLotKittingPackingDate;
+          
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Expected Dispatch Date').withOption('title','Expected Dispatch Date')
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotExpectedDispatchDate == "0000-00-00"){
+              
+              return '<div class="form-group form-animate-text" style="margin-bottom:0px;"><input type="date" id="lot_expected_dispatch_date'+full.lotId+'" name="lot_expected_dispatch_date'+full.lotId+'" class="form-text dateAnimate"></div>';
+     
+            }
+            else {
+          
+              return full.analysisLotExpectedDispatchDate;
+          
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('analysisLotAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotLotApproveStatus == 0){
+
+              return '<button class="btn ripple-infinite btn-raised btn-danger acknowledgeAnalysisLot" analysislot-id="'+full.lotId+'"><div><span>SAVE</span></div></button>';
+            
+            }
+            else if(full.analysisLotLotApproveStatus == 1) {
+
+              return '<button class="btn btn-raised btn-warning" disabled="disabled"><div><span>Pending</span></div></button>';
+            
+            }
+            else{
+
+             return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>'; 
+            
             }
           }).withClass("text-center")
         ];  
@@ -4645,20 +4762,61 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
         $scope.dtColumns[1].visible = true;
         $scope.dtColumns[2].visible = true;
         $scope.dtColumns[3].visible = true;
+        $scope.dtColumns[4].visible = false;
+        $scope.dtColumns[5].visible = false;
+        $scope.dtColumns[6].visible = false;
+        $scope.dtColumns[7].visible = true;
+        $scope.dtColumns[8].visible = true;
+        $scope.dtColumns[9].visible = true;
+        $scope.dtColumns[10].visible = false;
+        $scope.dtColumns[11].visible = true;
       }
       
     }
   });
 
-  $(document).on('click','.acknowledgePackingslip',function(event){
+  $(document).on('click','.acknowledgeAnalysisLot',function(event){
    
-    var packingslip = $(this).attr('packingslip-id');
+    var analysislotid = $(this).attr('analysislot-id');
     var vendor_id = getCookie('vendor_id');
-    var data = {packingslip_id : packingslip,vendor_id: vendor_id};
+    var printingDate = $("#lot_printing_date"+analysislotid).val();
+    var kittingDate = $("#lot_kittingpacking_date"+analysislotid).val();
+    var estimatedDisptachDate = $("#lot_expected_dispatch_date"+analysislotid).val();
+    var data = {analysislotid : analysislotid,vendor_id: vendor_id,printingDate:printingDate,kittingDate:kittingDate,estimatedDisptachDate:estimatedDisptachDate};
+    
+    if(printingDate == ''){
+      console.log("er");
+      $("#lot_printing_date"+analysislotid).attr('style','box-shadow:0px 0px 3px 2px #FF968B !important');
+      return false;
+    }
+    else{
+      $("#lot_printing_date"+analysislotid).removeAttr('style');
+    }
+
+    if(kittingDate == ''){
+      $("#lot_kittingpacking_date"+analysislotid).attr('style','box-shadow:0px 0px 3px 2px #FF968B !important');
+      return false;
+    }
+    else{
+      $("#lot_kittingpacking_date"+analysislotid).removeAttr('style');
+    }
+
+    if(estimatedDisptachDate == ''){
+      $("#lot_expected_dispatch_date"+analysislotid).attr('style','box-shadow:0px 0px 3px 2px #FF968B !important');
+      return false;
+    }
+    else{
+      $("#lot_expected_dispatch_date"+analysislotid).removeAttr('style');
+    }
+
+
+
     data = JSON.stringify(data);
-    $scope.newvendorpackingsliplist = [];
+    
+    $scope.newvendoranalysislotlist = [];
+
       $.ajax({
-      url: './api/vendor/acknowledge_packingslip',
+      url: './api/vendor/acknowledge_analysislot',
       type: 'POST',
       data: data,
       dataType : 'json', // data type
@@ -4671,23 +4829,32 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
 
         if(response.status == "success"){
 
-          jQuery.each( response.data, function( i, val ) {
-            $scope.newvendorpackingsliplist.push({
-              packingSlipId: val.packingslip_id,
-              packingSlipLotNo: val.packingslip_lotno,
-              packingSlipSentDate: val.packingslip_sentdate,
-              packingslipSchoolsCSV: val. packingslip_schools_data_csv,
-              packingslipBreakupCSV: val.packingslip_breakup_data_csv,
-              packingslipAcknowledgeDate: val.packingslip_acknowledge_date
-            });
+          jQuery.each( response.analysis_lot_list, function( i, val ) {
+          
+          $scope.newvendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
           });
 
-          $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newvendorpackingsliplist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+        });
+
+          $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newvendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
             $("td:first", nRow).html(iDisplayIndex +1);
             return nRow;
           }).withOption('processing', true);
 
-          $scope.dtInstance.rerender(); 
+          $scope.dtInstance.rerender();
+
         }
         
       }
@@ -4695,3 +4862,257 @@ app.controller('VendorAnalysisLotListController', function($scope,$http,DTOption
   });
 
 });
+
+app.controller('AnalysisLotListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  $scope.dtInstance = {};
+  $scope.vendoranalysislotlist = [];
+
+  
+  
+  $.ajax({
+    url: './api/lotgeneration/list_analysislot',
+    type: 'POST',
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.analysis_lot_list, function( i, val ) {
+          
+          $scope.vendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotVendor: val.vendor_name,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
+          });
+
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('analysisLotSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+          DTColumnBuilder.newColumn('analysisLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('analysisTestEdition').withTitle('Test Edition').withOption('title','Test Edition'),
+          DTColumnBuilder.newColumn('analysisLotVendor').withTitle('Vendor Name').withOption('title','Vendor Name'),
+          DTColumnBuilder.newColumn('analysisLotPendriveSentDate').withTitle('Pen Drive Sent Date').withOption('title','Pen Drive Sent Date'),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Excel File').withOption('title','Download QC Excel File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysisLotQcFilePath+'" download="'+full.analysisLotQcFilePath+'" target="_blank" title="Download Excel"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Html File').withOption('title','Download QC Html File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysislotQcHtmlFilePath+'" download="'+full.analysislotQcHtmlFilePath+'" title="Download HTML"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('analysisLotPrintingDate').withTitle('Printing Date').withOption('title','Printing Date'),
+          DTColumnBuilder.newColumn('analysisLotKittingPackingDate').withTitle('Kitting And Packing Date').withOption('title','Kitting And Packing Date'),
+          DTColumnBuilder.newColumn('analysisLotExpectedDispatchDate').withTitle('Expected Dispatch Date').withOption('title','Expected Dispatch Date'),
+          DTColumnBuilder.newColumn('analysisLotAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+         DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotLotApproveStatus == 1){
+
+              return '<img src="asset/img/accept.png" class="approveAnalysisLot" analysislot-id="'+full.lotId+'" style="width: 30px;cursor:pointer;" title="Approve" status="2" /> | <img title="Reject" src="asset/img/reject.png" class="approveAnalysisLot" analysislot-id="'+full.lotId+'" status="0" style="width: 21px;margin-left: 3px;cursor:pointer;"/>';
+            
+            }
+            else if(full.analysisLotLotApproveStatus == 2){
+
+             return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>'; 
+            
+            }
+            else{
+              return '<button class="btn btn-raised btn-warning" disabled="disabled"><div><span>Pending</span></div></button>'; 
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
+        $scope.dtColumns[4].visible = false;
+        $scope.dtColumns[5].visible = false;
+        $scope.dtColumns[6].visible = true;
+        $scope.dtColumns[7].visible = true;
+        $scope.dtColumns[8].visible = true;
+        $scope.dtColumns[9].visible = true;
+        $scope.dtColumns[10].visible = false;
+        $scope.dtColumns[11].visible = true;
+        
+        
+      }
+      else {
+        
+        jQuery.each( response.analysis_lot_list, function( i, val ) {
+          
+          $scope.vendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotVendor: val.vendor_name,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
+          });
+
+        });
+        
+        
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.vendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);   
+
+
+        $scope.dtColumns = [
+          DTColumnBuilder.newColumn(null).withTitle('S.No.').withOption('title','S.No','defaultContent', ' '),
+          DTColumnBuilder.newColumn('analysisLotSentDate').withTitle('Sent Date').withOption('title','Sent Date'),
+          DTColumnBuilder.newColumn('analysisLotNo').withTitle('Lot No.').withOption('title','Lot No.'),
+          DTColumnBuilder.newColumn('analysisTestEdition').withTitle('Test Edition').withOption('title','Test Edition'),
+          DTColumnBuilder.newColumn('analysisLotVendor').withTitle('Vendor Name').withOption('title','Vendor Name'),
+          DTColumnBuilder.newColumn('analysisLotPendriveSentDate').withTitle('Pen Drive Sent Date').withOption('title','Pen Drive Sent Date'),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Excel File').withOption('title','Download QC Excel File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysisLotQcFilePath+'" download="'+full.analysisLotQcFilePath+'" target="_blank" title="Download Excel"><img style="width: 30px;height: 30px;" class="packingslip-school-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('null').withTitle('Download QC Html File').withOption('title','Download QC Html File').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.lotId){
+              return '<a href="api/MIS Reports/Analysis Lot Files/'+full.analysislotQcHtmlFilePath+'" download="'+full.analysislotQcHtmlFilePath+'" title="Download HTML"><img style="width: 30px;height: 30px;" class="packingslip-breakup-download" src="asset/img/CSV_download.png"></a>';
+            }
+          }).withClass("text-center"),
+          DTColumnBuilder.newColumn('analysisLotPrintingDate').withTitle('Printing Date').withOption('title','Printing Date'),
+          DTColumnBuilder.newColumn('analysisLotKittingPackingDate').withTitle('Kitting And Packing Date').withOption('title','Kitting And Packing Date'),
+          DTColumnBuilder.newColumn('analysisLotExpectedDispatchDate').withTitle('Expected Dispatch Date').withOption('title','Expected Dispatch Date'),
+          DTColumnBuilder.newColumn('analysisLotAcknowledgeDate').withTitle('Acknowledge Date And Time').withOption('title','Acknowledge Date And Time'),
+          DTColumnBuilder.newColumn('null').withTitle('Acknowledge Status').withOption('title','Acknowledge Status').notSortable()
+          .renderWith(function (data, type, full, meta){
+            if(full.analysisLotLotApproveStatus == 1){
+
+              return '<img src="asset/img/accept.png" class="approveAnalysisLot" analysislot-id="'+full.lotId+'" status="2" /> | <img class="approveAnalysisLot" analysislot-id="'+full.lotId+'" status="0" />';
+            
+            }
+            else if(full.analysisLotLotApproveStatus == 2){
+
+             return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Done</span></div></button>'; 
+            
+            }
+            else{
+             return '<button class="btn btn-raised btn-warning" disabled="disabled"><div><span>Pending</span></div></button>';  
+            }
+          }).withClass("text-center")
+        ];  
+        
+        $scope.dtColumns[0].visible = true;
+        $scope.dtColumns[1].visible = true;
+        $scope.dtColumns[2].visible = true;
+        $scope.dtColumns[3].visible = true;
+        $scope.dtColumns[4].visible = false;
+        $scope.dtColumns[5].visible = false;
+        $scope.dtColumns[6].visible = false;
+        $scope.dtColumns[7].visible = true;
+        $scope.dtColumns[8].visible = true;
+        $scope.dtColumns[9].visible = true;
+        $scope.dtColumns[10].visible = false;
+        $scope.dtColumns[11].visible = false;
+        $scope.dtColumns[12].visible = true;
+      }
+      
+    }
+  });
+
+$(document).on('click','.approveAnalysisLot',function(event){
+   
+    var analysislotid = $(this).attr('analysislot-id');
+
+    var status = $(this).attr('status');
+    
+    var data = {analysislotid : analysislotid,status:status};
+    
+    data = JSON.stringify(data);
+    
+    $scope.newvendoranalysislotlist = [];
+
+      $.ajax({
+      url: './api/lotgeneration/approve_analysislot',
+      type: 'POST',
+      data: data,
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+
+          jQuery.each( response.analysis_lot_list, function( i, val ) {
+          
+          $scope.newvendoranalysislotlist.push({
+            lotId: val.id,
+            analysisLotNo: val.lotno,
+            analysisTestEdition: val.test_edition,
+            analysisLotSentDate: val.lot_sent_date,
+            analysisLotVendor: val.vendor_name,
+            analysisLotPendriveSentDate: val.lot_pendrive_sent_date,
+            analysisLotQcFilePath: val.lot_qc_file_path,
+            analysislotQcHtmlFilePath: val.lot_qc_html_file_path,
+            analysisLotAcknowledgeDate: val.lot_acknowledge_date,
+            analysisLotPrintingDate: val.lot_printing_date,
+            analysisLotKittingPackingDate : val.lot_kittingpacking_date,
+            analysisLotExpectedDispatchDate: val.lot_expected_dispatch_date,
+            analysisLotLotApproveStatus: val.lot_approve_status,
+          });
+
+        });
+
+          $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newvendoranalysislotlist).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+            $("td:first", nRow).html(iDisplayIndex +1);
+            return nRow;
+          }).withOption('processing', true);
+
+          $scope.dtInstance.rerender();
+
+        }
+        
+      }
+    });
+  });
+  
+
+});
+

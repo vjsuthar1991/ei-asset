@@ -770,4 +770,51 @@ class Vendors extends CI_Model{
         return $query->result_array();
 
     }
+
+    function acknowledgeAnalysisLot($analysislotid,$printingDate,$kittingDate,$estimatedDisptachDate){
+
+        $this->db->where("id",$analysislotid);
+        
+        $this->db->update($this->analysisLotListTbl,array('lot_acknowledge_date' => date('Y-m-d'),'lot_printing_date' => $printingDate,'lot_kittingpacking_date' => $kittingDate,'lot_expected_dispatch_date' => $estimatedDisptachDate,'lot_approve_status' => 1));
+         
+        return $analysislotid;
+    
+    }
+
+    function analysisLotList(){
+
+        $this->db->select('t1.*,t2.vendor_name');
+        $this->db->from("$this->analysisLotListTbl as t1");
+        $this->db->join("$this->vendorTbl as t2", 't1.vendor_id = t2.vendor_id',
+            'LEFT');
+        $this->db->order_by("t1.lotno","desc");
+
+        $this->db->last_query();
+        $query = $this->db->get();
+
+        return $query->result_array();
+
+    }
+
+    function approveAnalysisLot($analysislotid,$status){
+
+        
+
+        if($status == 2){
+
+            $this->db->where("id",$analysislotid);
+            $this->db->update($this->analysisLotListTbl,array('lot_approve_status' => $status));
+
+        }
+        else if($status == 0){
+            
+            $this->db->where("id",$analysislotid);
+            $this->db->update($this->analysisLotListTbl,array('lot_approve_status' => $status,'lot_acknowledge_date' => '0000-00-00','lot_printing_date' => '0000-00-00','lot_kittingpacking_date' => '0000-00-00','lot_expected_dispatch_date' => '0000-00-00'));            
+
+        }
+        
+        return $analysislotid;
+    
+    }
+
 }
