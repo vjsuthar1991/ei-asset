@@ -295,8 +295,11 @@ class Vendors extends CI_Model{
             else {
                 if($check[0]->analysis_delivery_date == '0000-00-00'){
 
+                    $this->db->where("school_code",$schoolCode);
+                    $this->db->where("test_edition",$edition[0]->test_edition);
+                    
                     $this->db->update($this->schoolProcessTracking,array('analysis_delivery_status' => $despatchStatus,'analysis_delivery_date' => date('Y-m-d',strtotime($deliveryDate)),'analysis_reciever_name' => $recieverName));    
-                    return false;
+                    return 0;
                 }
             }
 

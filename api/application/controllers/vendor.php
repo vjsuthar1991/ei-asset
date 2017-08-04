@@ -514,6 +514,170 @@ class Vendor extends CI_Controller {
 					else {
 
 						//Analysis code here
+						$mailFlag = $this->vendors->updateDespatchDate($value['B'],$value['O'],$value['P'],$value['Q'],$value['W'],$value['X'],$value['Y'],$value['R'],$value['V'],$value['T'],$value['U'],$value['C'],$value['D'],$value['F'],$value['S'],$value['Z']);
+						
+						if($mailFlag == 1){
+							$message = '';
+							$subject = '';
+
+							if($value['V'] == 'SFC'){
+								
+								$value['V'] = 'Surface';
+								 
+							}
+
+							$subject .= 'Analysis Despatch details : '.$value['C'].' of '.$value['O'];
+							$message .= 'Respected Sir/ Madam,' ;
+							$message .= '<br><br>';
+							$message .= 'Greetings from Educational Initiatives!';
+							$message .= '<br><br>';
+							$message .= 'We Thank you for participating in the ASSET Test.';
+							$message .= '<br><br>';
+							$message .= 'As per your order we have despatched the Results of ASSET Test.';
+							$message .= '<br><br>';
+							$message .= 'The dispatch details are mentioned below for your kind reference.';
+							$message .= '<table><tr><td><b>School Code:</b></td><td>'.$value['B'].'</td></tr><tr><td><b>School:</b></td><td>'.$value['C'].'</td></tr><tr><td><b>City:</b></td><td>'.$value['D'].'</td></tr><tr><td><b>Phone:</b></td><td>'.$value['F'].'</td></tr><tr><td><b>Despatch Mode:</b></td><td>'.$value['V'].'</td></tr><tr><td><b>Despatch Date:</b></td><td>'.date('d-m-Y',strtotime($value['Q'])).'</td></tr><tr><td><b>Consignment Number:</b></td><td>'.$value['S'].'</td></tr><tr><td><b>Courier Company:</b></td><td>'.$value['R'].'</td></tr><tr><td><b>Boxes Details:</b></td><td>'.$value['T'].'</td></tr></table>';
+							$message .= '<br><br>';
+							$message .= 'The material has been dispatched from our Vendor office at Mumbai and will take few days to reach the school.May we request your representative to contact us or the local courier branch to track the shipment. Please find below the table mentioning contact details of the local courier to track the shipment.';
+							$message .= '<br><br>';
+							$message .= 'With Best Wishes and Warm Regards,</br>The ASSET Team';
+							$message .= '<br><br>';
+							
+
+							$courierCompanyDetails = $this->vendors->courierCompanyDetails($value['R'],$value['H'],$value['D']);
+							
+							if(count($courierCompanyDetails) > 0) {
+
+								$message .= '<table><tr><td><b>Main Branch Office Number:</b></td><td>'.$courierCompanyDetails[0]->phone_no_1.'</td></tr><tr><td><b>Contact Person:</b></td><td>'.$courierCompanyDetails[0]->contact_person.'</td></tr><tr><td><b>Contact Person Email-ID:</b></td><td>'.$courierCompanyDetails[0]->email_Id.'</td></tr><tr><td><b>Website:</b></td><td>'.$courierCompanyDetails[0]->website.'</td></tr><tr><td><b>Contact No. from where the material is Despatched:</b></td><td></td></tr></table>';
+							}
+
+							$ci = get_instance();
+
+							$toEmail = array();
+							$school_email = $this->vendors->getSchoolEmailId($value['B']);
+							$school_principal_email = $this->vendors->getSchoolPrincipalEmailId($value['B']);
+							$school_assetcoordinator_email = $this->vendors->getSchoolAssetCoordinatorEmailId($value['B']);
+
+							if(count($school_email) > 0){
+								$schoolEmail = $school_email[0]['email'];	
+							}
+							else{
+								$schoolEmail = '';
+							}
+
+							if(count($school_principal_email) > 0){
+								$school_principal_email = $school_principal_email[0]['contact_mail_1'];
+							}
+							else{
+								$school_principal_email = '';
+							}
+
+							if(count($school_assetcoordinator_email) > 0){
+								$school_assetcoordinator_email = $school_assetcoordinator_email[0]['contact_mail'];
+							}
+							else{
+								$school_assetcoordinator_email = '';
+							}
+
+
+							if($schoolEmail == ''){
+								$schoolEmail = 'harit@ei-india.com';
+								array_push($toEmail, $schoolEmail);
+								$message .= '<br><br><b>Note:</b> We do not have schools email.';
+							}
+							else{
+								array_push($toEmail, $schoolEmail);
+							}
+
+							if($school_principal_email != ''){
+								array_push($toEmail, $school_principal_email);
+								
+							}
+
+							if($school_assetcoordinator_email != ''){
+								array_push($toEmail, $school_assetcoordinator_email);
+								
+							}
+							
+							$toEmail = array_unique($toEmail);
+
+							$toEmail = implode(',', $toEmail);
+
+							$ccEmail = array();
+
+							array_push($ccEmail, 'jignasha.mistry@ei-india.com');
+							array_push($ccEmail, 'mitul.patel@ei-india.com');
+
+							$schoolRegion = $this->vendors->getSchoolRegion($value['B']);
+
+							if($schoolRegion[0]['region'] == 'B-M-H'){
+								array_push($ccEmail, 'sherkhan.ei@gmail.com');
+								array_push($ccEmail, 'akbarshariff.ei@gmail.com');
+								array_push($ccEmail, 'harishkumar.ei@gmail.com');
+								array_push($ccEmail, 'kalpanarajan.ei@gmail.com');
+							}
+
+							$schoolKeyAccountRM = $this->vendors->getSchoolkeyAccountRM($value['B']);
+
+
+
+							if(count($schoolKeyAccountRM) > 0){
+								
+								$keyaccountrmEmailID = $this->vendors->getSchoolkeyAccountRMEmailID($schoolKeyAccountRM[0]['keyAccount']);
+
+								array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
+									
+							}
+
+							$schoolBuddyAccountRM = $this->vendors->getSchoolBuddyAccountRM($value['B']);
+
+							if(count($schoolBuddyAccountRM) > 0){
+								
+								$BuddyrmEmailID = $this->vendors->getSchoolBuddyRMEmailID($schoolBuddyAccountRM[0]['buddyAccount']);
+
+								array_push($ccEmail, $BuddyrmEmailID[0]['email']);
+									
+							}
+
+							$schoolZMEmail = $this->vendors->getSchoolZMEmailID($schoolRegion[0]['region']);
+							
+							if(count($schoolZMEmail) > 0){
+								array_push($ccEmail, $schoolZMEmail[0]['email']);
+							}
+
+							$ccEmail = array_unique($ccEmail);
+							
+							$ccEmail = implode(',', $ccEmail);
+							
+							$filename1 = '';
+
+							$fileExist = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif');
+								
+								if($fileExist != 1 || $fileExist == ''){
+									
+									$fileExist2 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.pdf');
+									
+									if($fileExist2 != 1 || $fileExist2 == ''){
+									
+										$fileExist3 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.jpg');
+
+										if($fileExist3 == 1 || $fileExist3 != ''){
+											$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.jpg';
+										}
+
+									}
+									else{
+										$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.pdf';
+									}	
+
+									
+								}
+								else{
+									$filename1 = $_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';		
+								}
+
+							$ci->setemail($filename1,$toEmail,$subject,$message,$ccEmail);
+						}
 					}
 
 					}
@@ -543,6 +707,7 @@ class Vendor extends CI_Controller {
         {
         	
         	$email = $schoolEmailId;
+        	//$email = 'vijay.suthar@ei-india.com';
 			$subject = $subject;
 			$message = $message;
 			$this->sendEmail($email,$subject,$message,$file1,$ccEmail);
@@ -568,8 +733,8 @@ class Vendor extends CI_Controller {
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
-	      //$this->email->to($email);
-	      //$this->email->cc($ccEmail);
+	      $this->email->to($email);
+	      $this->email->cc($ccEmail);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      if($file1 != null){
@@ -624,8 +789,8 @@ class Vendor extends CI_Controller {
 	      $this->load->library('email', $config);
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
-	      //$this->email->to($email);
-	      //$this->email->cc($ccEmail);
+	      $this->email->to($email);
+	      $this->email->cc($ccEmail);
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      
@@ -1016,7 +1181,7 @@ class Vendor extends CI_Controller {
 						}
 					
 					}
-					echo json_encode(array('status' => 'success','message' => 'Dispatch Details Sent Successfully To Logistic..Thank You!!' ));
+					echo json_encode(array('status' => 'success','message' => 'OMR Receipt Details Sent Successfully To Logistic..Thank You!!' ));
 				}
 				
 			}

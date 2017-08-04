@@ -243,9 +243,6 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
                         });
                     });
 
-                   
-                   
-                    
                 $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredPackingslipsschools).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
                   $("td:first", nRow).html(iDisplayIndex +1);
                   return nRow;
