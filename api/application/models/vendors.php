@@ -735,7 +735,7 @@ class Vendors extends CI_Model{
 
         $this->db->where('school_code',$schoolCode);
         $this->db->where('test_edition',$round);
-        $this->db->update($this->schoolProcessTracking,array('analysis_lotno' => $lotno,'analysis_vendorid' => $vendor));
+        $this->db->update($this->schoolProcessTracking,array('analysis_lotno' => $lotno,'analysis_vendorid' => $vendor,'analysis_sentdate' => date('Y-m-d')));
 
     }
 

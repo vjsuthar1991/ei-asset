@@ -5112,3 +5112,251 @@ $(document).on('click','.approveAnalysisLot',function(event){
 
 });
 
+app.controller('AnalysisStatusListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  
+  $scope.rounds = [];
+  $scope.lotnos = [];
+  $scope.zones = [];
+  $scope.analysismisreports = [];
+
+  var flag = 0;
+  var userData = [];
+  // var round = $('#qbroundfilter').val();
+  var data = {region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/lotgeneration/analysis_mis_list',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.lotnos = response.lotnos;
+        $scope.roundSelected = response.round_selected;
+
+        
+        jQuery.each( response.schooldata, function( i, val ) {
+         
+           $scope.schoolCodes.push(val.school_code);
+           $scope.schoolNames.push(val.schoolname);
+        
+        });
+        
+        
+        jQuery.each( response.analysis_mis_reports, function( i, val ) {
+
+          //var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+          
+          var diffDays = val.processingtat;
+
+          
+          
+          
+          if(diffDays == null){
+            diffDays = 'Not Yet Dispatched';
+          }
+
+          var deliverydiffDays = val.analysistat;
+          
+          if(deliverydiffDays == null){
+            deliverydiffDays = 'Not Yet Delivered';
+          }
+
+          $scope.analysismisreports.push({
+
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolPackLabelDate: val.analysis_sentdate,
+            schoolQbDispatchDate: val.analysis_despatch_date,
+            schoolCourierCompany: val.courier,
+            schoolAwbNo: val.consignmentNo,
+            schoolMode: val.mode,
+            schoolQty: val.material,
+            schoolWeight: val.weight,
+            schoolTat: diffDays,
+            schoolQbDelivery_status: val.analysis_delivery_status,
+            schoolQbDeliveryDate:val.analysis_delivery_date,
+            schoolQbRecieverName: val.analysis_reciever_name,
+            schoolDeliveryTime: deliverydiffDays
+
+          });
+        });
+
+        
+
+        $scope.packingdates = response.packlabel_date;
+        $scope.citys = response.school_city;
+
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.analysismisreports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('schoolPackLabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+                DTColumnBuilder.newColumn('schoolQbDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+                DTColumnBuilder.newColumn('schoolCourierCompany').withTitle('Courier Company').withOption('title','Courier Company'),
+                DTColumnBuilder.newColumn('schoolAwbNo').withTitle('AWB No.').withOption('title','AWB No.'),
+                DTColumnBuilder.newColumn('schoolMode').withTitle('Mode').withOption('title','Mode'),
+                DTColumnBuilder.newColumn('schoolQty').withTitle('No. Of Box').withOption('title','No. Of Box'),
+                DTColumnBuilder.newColumn('schoolWeight').withTitle('Weight').withOption('title','Weight'),
+                DTColumnBuilder.newColumn('schoolQbDelivery_status').withTitle('Delivery Status').withOption('title','Delivery Status'),
+                DTColumnBuilder.newColumn('schoolQbDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+                DTColumnBuilder.newColumn('schoolQbRecieverName').withTitle('Reciever Name').withOption('title','Reciever Name'),
+                DTColumnBuilder.newColumn('schoolTat').withTitle('Days Taken For Dispatch').withOption('title','Days Taken For Dispatch'),
+                DTColumnBuilder.newColumn('schoolDeliveryTime').withTitle('Days Taken For Delivery').withOption('title','Days Taken For Delivery'),
+                ];  
+                
+                
+                $scope.dtColumns[12].visible = false;
+                $scope.dtColumns[13].visible = false;
+                $scope.dtColumns[14].visible = false;
+                $scope.dtColumns[16].visible = false;
+                
+                
+      }
+      
+    }
+  });
+
+  $scope.filteranalysisreports = function(e) {
+    $scope.filteredanalysisReports = [];
+     
+      
+        var round = $('#qbroundfilter').val();
+        
+        var zone = $('#qbzonefilter').val();
+
+        var lotno = $('#packinglotnofilter').val();
+
+        var data = {round:round,lotno:lotno,zone:zone,region:region,category:category,username:username};
+        
+        data = JSON.stringify(data);
+
+        $.ajax({
+            url: "./api/lotgeneration/getAnalysisMisReportsFilter",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
+              
+             var response = returndata;
+             
+                if(response.status == "success"){
+
+                  
+                    jQuery.each( response.filteredanalysisreports, function( i, val ) {
+
+                        var diffDays = val.processingtat;
+
+                        if(diffDays == null){
+                          diffDays = 'Not Yet Dispatched';
+                        }
+
+                        var deliverydiffDays = val.analysistat;
+                        
+                        if(deliverydiffDays == null){
+                          deliverydiffDays = 'Not Yet Delivered';
+                        }
+
+
+                        
+                        $scope.filteredanalysisReports.push({
+
+                          schoolCode: val.school_code,
+                          schoolName: val.schoolname,
+                          schoolCity: val.city,
+                          schoolRegion: val.region,
+                          schoolPackLabelDate: val.analysis_sentdate,
+                          schoolQbDispatchDate: val.analysis_despatch_date,
+                          schoolCourierCompany: val.courier,
+                          schoolAwbNo: val.consignmentNo,
+                          schoolMode: val.mode,
+                          schoolQty: val.material,
+                          schoolWeight: val.weight,
+                          schoolTat: diffDays,
+                          schoolQbDelivery_status: val.analysis_delivery_status,
+                          schoolQbDeliveryDate:val.analysis_delivery_date,
+                          schoolQbRecieverName: val.analysis_reciever_name,
+                          schoolDeliveryTime: deliverydiffDays
+
+                        });
+
+
+                      });  
+            
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredanalysisReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('processing', true); 
+
+                $scope.dtInstance.rerender();
+               
+                }
+                else
+                {
+                  
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredanalysisReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+
+                
+
+                $scope.dtInstance.rerender();
+                  
+
+                }
+
+               }
+             });
+  };
+
+  
+});

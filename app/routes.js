@@ -347,6 +347,11 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/analysis-lot-list.html',
               controller: 'AnalysisLotListController',
+            })
+            .when('/analysis-status-list',{
+              cache: false,
+              templateUrl: 'views/analysis-status-list.html',
+              controller: 'AnalysisStatusListController',
             });
 
 

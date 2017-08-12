@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Qb_mis_list_model extends CI_Model{
+class Analysis_mis_list_model extends CI_Model{
     
     function __construct() {
         $this->schoolstatusTbl = 'school_status';
@@ -14,84 +14,32 @@ class Qb_mis_list_model extends CI_Model{
         $this->schoolProcessTracking = 'school_process_tracking';
         $this->courierDispatchDetails = 'courier_dispatch_details';
         $this->salesAllotmentMasterTbl = 'sales_allotment_master';
-
-    }
-
-    /*
-     * get rows from the schools_status table
-     */
-    function getZones($region){
-        $this->db->distinct();
-        $this->db->select('region');
-        $this->db->from($this->schoolsTbl);
-
-        if($region != '' && $region != 'NULL'){
-
-            $region = str_replace(',', "','", $region);
-
-            $this->db->where("region IN ('$region')");
-
-        }
+        $this->analysisLotListTbl = 'analysis_lot_list';
         
-        $this->db->where("region != ''");
-        $this->db->order_by("region","asc");
-        $query = $this->db->get(); 
-        
-        return $query->result();
     }
 
-    function getSchoolDetails($round)
-    {
-
-        $this->db->select('school_code,school_name');
-        $this->db->from($this->schoolProcessTracking);
-        $this->db->where('test_edition',$round);
-        $query = $this->db->get();
-        return $query->result();
-    }
-
-    function getPackLabelDate($round)
-    {
-        $this->db->distinct();
-        $this->db->select('packlabel_date');
-        $this->db->from($this->schoolProcessTracking);
-        $this->db->where('test_edition',$round);
-        $query = $this->db->get();
-        return $query->result(); 
-    }
-
-    function getSchoolCity($round)
-    {
-        $this->db->distinct();
-        $this->db->select('school_city');
-        $this->db->from($this->schoolProcessTracking);
-        $this->db->where('test_edition',$round);
-        $this->db->order_by('school_city','asc');
-        $query = $this->db->get();
-        return $query->result(); 
-    }
-
-    function getPackingLotNos($round){
+   
+    function getAnalysisLotNos($round){
 
         $this->db->distinct();
-        $this->db->select('lot_no');
-        $this->db->from($this->schoolProcessTracking);
+        $this->db->select('lotno');
+        $this->db->from($this->analysisLotListTbl);
         $this->db->where('test_edition',$round);
-        $this->db->order_by('lot_no','asc');
+        $this->db->order_by('lotno','asc');
         $query = $this->db->get();
         return $query->result();    
     }
 
-    function getQbMisReports($round,$region,$category,$username)
+    function getAnalysisMisReports($round,$region,$category,$username)
     {
-        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
-        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
-        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
-        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
-        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
-        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
+        $this->db->select('t1.order_id,t1.analysis_lotno,t1.school_code,t1.planned_test_date,t1.test_edition,t1.analysis_delivery_status,t1.analysis_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.analysis_sentdate,'%d-%m-%Y') as analysis_sentdate",FALSE);
+        $this->db->select("DATE_FORMAT(t1.analysis_despatch_date,'%d-%m-%Y') as analysis_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.analysis_delivery_date,'%d-%m-%Y') as analysis_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.analysis_despatch_date,t1.analysis_sentdate) as 'processingtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.analysis_delivery_date,t1.analysis_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
-        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."' AND t2.subCategory = 'QB Dispatch'", 'LEFT');
+        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."' AND t2.subCategory = 'Analysis Dispatch'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
         
         if($region != '' && $region != 'NULL'){
@@ -109,7 +57,11 @@ class Qb_mis_list_model extends CI_Model{
 
         
         $this->db->where('t1.test_edition',$round);
-        $this->db->order_by('t1.packlabel_date','desc');
+        $this->db->where('t1.analysis_sentdate != 0000-00-00');
+
+
+
+        $this->db->order_by('t1.analysis_sentdate','desc');
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -146,17 +98,18 @@ class Qb_mis_list_model extends CI_Model{
     }
 
 
-    function getFilteredQbReports($round,$zone,$lotno,$region,$category,$username)
+    function getFilteredAnalysisReports($round,$zone,$lotno,$region,$category,$username)
     {
-        $this->db->select('t1.order_id,t1.lot_no,t1.school_code,t1.planned_test_date,t1.test_edition,t1.qb_delivery_status,t1.qb_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
-        $this->db->select("DATE_FORMAT(t1.packlabel_date,'%d-%m-%Y') as packlabel_date",FALSE);
-        $this->db->select("DATE_FORMAT(t1.qb_despatch_date,'%d-%m-%Y') as qb_despatch_date",FALSE);
-        $this->db->select("DATE_FORMAT(t1.qb_delivery_date,'%d-%m-%Y') as qb_delivery_date",FALSE);
-        $this->db->select("DATEDIFF(t1.qb_despatch_date,t1.packlabel_date) as 'qbtat'",FALSE);
-        $this->db->select("DATEDIFF(t1.qb_delivery_date,t1.qb_despatch_date) as 'analysistat'",FALSE);
+        $this->db->select('t1.order_id,t1.analysis_lotno,t1.school_code,t1.planned_test_date,t1.test_edition,t1.analysis_delivery_status,t1.analysis_reciever_name,t2.courier,t2.mode,t2.material,t2.weight,t2.consignmentNo,t3.schoolname,t3.city,t3.region');
+        $this->db->select("DATE_FORMAT(t1.analysis_sentdate,'%d-%m-%Y') as analysis_sentdate",FALSE);
+        $this->db->select("DATE_FORMAT(t1.analysis_despatch_date,'%d-%m-%Y') as analysis_despatch_date",FALSE);
+        $this->db->select("DATE_FORMAT(t1.analysis_delivery_date,'%d-%m-%Y') as analysis_delivery_date",FALSE);
+        $this->db->select("DATEDIFF(t1.analysis_despatch_date,t1.analysis_sentdate) as 'processingtat'",FALSE);
+        $this->db->select("DATEDIFF(t1.analysis_delivery_date,t1.analysis_despatch_date) as 'analysistat'",FALSE);
         $this->db->from("$this->schoolProcessTracking as t1");
-        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."'", 'LEFT');
+        $this->db->join("$this->courierDispatchDetails as t2", "t1.school_code = t2.schoolCode AND t2.test_edition = '".$round."' AND t2.subCategory = 'Analysis Dispatch'", 'LEFT');
         $this->db->join("$this->schoolsTbl as t3", "t1.school_code = t3.schoolno", 'JOIN');
+       
         if($region != '' && $region != 'NULL'){
 
             $region = str_replace(',', "','", $region);
@@ -179,10 +132,11 @@ class Qb_mis_list_model extends CI_Model{
         }
 
         if($lotno != ""){
-            $this->db->where('t1.lot_no',$lotno);
+            $this->db->where('t1.analysis_lotno',$lotno);
         }
-
-        $this->db->order_by('t1.packlabel_date','desc');
+        
+        $this->db->where('t1.analysis_sentdate != 0000-00-00');
+        $this->db->order_by('t1.analysis_sentdate','desc');
         $query = $this->db->get();
 
         return $query->result(); 
