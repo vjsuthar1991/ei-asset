@@ -109,7 +109,17 @@ span.line {
     position: absolute;
     top: 50%;
     left: 0;
-} 
+}
+span.line2 {
+    height: 5px;
+    width: 150px;
+    background-color:#F5998E;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+}
+
 span.vertical-line {
     height: 129px;
     width: 5px;

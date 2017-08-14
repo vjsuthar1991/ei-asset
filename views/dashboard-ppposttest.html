@@ -1,0 +1,152 @@
+<div data-ng-include=" 'header.php' "></div>
+<!-- start: Content -->
+<div id="content">
+   
+   
+  <div class="col-md-12" style="padding:20px;" ng-controller="DashboardController">
+        <div class="col-md-12" style="background-color: #FFF;padding:15px;">
+                              
+          <div class="col-md-12 card-wrap padding-0" style="position: relative;">
+              <div class="navbar-default col-md-12" style="border: 5px solid #e7e7e7;padding: 10px 0px;width: 100%;">
+                <div class="col-md-2">
+                  <label style="font-size: 20px;font-weight: 500;">Search Filter :</label>
+                </div>
+                <div class="col-md-3">
+                  <div class="">
+                    <select tabindex="1" id="ppposttest_dashboard_zone" name="ppposttest_dashboard_zone" class="form-control">
+                      <option value="">Select Zone</option>
+                      <option ng-repeat="zone in zones" value="{{zone.region}}">{{zone.region}}</option>
+                    </select>
+                    <span class="bar"></span>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="" >
+                    <select tabindex="2" id="ppposttest_dashboard_round" name="ppposttest_dashboard_round" class="form-control">
+                      <option value="">Select Round</option>
+                      <option ng-selected="round.test_edition == roundSelected" ng-repeat="round in rounds" value="{{round.test_edition}}">{{round.description}}-{{round.test_edition}}</option>
+                    </select>
+                    <span class="bar"></span>
+                  </div>
+                </div>
+                <div class="col-md-4" tabindex="3">
+                   <button id="searchfilterppposttestdashboard" ng-click="filterPpPosttestDashboardData()" type="button" class="btn ripple btn-raised btn-info">
+                                        <div>
+                                          <span>Search</span>
+                                        </div>
+                                      </button>
+                </div>
+              </div>
+              <div class="clear" style="clear:both;"></div>
+
+              <div class="col-md-12" style="width: 100%;text-align: center;position: relative;margin-top: 30px;min-height:175px;">
+                <div class="col-md-3" style="position: absolute;margin: 0px auto;right: 35%;left: 35%;">
+                    <div class="panel box-v1">
+                      <div class="panel-heading bg-white border-none" style="padding:0px;">
+                        <div class="col-md-12 col-sm-6 col-xs-6 text-center padding-0">
+                          <h4 class="text-center" style="font-size: 15px;font-weight: bold;">SCHOOL REGISTERED</h4>
+                          <img src="asset/img/icon-57.png" style="width: 70px;"></img>
+
+                        </div>
+                        <div style="clear:both;"></div>
+                      </div>
+                      <div class="panel-body text-center padding-0" style="padding: 0;">
+                        <h1 style="margin-top: 10px;color:red;cursor:pointer;text-decoration: underline;"  title="Click To Get List" ng-click="showSchoolRegistered()" >{{ssfCount}}</h1>
+                        <p style="color: #58666e;font-weight: bold;font-size: 13px;">{{roundDescription}}</p>
+                      </div>
+                    </div>
+                </div>
+                <div class="clear" style="clear:both;"></div>
+            </div>
+
+            <div class="clear" style="clear:both;"></div>
+
+            <div class="col-md-12 responsive-table" style="margin-top: 20px;">
+                      
+                <table class="table table-striped table-bordered" width="100%" cellspacing="0" style="min-height: 201px;font-size:15px;">
+                    <thead>
+                      <tr style="height: 50px;font-weight: bold;font-size: 19px;">
+                        <th style="text-align:center;vertical-align: inherit !important;">Stage</th>
+                        <th style="text-align:center;vertical-align: inherit !important;">Completed</th>
+                        <th style="text-align:center;vertical-align: inherit !important;">Pending</th>
+                        <th style="text-align:center;vertical-align: inherit !important;">Alert</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">OMR Receipt</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">OMR Scanned</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Name Check Status</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Scoring Status</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Reports Generated</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Report Dispatch From EI</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Analysis Dispatch Status</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">Analysis Delivery Status</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div> 
+
+
+          </div>
+
+          
+            <div class="clear" style="clear:both;"></div>
+            <div class="col-md-12" style="margin-top: 30px;">
+              <div class="responsive-table hide" id="ppPostTestDynamicTable">
+                      
+                    <table id="schoollist-table" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance" class="table table-striped table-bordered" width="100%" cellspacing="0" >
+                          
+                    </table>
+                  </div>
+            </div>
+            <div class="clear" style="clear:both;"></div>
+          </div>
+        </div>
+                      
+  </div>
+  <div id="overlay"></div>
+</div>
+
+</div>
+<!-- start: Mobile -->
+ <!--  <div data-ng-include=" 'mobile_menu.html' "></div> -->
+<!-- end: Mobile -->

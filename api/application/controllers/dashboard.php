@@ -677,4 +677,65 @@ class Dashboard extends CI_Controller {
 
 	}
 
+	/*
+	
+		Function Name: pppretestDashboard
+		Description: Fetch all the pre test information like school registered,school final breakup,payment,packlabel,dispatch and delivery information
+		Params : @zone - zone selected
+				 @region - logged in user region
+				 @category - logged in user category
+				 @username - logged in user username	
+		Input Format: JSON
+		Output: List of all the rounds,zones,school registered,school final breakup,payment,packlabel,dispatch and delivery information
+		Output Format: JSON
+
+	*/
+	
+	function ppposttestDashboard(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		//get the latest round running in current session
+		$data['round_latest'] = $this->packingslips->getLatestRound();
+
+		//loop through the rounds selected
+		foreach ($data['round_latest'] as $key => $value) {
+
+			$date1 = '01-10-'.date('Y'); //date set to start winter round
+
+			$date2 = date('d-m-Y'); //get current date
+
+			//compare current date with winter round date
+			if(new DateTime($date1) > new DateTime($date2)){
+				//condition to select summer round
+				if($value->description == 'Summer '.date('Y')){
+					$round = $value->test_edition;
+					$description = $value->description;
+				}
+			}
+			else{
+				//condition to select winter round
+				if($value->description == 'Winter '.date('Y')){
+					$round = $value->test_edition;
+					$description = $value->description;
+				}
+			}
+			
+		}
+		//call model function to return all zones as per the user region
+		$data['zones'] = $this->dashboards->getZones($inputRequest['region']);
+
+		//call model function to get list of all the rounds from test_edition_details table 
+		$data['rounds'] = $this->vendors->getRounds();
+
+		//call model function to get count of all the registered school for the current round running
+		$data['school_registered'] = $this->dashboards->getRegisteredSchool($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['omr_recieved'] = $this->dashboards->getPostTestOMRReceived($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		//output data in json array
+		echo json_encode(array('status' => 'success','rounds' => $data['rounds'],'zones' => $data['zones'],'school_registered' => $data['school_registered'],'ssf_recieved' => $data['ssf_recieved'], 'ssf_pending' => $data['ssf_pending'],'ssf_alert' => $data['ssf_alert'],'payment_recieved' => $data['payment_recieved'],'payment_pending' => $data['payment_pending'],'payment_alert' => $data['payment_alert'],'packlabeldate_set' => $data['packlabeldate_set'],'packlabeldate_notset' => $data['packlabeldate_notset'],'packlabeldate_alert' => $data['packlabeldate_alert'],'dispatchdate_set' => $data['dispatchdate_set'],'dispatchdate_notset' => $data['dispatchdate_notset'],'dispatchdate_alert' => $data['dispatchdate_alert'],'deliverydate_set' => $data['deliverydate_set'],'deliverydate_notset' => $data['deliverydate_notset'],'deliverydate_alert' => $data['deliverydate_alert'],'round_selected' => $round,'round_description' => $description));
+
+	}
+
 }

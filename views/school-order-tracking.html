@@ -242,24 +242,24 @@
                     <h3 style="text-align:center;text-decoration:underline;">Post Test</h3>
                     <div class="col-md-12 padding-0" style="margin-bottom: 30px;">
                       <ul class="nav nav-tabs nav-tabs-v5" style="background:none;border:none;" id="tabs-demo6">
-                        <li id="foo" class="text-center" style="margin-bottom: 30px;">
+                        <li id="foo2" class="text-center" style="margin-bottom: 30px;">
                           <div class="tabtitlecustom">OMR Receipt</div>
                          <a href="javascript:void(0)" data-toggle="tab" title="welcome" style="width:85px;height:85px;">
                           <span class="round-tabs" style="background-color:{{finalBreakupColor}};color: white;border: 2px solid {{finalBreakupColor}};width:85px;height:85px;line-height: 80px;">
                             <i class="glyphicon icon-docs"></i>
                           </span> 
-                          <span class="line" style="background-color:{{finalBreakupColor}};"></span>
+                          <span class="line2" style="background-color:{{finalBreakupColor}};"></span>
                         </a>
                         
                       </li>
 
-                      <li id="bar" class="text-center" style="margin-bottom: 30px;">
+                      <li id="bar2" class="text-center" style="margin-bottom: 30px;">
                         <div class="tabtitlecustom">OMR Scanned</div>
                         <a href="javascript:void(0)" data-toggle="tab" title="profile" style="width:85px;height:85px;">
                          <span class="round-tabs" style="background-color:{{paymentColor}};color: white;border: 2px solid {{paymentColor}};width:85px;height:85px;line-height: 80px;">
                            <i class="glyphicon fa fa-inr"></i>
                          </span> 
-                         <span class="line" style="background-color:{{paymentColor}};"></span>
+                         <span class="line2" style="background-color:{{paymentColor}};"></span>
                        </a>
                        
                      </li>
@@ -270,7 +270,7 @@
                        <span class="round-tabs" style="background-color:{{packLabelColor}};color: white;border: 2px solid {{packLabelColor}};width:85px;height:85px;line-height: 80px;">
                         <i class="glyphicon glyphicon-gift"></i>
                       </span> 
-                      <span class="line" style="background-color:{{packLabelColor}};"></span>
+                      <span class="line2" style="background-color:{{packLabelColor}};"></span>
                     </a>
                     
 
@@ -282,7 +282,7 @@
                        <span class="round-tabs" style="background-color:{{qbDispatchColor}};color: white;border: 2px solid {{qbDispatchColor}};width:85px;height:85px;line-height: 80px;">
                          <i class="glyphicon fa fa-truck"></i>
                        </span> 
-                       <span class="line" style="background-color:{{qbDispatchColor}};"></span>
+                       <span class="line2" style="background-color:{{qbDispatchColor}};"></span>
                      </a>
                      
                    </li>
@@ -293,29 +293,31 @@
                      <span class="round-tabs" style="background-color:{{qbDeliveryColor}};color: white;border: 2px solid {{qbDeliveryColor}};width:85px;height:85px;line-height: 80px;">
                       <i class="glyphicon glyphicon-ok"></i>
                     </span> 
-                    <span class="line" style="background-color:{{qbDeliveryColor}};"></span>
+                    <span class="line2" style="background-color:{{qbDeliveryColor}};"></span>
+                    <span class="vertical-line"></span>
                   </a>
                     
                   </li> 
-                   <li class="text-center" style="margin-bottom: 30px;">
-                      <div class="tabtitlecustom">Report Dispacth From EI</div>
+                   <li class="text-center" style="float: right;margin-bottom: 30px;">
+                      
                       <a href="#tabs-demo6-area4" data-toggle="tab" title="blah blah">
-                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;width:85px;height:85px;line-height: 80px;">
                          <i class="glyphicon fa fa-plane"></i>
                        </span> 
-                       <span class="line"></span>
-                       <span class="vertical-line"></span>
+                       <span class="line2"></span>
+                       
                      </a>
-                     
+                     <div class="tabtitlecustom">Report Dispacth From EI</div>
+
                    </li>
 
                    <li class="text-center" style="float: right;margin-bottom:30px;">
                       
                       <a href="#tabs-demo6-area4" data-toggle="tab" title="blah blah">
-                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                       <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;width:85px;height:85px;line-height: 80px;">
                          <i class="glyphicon fa fa-plane"></i>
                        </span> 
-                       <span class="line"></span>
+                       <span class="line2"></span>
                      </a>
                      <div class="tabtitlecustom">Analysis Dispatch Status</div>
                    </li>
@@ -323,10 +325,10 @@
                    <li class="text-center" style="float: right;margin-bottom:30px;">
                     
                     <a href="#tabs-demo6-area5" data-toggle="tab" title="completed">
-                     <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;">
+                     <span class="round-tabs" style="background-color:#f1685e;color: white;border: 2px solid #f1685e;width:85px;height:85px;line-height: 80px;">
                       <i class="glyphicon glyphicon-ok"></i>
                     </span> 
-                    <span class="line"></span>
+                    <span class="line2"></span>
                   </a>
                     <div class="tabtitlecustom">Analysis Delivery Status</div>
                   </li>
@@ -339,7 +341,11 @@
 
                     <thead>
                       <tr>
-                        <th>Pack Label Date</th>
+                        <th>OMR Receipt Date</th>
+                        <th>OMR Scanned Date</th>
+                        <th>OMR Name Check Date</th>
+                        <th>OMR Scoring Date</th>
+                        <th>Report Dispatch From EI Date</th>
                         <th>Lot No.</th>
                         <th>Dispatch Date</th>
                         <th>Delivery Date</th>
@@ -356,6 +362,10 @@
                         <td>{{processTracking.qb_delivery_date}}</td>
                         <td>{{processTracking.qb_reciever_name}}</td>
                         <td>{{processTracking.qb_delivery_status}}</td>
+                        <td>{{processTracking.qb_delivery_status}}</td>
+                        <td>{{processTracking.school_confirm_date}}</td>
+                        <td>{{processTracking.school_confirm_date}}</td>
+                        <td>{{processTracking.school_confirm_date}}</td>
                         <td>{{processTracking.school_confirm_date}}</td>
                       </tr>
                     </tbody>

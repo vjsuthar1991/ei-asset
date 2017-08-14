@@ -1902,17 +1902,17 @@ app.controller('VendorQbMisListController', function($scope,$http,DTOptionsBuild
 
 app.controller('DashboardPenAndPaperController', function($scope,$http){
 
-  $scope.openPretestdashboardtable = function(event){
+  // $scope.openPretestdashboardtable = function(event){
     
-    document.getElementById("myNav").style.width = "100%";
+  //   document.getElementById("myNav").style.width = "100%";
 
-  };
+  // };
 
-  $scope.closePretestdashboardtable = function(event){
+  // $scope.closePretestdashboardtable = function(event){
     
-    document.getElementById("myNav").style.width = "0%";
+  //   document.getElementById("myNav").style.width = "0%";
 
-  };
+  // };
 
 });
 
@@ -3402,6 +3402,191 @@ $scope.showSchoolDeilveryDateAlert = function(e){
 
 });
 
+app.controller('DashboardPenAndPaperPostTestController', function($rootScope,$scope,$http,$routeParams,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder,$location,$window,$route){
+
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
+$scope.dtInstance = {};
+
+function destroy() {
+    angular.element('#schoollist-table').children('thead').children().remove();
+    angular.element('#schoollist-table').children('tbody').children().remove(); 
+    angular.element('#schoollist-table').empty();
+}
+
+  $scope.schoolRegisteredList = [];
+
+  $scope.schoolRegisteredList.push({
+    schoolCode: 0,
+    schoolName: 0,
+    schoolCity: 0,
+    schoolRegion: 0,
+    schoolSSFDate: 0,
+    schoolAmountPayable: 0,
+    schoolAmountPaid: 0,
+    schoolPercentagePaid: 0,
+    schoolAmountDifference: 0,
+  });
+  
+
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolRegisteredList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+    $("td:first", nRow).html(iDisplayIndex +1);
+    return nRow;
+  }).withOption('processing', true);
+
+  $scope.dtColumns = [
+
+      DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+      DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+      DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+      DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+      DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+      DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+      DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+      DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+      DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+      DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount'),
+      ];  
+
+
+
+  $scope.rounds = [];
+  
+  $scope.zones = [];
+
+  $scope.ssfCount = '0';
+
+  $scope.ssfRecievedCount = '0';
+
+  $scope.paymentRecieved = '0';
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {zone: zone,region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppposttestDashboard',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.roundSelected = response.round_selected;
+        $scope.roundDescription = response.round_description;
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.ssfCount = response.school_registered[0]['ssfcount'];
+        
+      
+      }
+      
+    }
+  });
+
+  $scope.showSchoolRegistered = function(e){
+
+  destroy();
+
+  $scope.schoolRegisteredList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolRegistered',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.school_registered, function( i, val ) {
+          $scope.schoolRegisteredList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolSSFNumber: val.ssf_number,
+            schoolSSFDate: val.SSF_date,
+            schoolAmountPayable: val.amount_payable,
+            schoolAmountPaid: val.paid,
+            schoolPercentagePaid: val.percentage_paid,
+            schoolAmountDifference: val.difference,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolRegisteredList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            //DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolSSFNumber').withTitle('SSF Number').withOption('title','SSF Number'),
+            DTColumnBuilder.newColumn('schoolSSFDate').withTitle('SSF Date').withOption('title','SSF Date'),
+            DTColumnBuilder.newColumn('schoolAmountPayable').withTitle('Amount Payable').withOption('title','Amount Payable'),
+            DTColumnBuilder.newColumn('schoolAmountPaid').withTitle('Amount Paid').withOption('title','Amount Paid'),
+            DTColumnBuilder.newColumn('schoolPercentagePaid').withTitle('(%) Paid').withOption('title','(%) Paid'),
+            DTColumnBuilder.newColumn('schoolAmountDifference').withTitle('Pending Amount').withOption('title','Pending Amount'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+});
+
 app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
 
   if($routeParams.round != '' && $routeParams.school != ''){
@@ -3815,6 +4000,29 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
       var linewidth = Math.abs($('#foo').offset().left - $('#bar').offset().left); 
 
           if(i == 4 || i == 5){
+
+             linewidth = 0;
+
+             $(obj).css('width',linewidth);
+             //$('.vertical-line').css('left',linewidth - 6);
+          }
+          else{
+
+             $(obj).css('width',linewidth);
+
+          
+          }
+      });
+
+    },1);
+
+    setTimeout(function(){
+
+      $('.line2').each(function(i, obj) {
+
+      var linewidth = Math.abs($('#foo2').offset().left - $('#bar2').offset().left); 
+      
+      if(i == 4 || i == 5){
 
              linewidth = 0;
 
@@ -5352,6 +5560,247 @@ app.controller('AnalysisStatusListController', function($scope,$http,DTOptionsBu
                 $scope.dtInstance.rerender();
                   
 
+                }
+
+               }
+             });
+  };
+
+  
+});
+
+app.controller('VendorAnalysisStatusListController', function($scope,$http,DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder){
+
+  function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var vendor_id = getCookie('vendor_id');  
+
+  //script code to list all the schools of current round with rounds and country
+  $scope.dtInstance = {};
+  $scope.rounds = [];
+  $scope.lotnos = [];
+  $scope.zones = [];
+  $scope.analysismisreports = [];
+
+  var flag = 0;
+  var userData = [];
+  
+  var data = {vendor_id:vendor_id};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/lotgeneration/vendor_analysis_mis_list',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+        
+        $scope.zones = response.zones;
+        $scope.rounds = response.rounds;
+        $scope.lotnos = response.lotnos;
+        $scope.roundSelected = response.round_selected;
+
+        
+        jQuery.each( response.schooldata, function( i, val ) {
+         
+           $scope.schoolCodes.push(val.school_code);
+           $scope.schoolNames.push(val.schoolname);
+        
+        });
+
+        jQuery.each( response.analysis_mis_reports, function( i, val ) {
+
+          var diffDays = val.processingtat;
+
+          if(diffDays == null){
+            diffDays = 'Not Yet Dispatched';
+          }
+
+          var deliverydiffDays = val.analysistat;
+          
+          if(deliverydiffDays == null){
+            deliverydiffDays = 'Not Yet Delivered';
+          }
+
+
+          
+          $scope.analysismisreports.push({
+
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolPackLabelDate: val.analysis_sentdate,
+            schoolQbDispatchDate: val.analysis_despatch_date,
+            schoolCourierCompany: val.courier,
+            schoolAwbNo: val.consignmentNo,
+            schoolMode: val.mode,
+            schoolQty: val.material,
+            schoolWeight: val.weight,
+            schoolTat: diffDays,
+            schoolQbDelivery_status: val.analysis_delivery_status,
+            schoolQbDeliveryDate:val.analysis_delivery_date,
+            schoolQbRecieverName: val.analysis_reciever_name,
+            schoolDeliveryTime: deliverydiffDays
+
+          });
+        });
+
+        $scope.packingdates = response.packlabel_date;
+        $scope.citys = response.school_city;
+
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.analysismisreports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('processing', true);   
+
+
+                $scope.dtColumns = [
+
+                DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+                DTColumnBuilder.newColumn('schoolCode').withTitle('School Code').withOption('title','School Code'),
+                DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+                DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+                DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+                DTColumnBuilder.newColumn('schoolPackLabelDate').withTitle('Pack Label Date').withOption('title','Pack Label Date'),
+                DTColumnBuilder.newColumn('schoolQbDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+                DTColumnBuilder.newColumn('schoolCourierCompany').withTitle('Courier Company').withOption('title','Courier Company'),
+                DTColumnBuilder.newColumn('schoolAwbNo').withTitle('AWB No.').withOption('title','AWB No.'),
+                DTColumnBuilder.newColumn('schoolMode').withTitle('Mode').withOption('title','Mode'),
+                DTColumnBuilder.newColumn('schoolQty').withTitle('No. Of Box').withOption('title','No. Of Box'),
+                DTColumnBuilder.newColumn('schoolWeight').withTitle('Weight').withOption('title','Weight'),
+                DTColumnBuilder.newColumn('schoolQbDelivery_status').withTitle('Delivery Status').withOption('title','Delivery Status'),
+                DTColumnBuilder.newColumn('schoolQbDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+                DTColumnBuilder.newColumn('schoolQbRecieverName').withTitle('Reciever Name').withOption('title','Reciever Name'),
+                DTColumnBuilder.newColumn('schoolTat').withTitle('Days Taken For Dispatch').withOption('title','Days Taken For Dispatch'),
+                DTColumnBuilder.newColumn('schoolDeliveryTime').withTitle('Days Taken For Delivery').withOption('title','Days Taken For Delivery'),
+                ];  
+                
+                
+                $scope.dtColumns[12].visible = false;
+                $scope.dtColumns[13].visible = false;
+                $scope.dtColumns[14].visible = false;
+                $scope.dtColumns[16].visible = false;
+
+
+                
+      }
+      
+    }
+  });
+
+  $scope.filtervendorqbreports = function(e) {
+    
+    $scope.filteredqbReports = [];
+     
+      
+        var round = $('#qbroundfilter').val();
+        
+        var zone = $('#qbzonefilter').val();
+
+        var lotno = $('#packinglotnofilter').val();
+
+        var vendor_id = getCookie('vendor_id');  
+
+        var data = {round:round,lotno:lotno,zone:zone,vendor_id:vendor_id};
+        
+        data = JSON.stringify(data);
+
+        $.ajax({
+            url: "./api/mis_system/getQbMisVendorReportsFilter",
+            contentType: false,
+            processData: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            dataType : 'json',
+            success: function (returndata) {
+              
+             var response = returndata;
+             
+                if(response.status == "success"){
+
+                  
+                    jQuery.each( response.filteredqbreports, function( i, val ) {
+
+                        var diffDays = val.qbtat;
+
+                        if(diffDays == null){
+                          diffDays = 'Not Yet Dispatched';
+                        }
+
+                        var deliverydiffDays = val.analysistat;
+                        
+                        if(deliverydiffDays == null){
+                          deliverydiffDays = 'Not Yet Delivered';
+                        }
+
+
+                        
+                        $scope.filteredqbReports.push({
+
+                          schoolCode: val.school_code,
+                          schoolName: val.schoolname,
+                          schoolCity: val.city,
+                          schoolRegion: val.region,
+                          schoolPackLabelDate: val.packlabel_date,
+                          schoolQbDispatchDate: val.qb_despatch_date,
+                          schoolCourierCompany: val.courier,
+                          schoolAwbNo: val.consignmentNo,
+                          schoolMode: val.mode,
+                          schoolQty: val.material,
+                          schoolWeight: val.weight,
+                          schoolTat: diffDays,
+                          schoolQbDelivery_status: val.qb_delivery_status,
+                          schoolQbDeliveryDate:val.qb_delivery_date,
+                          schoolQbRecieverName: val.qb_reciever_name,
+                          schoolDeliveryTime: deliverydiffDays
+
+                        });
+
+
+                      });  
+            
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('processing', true); 
+
+                $scope.dtInstance.rerender();
+               
+                }
+                else
+                {
+                  
+                $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.filteredqbReports).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+                  $("td:first", nRow).html(iDisplayIndex +1);
+                  return nRow;
+                }).withOption('paging', false).withOption('scrollY', "500px").withOption('processing', true).withOption('fnPreDrawCallback', function () { $('#packingloader').show(); }).withOption('fnDrawCallback', function () {  }); 
+
+                $scope.dtInstance.rerender();
+              
                 }
 
                }

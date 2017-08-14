@@ -281,6 +281,11 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
                     }]
                 }
             })
+            .when('/dashboard-ppposttest',{
+              cache: false,
+              templateUrl: 'views/dashboard-ppposttest.html',
+              controller: 'DashboardPenAndPaperPostTestController',
+            })
             .when('/school-order-tracking',{
               cache: false,
               templateUrl: 'views/school-order-tracking.html',
@@ -352,6 +357,11 @@ app.config(['$routeProvider','$locationProvider','$controllerProvider',
               cache: false,
               templateUrl: 'views/analysis-status-list.html',
               controller: 'AnalysisStatusListController',
+            })
+            .when('/vendor-analysis-status-list',{
+              cache: false,
+              templateUrl: 'views/vendor-portal/vendor-analysis-status-list.html',
+              controller: 'VendorAnalysisStatusListController',
             });
 
 
