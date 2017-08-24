@@ -44,8 +44,8 @@ class Dashboard extends CI_Controller {
 
 	/*
 	
-		Function Name: adminLogout
 		Description: Logout user from the system and destroy all user session
+		Function Name: adminLogout
 		Params : NULL
 		Input Format: NULL
 		Output: NULL
@@ -76,38 +76,19 @@ class Dashboard extends CI_Controller {
 		Output Format: JSON
 
 	*/
-	
+
 	function pppretestDashboard(){
 
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		//get the latest round running in current session
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		//loop through the rounds selected
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y'); //date set to start winter round
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y'); //get current date
+		$description = $roundDetails['description'];
 
-			//compare current date with winter round date
-			if(new DateTime($date1) > new DateTime($date2)){
-				//condition to select summer round
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			else{
-				//condition to select winter round
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			
-		}
 		//call model function to return all zones as per the user region
 		$data['zones'] = $this->dashboards->getZones($inputRequest['region']);
 
@@ -695,33 +676,14 @@ class Dashboard extends CI_Controller {
 
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		//get the latest round running in current session
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		//loop through the rounds selected
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y'); //date set to start winter round
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y'); //get current date
+		$description = $roundDetails['description'];
 
-			//compare current date with winter round date
-			if(new DateTime($date1) > new DateTime($date2)){
-				//condition to select summer round
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			else{
-				//condition to select winter round
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			
-		}
 		//call model function to return all zones as per the user region
 		$data['zones'] = $this->dashboards->getZones($inputRequest['region']);
 
@@ -731,10 +693,228 @@ class Dashboard extends CI_Controller {
 		//call model function to get count of all the registered school for the current round running
 		$data['school_registered'] = $this->dashboards->getRegisteredSchool($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
 
-		$data['omr_recieved'] = $this->dashboards->getPostTestOMRReceived($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+		$data['qb_delivered_completed_schools'] = $this->dashboards->getPreTestDeliveryDateSet($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['qb_delivered_pending_schools'] = $this->dashboards->getPreTestDeliveryDateNotSet($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['qb_delivered_alert_schools'] = $this->dashboards->getPreTestDeliveryDateAlert($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+		
+		$data['omr_recieved_count'] = $this->dashboards->getPostTestOMRCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_pending_count'] = $this->dashboards->getPostTestOMRCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_alert_count'] = $this->dashboards->getPostTestOMRCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_gotfromscanning_recieved_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_gotfromscanning_pending_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_gotfromscanning_alert_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_namecheckstatus_completed_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_namecheckstatus_pending_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_namecheckstatus_alert_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_scoreing_completed_count'] = $this->dashboards->getPostTestOMRScoreingCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_scoreing_pending_count'] = $this->dashboards->getPostTestOMRScoreingCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_scoreing_alert_count'] = $this->dashboards->getPostTestOMRScoreingCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_reportgenerated_completed_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_reportgenerated_pending_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_reportgenerated_alert_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+		
+		$data['omr_report_dispatch_ei_completed_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_dispatch_ei_pending_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_dispatch_ei_alert_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_report_dispatch_completed_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_dispatch_pending_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_dispatch_alert_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_report_delivery_completed_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_delivery_pending_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_delivery_alert_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($round,$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
 
 		//output data in json array
-		echo json_encode(array('status' => 'success','rounds' => $data['rounds'],'zones' => $data['zones'],'school_registered' => $data['school_registered'],'ssf_recieved' => $data['ssf_recieved'], 'ssf_pending' => $data['ssf_pending'],'ssf_alert' => $data['ssf_alert'],'payment_recieved' => $data['payment_recieved'],'payment_pending' => $data['payment_pending'],'payment_alert' => $data['payment_alert'],'packlabeldate_set' => $data['packlabeldate_set'],'packlabeldate_notset' => $data['packlabeldate_notset'],'packlabeldate_alert' => $data['packlabeldate_alert'],'dispatchdate_set' => $data['dispatchdate_set'],'dispatchdate_notset' => $data['dispatchdate_notset'],'dispatchdate_alert' => $data['dispatchdate_alert'],'deliverydate_set' => $data['deliverydate_set'],'deliverydate_notset' => $data['deliverydate_notset'],'deliverydate_alert' => $data['deliverydate_alert'],'round_selected' => $round,'round_description' => $description));
+		
+		echo json_encode(array('status' => 'success','rounds' => $data['rounds'],'zones' => $data['zones'],'school_registered' => $data['school_registered'],'round_selected' => $round,'round_description' => $description,'omr_recieved_count' => $data['omr_recieved_count'],'omr_pending_count' => $data['omr_pending_count'],'omr_alert_count' => $data['omr_alert_count'],'omr_gotfromscanning_recieved_count' => $data['omr_gotfromscanning_recieved_count'],'omr_gotfromscanning_pending_count' => $data['omr_gotfromscanning_pending_count'],'omr_gotfromscanning_alert_count' => $data['omr_gotfromscanning_alert_count'],'omr_namecheckstatus_completed_count' => $data['omr_namecheckstatus_completed_count'],'omr_namecheckstatus_pending_count' => $data['omr_namecheckstatus_pending_count'],'omr_namecheckstatus_alert_count' => $data['omr_namecheckstatus_alert_count'],'omr_scoreing_completed_count' => $data['omr_scoreing_completed_count'],'omr_scoreing_pending_count' => $data['omr_scoreing_pending_count'],'omr_scoreing_alert_count' => $data['omr_scoreing_alert_count'],'omr_reportgenerated_completed_count' => $data['omr_reportgenerated_completed_count'],'omr_reportgenerated_pending_count' => $data['omr_reportgenerated_pending_count'],'omr_reportgenerated_alert_count' => $data['omr_reportgenerated_alert_count'],'omr_report_dispatch_ei_completed_count' => $data['omr_report_dispatch_ei_completed_count'],'omr_report_dispatch_ei_pending_count' => $data['omr_report_dispatch_ei_pending_count'],'omr_report_dispatch_ei_alert_count' => $data['omr_report_dispatch_ei_alert_count'],'omr_report_dispatch_completed_count' => $data['omr_report_dispatch_completed_count'],'omr_report_dispatch_pending_count' => $data['omr_report_dispatch_pending_count'],'omr_report_dispatch_alert_count' => $data['omr_report_dispatch_alert_count'],'omr_report_delivery_completed_count' => $data['omr_report_delivery_completed_count'],'omr_report_delivery_pending_count' => $data['omr_report_delivery_pending_count'],'omr_report_delivery_alert_count' => $data['omr_report_delivery_alert_count'],'qb_delivered_completed_schools' => $data['qb_delivered_completed_schools'],'qb_delivered_pending_schools' => $data['qb_delivered_pending_schools'],'qb_delivered_alert_schools' => $data['qb_delivered_alert_schools']));
+
+	}
+
+	function ppposttestDashboardFilter(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$roundName = $this->packingslips->getRoundName($inputRequest['round']);
+
+		$description = $roundName[0]->description;//round description
+
+		//call model function to return all zones as per the user region
+		$data['zones'] = $this->vendors->getZones($inputRequest['region']);
+		
+		//call model function to get list of all the rounds from test_edition_details table 
+		$data['rounds'] = $this->vendors->getRounds();
+
+		//call model function to get count of all the registered school for the current round running
+		$data['school_registered'] = $this->dashboards->getRegisteredSchool($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['qb_delivered_completed_schools'] = $this->dashboards->getPreTestDeliveryDateSet($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['qb_delivered_pending_schools'] = $this->dashboards->getPreTestDeliveryDateNotSet($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['qb_delivered_alert_schools'] = $this->dashboards->getPreTestDeliveryDateAlert($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+
+		$data['omr_recieved_count'] = $this->dashboards->getPostTestOMRCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_pending_count'] = $this->dashboards->getPostTestOMRCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_alert_count'] = $this->dashboards->getPostTestOMRCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_gotfromscanning_recieved_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_gotfromscanning_pending_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_gotfromscanning_alert_count'] = $this->dashboards->getPostTestOMRGotFromScanningCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_namecheckstatus_completed_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_namecheckstatus_pending_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_namecheckstatus_alert_count'] = $this->dashboards->getPostTestOMRNamecheckstatusCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_scoreing_completed_count'] = $this->dashboards->getPostTestOMRScoreingCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_scoreing_pending_count'] = $this->dashboards->getPostTestOMRScoreingCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_scoreing_alert_count'] = $this->dashboards->getPostTestOMRScoreingCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_reportgenerated_completed_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_reportgenerated_pending_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_reportgenerated_alert_count'] = $this->dashboards->getPostTestOMRReportGeneratedCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+		
+		$data['omr_report_dispatch_ei_completed_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_dispatch_ei_pending_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_dispatch_ei_alert_count'] = $this->dashboards->getPostTestOMRReportDispatchEiCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_report_dispatch_completed_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_dispatch_pending_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_dispatch_alert_count'] = $this->dashboards->getPostTestOMRReportDispatchCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		$data['omr_report_delivery_completed_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'completed');
+
+		$data['omr_report_delivery_pending_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'pending');
+
+		$data['omr_report_delivery_alert_count'] = $this->dashboards->getPostTestOMRReportDeliveryCount($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],'alert');
+
+		//output data in json array
+		
+		echo json_encode(array('status' => 'success','rounds' => $data['rounds'],'zones' => $data['zones'],'school_registered' => $data['school_registered'],'round_description' => $description,'omr_recieved_count' => $data['omr_recieved_count'],'omr_pending_count' => $data['omr_pending_count'],'omr_alert_count' => $data['omr_alert_count'],'omr_gotfromscanning_recieved_count' => $data['omr_gotfromscanning_recieved_count'],'omr_gotfromscanning_pending_count' => $data['omr_gotfromscanning_pending_count'],'omr_gotfromscanning_alert_count' => $data['omr_gotfromscanning_alert_count'],'omr_namecheckstatus_completed_count' => $data['omr_namecheckstatus_completed_count'],'omr_namecheckstatus_pending_count' => $data['omr_namecheckstatus_pending_count'],'omr_namecheckstatus_alert_count' => $data['omr_namecheckstatus_alert_count'],'omr_scoreing_completed_count' => $data['omr_scoreing_completed_count'],'omr_scoreing_pending_count' => $data['omr_scoreing_pending_count'],'omr_scoreing_alert_count' => $data['omr_scoreing_alert_count'],'omr_reportgenerated_completed_count' => $data['omr_reportgenerated_completed_count'],'omr_reportgenerated_pending_count' => $data['omr_reportgenerated_pending_count'],'omr_reportgenerated_alert_count' => $data['omr_reportgenerated_alert_count'],'omr_report_dispatch_ei_completed_count' => $data['omr_report_dispatch_ei_completed_count'],'omr_report_dispatch_ei_pending_count' => $data['omr_report_dispatch_ei_pending_count'],'omr_report_dispatch_ei_alert_count' => $data['omr_report_dispatch_ei_alert_count'],'omr_report_dispatch_completed_count' => $data['omr_report_dispatch_completed_count'],'omr_report_dispatch_pending_count' => $data['omr_report_dispatch_pending_count'],'omr_report_dispatch_alert_count' => $data['omr_report_dispatch_alert_count'],'omr_report_delivery_completed_count' => $data['omr_report_delivery_completed_count'],'omr_report_delivery_pending_count' => $data['omr_report_delivery_pending_count'],'omr_report_delivery_alert_count' => $data['omr_report_delivery_alert_count'],'qb_delivered_completed_schools' => $data['qb_delivered_completed_schools'],'qb_delivered_pending_schools' => $data['qb_delivered_pending_schools'],'qb_delivered_alert_schools' => $data['qb_delivered_alert_schools']));
+
+	}
+
+	function ppPostTestDashboardSchoolOmrList(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_list'] = $this->dashboards->getPostTestOMRList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_list' => $data['omr_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRGotFromScanning(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_gotfromscanning_list'] = $this->dashboards->getPostTestOMRGotFromScanningList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_gotfromscanning_list' => $data['omr_gotfromscanning_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRNameCheckStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_namecheckstatus_list'] = $this->dashboards->getPostTestOMRNamecheckstatusList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_namecheckstatus_list' => $data['omr_namecheckstatus_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRScoreingStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_scoreingstatus_list'] = $this->dashboards->getPostTestOMRScoreingList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_scoreingstatus_list' => $data['omr_scoreingstatus_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRReportGeneratedStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_reportgenerated_status_list'] = $this->dashboards->getPostTestOMRReportGeneratedList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_reportgenerated_status_list' => $data['omr_reportgenerated_status_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRReportDispatchEiStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_reportdispatchei_status_list'] = $this->dashboards->getPostTestOMRReportDispatchEiList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_reportdispatchei_status_list' => $data['omr_reportdispatchei_status_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRReportDispatchStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_reportdispatch_status_list'] = $this->dashboards->getPostTestOMRReportDispatchList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_reportdispatch_status_list' => $data['omr_reportdispatch_status_list']));
+
+	}
+
+	function ppPostTestDashboardSchoolOMRReportDeliveryStatus(){
+
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$data['omr_reportdelivery_status_list'] = $this->dashboards->getPostTestOMRReportDeliveryList($inputRequest['round'],$inputRequest['zone'],$inputRequest['region'],$inputRequest['category'],$inputRequest['username'],$inputRequest['type']);
+
+		//output school list in JSON array
+		echo json_encode(array('status' => 'success','omr_reportdelivery_status_list' => $data['omr_reportdelivery_status_list']));
 
 	}
 

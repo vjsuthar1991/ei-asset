@@ -74,52 +74,58 @@
                     </thead>
                     <tbody>
                       <tr style="font-weight: bold;text-align: center;">
-                        <td style="text-align: left;">OMR Receipt</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="text-align: left;">QB Delivered Schools</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolDeilveryDateSet()">{{qbDeliveryCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolDeilveryDateNotSet()">{{qbDeliveryPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolDeilveryDateAlert()">{{qbDeliveryAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
-                        <td style="text-align: left;">OMR Scanned</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="text-align: left;">OMR Receipt</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRReceived()">{{omrReceivedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRPending()">{{omrPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRAlert()">{{omrAlertCount}}</td>
+                      </tr>
+                      <tr style="font-weight: bold;text-align: center;">
+                        <td style="text-align: left;">OMR Got From Scanning</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRGotFromScanningCompleted()">{{omrGotfromscanningReceivedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRGotFromScanningPending()">{{omrGotfromscanningPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRGotFromScanningAlert()">{{omrGotfromscanningAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Name Check Status</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRNameCheckStatusCompleted()">{{omrNamecheckCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRNameCheckStatusPending()">{{omrNamecheckPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRNameCheckStatusAlert()">{{omrNamecheckAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Scoring Status</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRScoreingStatusCompleted()">{{omrScoreingCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRScoreingStatusPending()">{{omrScoreingPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRScoreingStatusAlert()">{{omrScoreingAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Reports Generated</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRReportGeneratedStatusCompleted()">{{omrReportGeneratedCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRReportGeneratedStatusPending()">{{omrReportGeneratedPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRReportGeneratedStatusAlert()">{{omrReportGeneratedAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Report Dispatch From EI</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRReportDispatchEiCompleted()">{{omrReportDispatchEiCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRReportDispatchEiPending()">{{omrReportDispatchEiPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRReportDispatchEiAlert()">{{omrReportDispatchEiAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Analysis Dispatch Status</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRReportDispatchCompleted()">{{omrReportDispatchCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRReportDispatchPending()">{{omrReportDispatchPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRReportDispatchAlert()">{{omrReportDispatchAlertCount}}</td>
                       </tr>
                       <tr style="font-weight: bold;text-align: center;">
                         <td style="text-align: left;">Analysis Delivery Status</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolSSFReceived()">100</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolSSFReceived()">150</td>
-                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolSSFReceived()">50</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #27C24C;" ng-click="showSchoolOMRReportDeliveryCompleted()">{{omrReportDeliveryCompletedCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #FFC107;" ng-click="showSchoolOMRReportDeliveryPending()">{{omrReportDeliveryPendingCount}}</td>
+                        <td style="cursor:pointer;text-decoration: underline;color: #F44336;" ng-click="showSchoolOMRReportDeliveryAlert()">{{omrReportDeliveryAlertCount}}</td>
                       </tr>
                     </tbody>
                 </table>

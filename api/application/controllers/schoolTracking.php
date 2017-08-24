@@ -18,28 +18,13 @@ class Schooltracking extends CI_Controller {
 
 		$data['rounds'] = $this->vendors->getRounds();
 
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y');
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y');
-
-			if(new DateTime($date1) > new DateTime($date2)){
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			else{
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-					$description = $value->description;
-				}
-			}
-			
-		}
+		$description = $roundDetails['description'];
 
 		$data['school_registered'] = $this->schooltrackingmodel->getRegisteredSchool($round,$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
 
@@ -96,7 +81,42 @@ class Schooltracking extends CI_Controller {
 			$fileExtension = '.tif';
 		}
 
-		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount'],'fileExtension' => $fileExtension));
+		$analysisfileExist = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/Analysis/'.$inputRequest['school'].'.tif');
+								
+		$analysisfileExtension = '';
+		
+		if($analysisfileExist != 1 || $analysisfileExist == ''){
+			
+			$analysisfileExist2 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/Analysis/'.$inputRequest['school'].'.pdf');
+			
+			if($analysisfileExist2 != 1 || $analysisfileExist2 == ''){
+			
+				$analysisfileExist3 = file_exists($_SERVER['DOCUMENT_ROOT'].'/PackingSlips/'.$description[0]['description'].'/Analysis/'.$inputRequest['school'].'.jpg');
+
+				if($analysisfileExist3 != 1 || $analysisfileExist3 == ''){
+					
+				}
+				else{
+					$analysisfileExtension = '.jpg';
+				}		
+
+			}
+			else{
+				$analysisfileExtension = '.pdf';
+			}		
+
+		}
+		else{
+			$analysisfileExtension = '.tif';
+		}
+
+		$data['omr_status_data'] = $this->schooltrackingmodel->getOMRStatusData($inputRequest);
+
+		$data['omr_dispatch_data'] = $this->schooltrackingmodel->getOMRDispatchData($inputRequest);
+
+		$data['analysis_courier_details'] = $this->schooltrackingmodel->getAnalysisCourierDetails($inputRequest);
+
+		echo json_encode(array('status' => 'success','schoolName' => $data['schoolName'],'paymentDetails' => $data['paymentDetails'],'processTracking' => $data['processTracking'],'courierDetails' => $data['courierDetails'],'finalbreakupflag' => $data['finalbreakupflag'][0]['ssfrecievedcount'],'paymentflag' => $data['paymentflag'][0]['paymentcount'],'fileExtension' => $fileExtension,'omr_status_data' => $data['omr_status_data'],'omr_dispatch_data' => $data['omr_dispatch_data'],'analysis_courier_details' => $data['analysis_courier_details'],'analysisfileExtension' => $analysisfileExtension));
 	}
 
 }

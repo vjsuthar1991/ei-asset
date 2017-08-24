@@ -295,11 +295,15 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
       
       if(vendorSelected != "" && vendorSelected != "undefined")
       {
-        $('#vendorSelected').css('box-shadow','0px 0px #FF968B');
+      
+      $('#vendorSelected').css('box-shadow','0px 0px #FF968B');
+      
       if(arrayOfValues.length > 0){
 
         $('#generatepackingslip').attr('disabled','disabled');
         
+        $('.page-loading').show();
+
         var data = {data:arrayOfValues,vendor:vendorSelected,round:round,username:username};
         
         data = JSON.stringify(data);
@@ -317,28 +321,40 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
              var response = returndata;
              
                 if(response.status == "success"){
-
+                  
+                  $('.page-loading').hide();
+                  
                   if($('#add_packingslip_message_box').hasClass('alert-danger')){
                     $('#add_packingslip_message_box').removeClass('alert-danger');
                   }
+                  
                   $('#add_packingslip_message_box').addClass('alert-success');
                   $('#add_packingslip_message_box').text('');
                   $('#add_packingslip_message_box').append(response.message);
                   $('#add_packingslip_message_box').removeClass('hide');
+                  
                   $(window).scrollTop($('#add_packingslip_message_box').offset().top);
+                  
                   setTimeout(function(){ window.location.reload(); }, 3000);
                                       
                 }
                 else {
+                  
+                  $('.page-loading').hide();
+
                   if($('#add_packingslip_message_box').hasClass('alert-success')){
                     $('#add_packingslip_message_box').removeClass('alert-success');
                   }
+                  
                   $('#add_packingslip_message_box').addClass('alert-danger');
                   $('#add_packingslip_message_box').text('');
                   $('#add_packingslip_message_box').append(response.message);
                   $('#add_packingslip_message_box').removeClass('hide');
+                  
                   $(window).scrollTop($('#add_packingslip_message_box').offset().top);
+                  
                   setTimeout(function(){ window.location.reload(); }, 3000);
+                
                 }
 
                }
@@ -360,8 +376,6 @@ app.controller('PackingSlipsController', function($scope,$http,DTOptionsBuilder,
 
 });
 
-
-
 app.controller('CreateVendorController', function($scope,$http){
 
   $.ajax({
@@ -381,7 +395,6 @@ app.controller('CreateVendorController', function($scope,$http){
 
       }
       
-    
     }
   });
 
@@ -444,7 +457,6 @@ $(document).on('submit','#addvendorform',function(event){
           //disable the default form submission
           event.preventDefault();
           var jsonData = {};
-
 
           //grab all form data  
           var formData = jQuery('form#addvendorform').serializeArray();
@@ -1143,6 +1155,8 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
     
     event.stopImmediatePropagation();
 
+    $('.page-loading').show();
+
     $('#uploadqbanalysismisbtn').attr('disabled','disabled');
     
     event.preventDefault();
@@ -1172,6 +1186,8 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
 
              if(response.status == "success"){
 
+                $('.page-loading').hide();
+
                 if($('#upload_csv_message_box').hasClass('alert-danger')){
                   $('#upload_csv_message_box').removeClass('alert-danger');
                 }
@@ -1185,7 +1201,7 @@ app.controller('TestMaterialMisController', function($scope,$http,$routeParams,$
 
               }
               else {
-
+                $('.page-loading').hide();
                 $('#uploadqbmisform')[0].reset();
                 $('#uploadqbanalysismisbtn').removeAttr('disabled');
                 
@@ -3503,12 +3519,112 @@ function destroy() {
         $scope.zones = response.zones;
         $scope.rounds = response.rounds;
         $scope.ssfCount = response.school_registered[0]['ssfcount'];
-        
-      
+        $scope.qbDeliveryCompletedCount = response.qb_delivered_completed_schools[0]['deliverysetcount'];
+        $scope.qbDeliveryPendingCount = response.qb_delivered_pending_schools[0]['deliverynotsetcount'];
+        $scope.qbDeliveryAlertCount = response.qb_delivered_alert_schools[0]['deliveryalertcount'];
+        $scope.omrReceivedCount = response.omr_recieved_count[0]['omrrecievedcount'];
+        $scope.omrPendingCount = response.omr_pending_count[0]['omrpendingcount'];
+        $scope.omrAlertCount = response.omr_alert_count[0]['omralertcount'];
+        $scope.omrGotfromscanningReceivedCount = response.omr_gotfromscanning_recieved_count[0]['omrgotfromscanningrecievedcount'];
+        $scope.omrGotfromscanningPendingCount = response.omr_gotfromscanning_pending_count[0]['omrgotfromscanningpendingcount'];
+        $scope.omrGotfromscanningAlertCount = response.omr_gotfromscanning_alert_count[0]['omrgotfromscanningalertcount'];
+        $scope.omrNamecheckCompletedCount = response.omr_namecheckstatus_completed_count[0]['omrgotfromnamecheckcompletedcount'];
+        $scope.omrNamecheckPendingCount = response.omr_namecheckstatus_pending_count[0]['omrgotfromnamecheckpendingcount'];
+        $scope.omrNamecheckAlertCount = response.omr_namecheckstatus_alert_count[0]['omrgotfromnamecheckalertcount'];
+        $scope.omrScoreingCompletedCount = response.omr_scoreing_completed_count[0]['omrscoreingcompletedcount'];
+        $scope.omrScoreingPendingCount = response.omr_scoreing_pending_count[0]['omrscoreingpendingcount'];
+        $scope.omrScoreingAlertCount = response.omr_scoreing_alert_count[0]['omrscoreingalertcount'];
+        $scope.omrReportGeneratedCompletedCount = response.omr_reportgenerated_completed_count[0]['omrreportgeneratedcompletedcount'];
+        $scope.omrReportGeneratedPendingCount = response.omr_reportgenerated_pending_count[0]['omrreportgeneratedpendingcount'];
+        $scope.omrReportGeneratedAlertCount = response.omr_reportgenerated_alert_count[0]['omrreportgeneratedalertcount'];
+        $scope.omrReportDispatchEiCompletedCount = response.omr_report_dispatch_ei_completed_count[0]['omrreportdisptcheicompletedcount'];
+        $scope.omrReportDispatchEiPendingCount = response.omr_report_dispatch_ei_pending_count[0]['omrreportdisptcheipendingcount'];
+        $scope.omrReportDispatchEiAlertCount = response.omr_report_dispatch_ei_alert_count[0]['omrreportdisptcheialertcount'];
+        $scope.omrReportDispatchCompletedCount = response.omr_report_dispatch_completed_count[0]['omrreportdisptchcompletedcount'];
+        $scope.omrReportDispatchPendingCount = response.omr_report_dispatch_pending_count[0]['omrreportdisptchpendingcount'];
+        $scope.omrReportDispatchAlertCount = response.omr_report_dispatch_alert_count[0]['omrreportdisptchalertcount'];
+        $scope.omrReportDeliveryCompletedCount = response.omr_report_delivery_completed_count[0]['omrreportdeliverycompletedcount'];
+        $scope.omrReportDeliveryPendingCount = response.omr_report_delivery_pending_count[0]['omrreportdeliverypendingcount'];
+        $scope.omrReportDeliveryAlertCount = response.omr_report_delivery_alert_count[0]['omrreportdeliveryalertcount'];
+     
       }
       
     }
   });
+
+  $scope.filterPpPosttestDashboardData = function(e){
+
+    $('#overlay').show();
+
+    destroy();
+
+    $('#ppPostTestDynamicTable').addClass('hide');
+
+    $scope.ssfCount = '0';
+
+    $scope.ssfRecievedCount = '0';
+
+    $scope.paymentRecieved = '0';
+
+    var round = $('#ppposttest_dashboard_round').val();
+    var zone = $('#ppposttest_dashboard_zone').val();
+
+    var data = {round: round,zone:zone,region:region,category:category,username:username};
+    data = JSON.stringify(data);
+
+      $.ajax({
+      url: './api/dashboard/ppposttestDashboardFilter',
+      type: 'POST',
+      data: data,
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+          
+          $scope.roundDescription = response.round_description;
+          $scope.ssfCount = response.school_registered[0]['ssfcount'];
+          $scope.qbDeliveryCompletedCount = response.qb_delivered_completed_schools[0]['deliverysetcount'];
+          $scope.qbDeliveryPendingCount = response.qb_delivered_pending_schools[0]['deliverynotsetcount'];
+          $scope.qbDeliveryAlertCount = response.qb_delivered_alert_schools[0]['deliveryalertcount'];
+          $scope.omrReceivedCount = response.omr_recieved_count[0]['omrrecievedcount'];
+          $scope.omrPendingCount = response.omr_pending_count[0]['omrpendingcount'];
+          $scope.omrAlertCount = response.omr_alert_count[0]['omralertcount'];
+          $scope.omrGotfromscanningReceivedCount = response.omr_gotfromscanning_recieved_count[0]['omrgotfromscanningrecievedcount'];
+          $scope.omrGotfromscanningPendingCount = response.omr_gotfromscanning_pending_count[0]['omrgotfromscanningpendingcount'];
+          $scope.omrGotfromscanningAlertCount = response.omr_gotfromscanning_alert_count[0]['omrgotfromscanningalertcount'];
+          $scope.omrNamecheckCompletedCount = response.omr_namecheckstatus_completed_count[0]['omrgotfromnamecheckcompletedcount'];
+          $scope.omrNamecheckPendingCount = response.omr_namecheckstatus_pending_count[0]['omrgotfromnamecheckpendingcount'];
+          $scope.omrNamecheckAlertCount = response.omr_namecheckstatus_alert_count[0]['omrgotfromnamecheckalertcount'];
+          $scope.omrScoreingCompletedCount = response.omr_scoreing_completed_count[0]['omrscoreingcompletedcount'];
+          $scope.omrScoreingPendingCount = response.omr_scoreing_pending_count[0]['omrscoreingpendingcount'];
+          $scope.omrScoreingAlertCount = response.omr_scoreing_alert_count[0]['omrscoreingalertcount'];
+          $scope.omrReportGeneratedCompletedCount = response.omr_reportgenerated_completed_count[0]['omrreportgeneratedcompletedcount'];
+          $scope.omrReportGeneratedPendingCount = response.omr_reportgenerated_pending_count[0]['omrreportgeneratedpendingcount'];
+          $scope.omrReportGeneratedAlertCount = response.omr_reportgenerated_alert_count[0]['omrreportgeneratedalertcount'];
+          $scope.omrReportDispatchEiCompletedCount = response.omr_report_dispatch_ei_completed_count[0]['omrreportdisptcheicompletedcount'];
+          $scope.omrReportDispatchEiPendingCount = response.omr_report_dispatch_ei_pending_count[0]['omrreportdisptcheipendingcount'];
+          $scope.omrReportDispatchEiAlertCount = response.omr_report_dispatch_ei_alert_count[0]['omrreportdisptcheialertcount'];
+          $scope.omrReportDispatchCompletedCount = response.omr_report_dispatch_completed_count[0]['omrreportdisptchcompletedcount'];
+          $scope.omrReportDispatchPendingCount = response.omr_report_dispatch_pending_count[0]['omrreportdisptchpendingcount'];
+          $scope.omrReportDispatchAlertCount = response.omr_report_dispatch_alert_count[0]['omrreportdisptchalertcount'];
+          $scope.omrReportDeliveryCompletedCount = response.omr_report_delivery_completed_count[0]['omrreportdeliverycompletedcount'];
+          $scope.omrReportDeliveryPendingCount = response.omr_report_delivery_pending_count[0]['omrreportdeliverypendingcount'];
+          $scope.omrReportDeliveryAlertCount = response.omr_report_delivery_alert_count[0]['omrreportdeliveryalertcount'];
+
+          $location.path('/dashboard-ppposttest');
+
+          setTimeout(function(){ $('#overlay').hide(); },2000);
+          
+        }
+        
+      }
+    });
+  };
 
   $scope.showSchoolRegistered = function(e){
 
@@ -3585,6 +3701,1748 @@ function destroy() {
 
 };
 
+$scope.showSchoolDeilveryDateSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateSetList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_set_list, function( i, val ) {
+          $scope.schoolDeliveryDateSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDeliveryDate: val.qb_delivery_date,
+            schoolDeliveryStatus: val.qb_delivery_status,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDeliveryDate').withTitle('Delivery Date').withOption('title','Delivery Date'),
+            DTColumnBuilder.newColumn('schoolDeliveryStatus').withTitle('Delivery Status').withOption('title','Delivery Status'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-ppposttest');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+
+$scope.showSchoolDeilveryDateNotSet = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateNotSetList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateNotSet',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_notset_list, function( i, val ) {
+          $scope.schoolDeliveryDateNotSetList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDispatchDate: val.qb_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateNotSetList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-ppposttest');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+
+$scope.showSchoolDeilveryDateAlert = function(e){
+
+  destroy();  
+
+  $scope.schoolDeliveryDateAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/pppretestDashboardSchoolDeliveryDateAlert',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.deliverydate_alert_list, function( i, val ) {
+          $scope.schoolDeliveryDateAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolDispatchDate: val.qb_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolDeliveryDateAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+       
+        $scope.dtColumns = [];
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolDispatchDate').withTitle('Dispatch Date').withOption('title','Dispatch Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            //$scope.dtInstance.rerender();
+
+            $location.path('/dashboard-ppposttest');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReceived = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReceivedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOmrList',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.omr_list, function( i, val ) {
+          $scope.schoolOMRReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceived: val.omr_received,
+            schoolTotalOmr: val.totalPapers,
+            schoolOmrReceiptDate: val.answers_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolTotalOmr').withTitle('Total OMR').withOption('title','Total OMR'),
+            DTColumnBuilder.newColumn('schoolOmrReceived').withTitle('OMR Received').withOption('title','OMR Received'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOmrList',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_list, function( i, val ) {
+          $scope.schoolOMRPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceived: val.omr_received,
+            schoolTotalOmr: val.totalPapers,
+            schoolOmrReceiptDate: val.answers_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolTotalOmr').withTitle('Total OMR').withOption('title','Total OMR'),
+            DTColumnBuilder.newColumn('schoolOmrReceived').withTitle('OMR Received').withOption('title','OMR Received'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOmrList',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_list, function( i, val ) {
+          $scope.schoolOMRAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolQbDeliveryDate: val.qb_delivery_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolQbDeliveryDate').withTitle('QB Delivery Date').withOption('title','QB Delivery Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRGotFromScanningCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRGotFromScanningReceivedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRGotFromScanning',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.omr_gotfromscanning_list, function( i, val ) {
+          $scope.schoolOMRGotFromScanningReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+            schoolOmrScanGotDate: val.scan_got_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRGotFromScanningReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            DTColumnBuilder.newColumn('schoolOmrScanGotDate').withTitle('OMR Scan Got Date').withOption('title','OMR Scan Got Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRGotFromScanningPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRGotFromScanningPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRGotFromScanning',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.omr_gotfromscanning_list, function( i, val ) {
+          $scope.schoolOMRGotFromScanningPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRGotFromScanningPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            ];  
+
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRGotFromScanningAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRGotFromScanningAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRGotFromScanning',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        
+        jQuery.each( response.omr_gotfromscanning_list, function( i, val ) {
+          $scope.schoolOMRGotFromScanningAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRGotFromScanningAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRNameCheckStatusCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRNameCheckStatusReceivedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRNameCheckStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_namecheckstatus_list, function( i, val ) {
+          $scope.schoolOMRNameCheckStatusReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+            schoolOmrScanGotDate: val.scan_got_date,
+            schoolOmrNameCheckDate: val.namecheck_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRNameCheckStatusReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            DTColumnBuilder.newColumn('schoolOmrScanGotDate').withTitle('OMR Scan Got Date').withOption('title','OMR Scan Got Date'),
+            DTColumnBuilder.newColumn('schoolOmrNameCheckDate').withTitle('OMR Name Check Date').withOption('title','OMR Name Check Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRNameCheckStatusPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRNameCheckStatusPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRNameCheckStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_namecheckstatus_list, function( i, val ) {
+          $scope.schoolOMRNameCheckStatusPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+            schoolOmrScanGotDate: val.scan_got_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRNameCheckStatusPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            DTColumnBuilder.newColumn('schoolOmrScanGotDate').withTitle('OMR Scan Got Date').withOption('title','OMR Scan Got Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRNameCheckStatusAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRNameCheckStatusAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRNameCheckStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_namecheckstatus_list, function( i, val ) {
+          $scope.schoolOMRNameCheckStatusReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrReceiptDate: val.answers_date,
+            schoolOmrScanGotDate: val.scan_got_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRNameCheckStatusAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrReceiptDate').withTitle('OMR Receipt Date').withOption('title','OMR Receipt Date'),
+            DTColumnBuilder.newColumn('schoolOmrScanGotDate').withTitle('OMR Scan Got Date').withOption('title','OMR Scan Got Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRScoreingStatusCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRScoreingStatusReceivedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRScoreingStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_scoreingstatus_list, function( i, val ) {
+          $scope.schoolOMRScoreingStatusReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrNameCheckDate: val.namecheck_date,
+            schoolOmrScoreingDate: val.scoreing_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRScoreingStatusReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrNameCheckDate').withTitle('OMR Name Check Date').withOption('title','OMR Name Check Date'),
+            DTColumnBuilder.newColumn('schoolOmrScoreingDate').withTitle('OMR Scoreing Date').withOption('title','OMR Scoreing Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRScoreingStatusPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRScoreingStatusPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRScoreingStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_scoreingstatus_list, function( i, val ) {
+          $scope.schoolOMRScoreingStatusPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrNameCheckDate: val.namecheck_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRScoreingStatusPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrNameCheckDate').withTitle('OMR Name Check Date').withOption('title','OMR Name Check Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRScoreingStatusAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRScoreingStatusAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRScoreingStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_scoreingstatus_list, function( i, val ) {
+          $scope.schoolOMRScoreingStatusAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrNameCheckDate: val.namecheck_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRScoreingStatusAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrNameCheckDate').withTitle('OMR Name Check Date').withOption('title','OMR Name Check Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportGeneratedStatusCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportGeneratedStatusReceivedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportGeneratedStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportgenerated_status_list, function( i, val ) {
+          $scope.schoolOMRReportGeneratedStatusReceivedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrScoreingDate: val.scoreing_date,
+            schoolOmrSchoolReportsDate: val.school_reports_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportGeneratedStatusReceivedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrScoreingDate').withTitle('OMR Scoreing Date').withOption('title','OMR Scoreing Date'),
+            DTColumnBuilder.newColumn('schoolOmrSchoolReportsDate').withTitle('OMR Report Generated Date').withOption('title','OMR Report Generated Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportGeneratedStatusPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportGeneratedStatusPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportGeneratedStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportgenerated_status_list, function( i, val ) {
+          $scope.schoolOMRReportGeneratedStatusPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrScoreingDate: val.scoreing_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportGeneratedStatusPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrScoreingDate').withTitle('OMR Scoreing Date').withOption('title','OMR Scoreing Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportGeneratedStatusAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportGeneratedStatusAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportGeneratedStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportgenerated_status_list, function( i, val ) {
+          $scope.schoolOMRReportGeneratedStatusAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrScoreingDate: val.scoreing_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportGeneratedStatusAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrScoreingDate').withTitle('OMR Scoreing Date').withOption('title','OMR Scoreing Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchEiCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchEiCompletedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchEiStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatchei_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchEiCompletedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrSchoolReportsDate: val.school_reports_date,
+            schoolOmrAnalysisSentDate: val.analysis_sentdate,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchEiCompletedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrSchoolReportsDate').withTitle('OMR Report Generated Date').withOption('title','OMR Report Generated Date'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisSentDate').withTitle('OMR Analysis Sent Date').withOption('title','OMR Analysis Sent Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchEiPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchEiPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchEiStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatchei_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchEiPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrSchoolReportsDate: val.school_reports_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchEiPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrSchoolReportsDate').withTitle('OMR Report Generated Date').withOption('title','OMR Report Generated Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchEiAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchEiAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchEiStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatchei_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchEiAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrSchoolReportsDate: val.school_reports_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchEiAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrSchoolReportsDate').withTitle('OMR Report Generated Date').withOption('title','OMR Report Generated Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchCompletedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatch_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchCompletedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisSentDate: val.analysis_sentdate,
+            schoolOmrAnalysisDispatchDate: val.analysis_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchCompletedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisSentDate').withTitle('OMR Analysis Sent Date').withOption('title','OMR Analysis Sent Date'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisDispatchDate').withTitle('OMR Analysis Dispatch Date').withOption('title','OMR Analysis Dispatch Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatch_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisSentDate: val.analysis_sentdate,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisSentDate').withTitle('OMR Analysis Sent Date').withOption('title','OMR Analysis Sent Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDispatchAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDispatchAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDispatchStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdispatch_status_list, function( i, val ) {
+          $scope.schoolOMRReportDispatchAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisSentDate: val.analysis_sentdate,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDispatchAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisSentDate').withTitle('OMR Analysis Sent Date').withOption('title','OMR Analysis Sent Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDeliveryCompleted = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDeliveryCompletedList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'completed'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDeliveryStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdelivery_status_list, function( i, val ) {
+          $scope.schoolOMRReportDeliveryCompletedList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisDispatchDate: val.analysis_despatch_date,
+            schoolOmrAnalysisDeliveryDate: val.analysis_delivery_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDeliveryCompletedList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisDispatchDate').withTitle('OMR Analysis Dispatch Date').withOption('title','OMR Analysis Dispatch Date'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisDeliveryDate').withTitle('OMR Analysis Delivery Date').withOption('title','OMR Analysis Delivery Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDeliveryPending = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDeliveryPendingList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'pending'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDeliveryStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdelivery_status_list, function( i, val ) {
+          $scope.schoolOMRReportDeliveryPendingList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisDispatchDate: val.analysis_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDeliveryPendingList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisDispatchDate').withTitle('OMR Analysis Dispatch Date').withOption('title','OMR Analysis Dispatch Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
+$scope.showSchoolOMRReportDeliveryAlert = function(e){
+
+  destroy();
+
+  $scope.schoolOMRReportDeliveryAlertList = [];
+
+  var round = $('#ppposttest_dashboard_round').val();
+  var zone = $('#ppposttest_dashboard_zone').val();
+
+  var data = {round: round,zone:zone,region:region,category:category,username:username,type:'alert'};
+  data = JSON.stringify(data);
+
+    $.ajax({
+    url: './api/dashboard/ppPostTestDashboardSchoolOMRReportDeliveryStatus',
+    type: 'POST',
+    data: data,
+    dataType : 'json', // data type
+    async: false,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (returndata) {
+      var response = JSON.parse(JSON.stringify(returndata));
+
+      if(response.status == "success"){
+
+        jQuery.each( response.omr_reportdelivery_status_list, function( i, val ) {
+          $scope.schoolOMRReportDeliveryAlertList.push({
+            schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolOmrAnalysisDispatchDate: val.analysis_despatch_date,
+          });
+        });
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.schoolOMRReportDeliveryAlertList).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+          $("td:first", nRow).html(iDisplayIndex +1);
+          return nRow;
+        }).withOption('processing', true);
+
+        $scope.dtColumns = [
+
+            DTColumnBuilder.newColumn(null).withTitle('#').withOption('title','#','defaultContent', ' '),
+            DTColumnBuilder.newColumn(null).withTitle('School Code').withOption('title','School Code').renderWith(function (data, type, full, meta){ return '<a target="_blank" href="school-order-tracking?round='+round+'&school='+full.schoolCode+'">'+full.schoolCode+'</a>';}),
+            DTColumnBuilder.newColumn('schoolName').withTitle('School Name').withOption('title','School Name'),
+            DTColumnBuilder.newColumn('schoolCity').withTitle('City').withOption('title','City'),
+            DTColumnBuilder.newColumn('schoolRegion').withTitle('Region').withOption('title','Region'),
+            DTColumnBuilder.newColumn('schoolOmrAnalysisDispatchDate').withTitle('OMR Analysis Dispatch Date').withOption('title','OMR Analysis Dispatch Date'),
+            ];  
+
+            $('#ppPostTestDynamicTable').removeClass('hide');
+
+            $(window).scrollTop($('#ppPostTestDynamicTable').offset().top);
+
+      }
+      
+    }
+  });
+
+};
+
 });
 
 app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoad,$location,$window,$route,$routeParams) {
@@ -3634,6 +5492,12 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         $scope.finalBreakupFlag = response.finalbreakupflag;
 
         $scope.fileExtension = response.fileExtension;
+
+        $scope.omrStatus = response.omr_status_data[0];
+
+        $scope.omrDispatchStatus = response.omr_dispatch_data[0];
+
+        $scope.analysis_courier_details = response.analysis_courier_details[0];
 
         if($scope.finalBreakupFlag == 1){
           $scope.finalBreakupColor = 'rgb(34, 194, 34)';
@@ -3694,6 +5558,80 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         $scope.qbDeliveryColor = '#f1685e';
       }
 
+      if(response.omr_status_data.length > 0){
+        if(response.omr_status_data[0]['status_flag'] != '1' && response.omr_status_data[0]['status_flag'] != ''){
+          $scope.omrReceiptColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrReceiptColor = '#f1685e';
+        }
+
+        if(response.omr_status_data[0]['scan_got_date'] != '0000-00-00' && response.omr_status_data[0]['scan_got_date'] != ''){
+          $scope.omrScannedColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.omrScannedColor = '#f1685e';
+        }
+
+        if(response.omr_status_data[0]['namecheck_date'] != '0000-00-00' && response.omr_status_data[0]['namecheck_date'] != ''){
+          $scope.omrNameCheckColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrNameCheckColor = '#f1685e'; 
+        }
+
+        if(response.omr_status_data[0]['scoreing_date'] != '0000-00-00' && response.omr_status_data[0]['scoreing_date'] != ''){
+          $scope.omrScoreingColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrScoreingColor = '#f1685e'; 
+        }
+
+        if(response.omr_status_data[0]['school_reports_date'] != '0000-00-00' && response.omr_status_data[0]['school_reports_date'] != ''){
+          $scope.omrReportsGeneratedColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrReportsGeneratedColor = '#f1685e'; 
+        }
+
+      }
+      else {
+        $scope.omrReceiptColor = '#f1685e';
+        $scope.omrScannedColor = '#f1685e';
+        $scope.omrNameCheckColor = '#f1685e';
+        $scope.omrScoreingColor = '#f1685e';
+        $scope.omrReportsGeneratedColor = '#f1685e';
+      }
+
+      if(response.omr_dispatch_data.length > 0){
+        if(response.omr_dispatch_data[0]['analysis_sentdate'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_sentdate'] != ''){
+          $scope.omrAnalysisSentColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisSentColor = '#f1685e';
+        }
+
+        if(response.omr_dispatch_data[0]['analysis_despatch_date'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_despatch_date'] != ''){
+          $scope.omrAnalysisDispatchColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisDispatchColor = '#f1685e';
+        }
+
+        if(response.omr_dispatch_data[0]['analysis_delivery_date'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_delivery_date'] != ''){
+          $scope.omrAnalysisDeliveryColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisDeliveryColor = '#f1685e';
+        }
+
+      }
+      else {
+        $scope.omrAnalysisSentColor = '#f1685e';
+        $scope.omrAnalysisDispatchColor = '#f1685e';
+        $scope.omrAnalysisDeliveryColor = '#f1685e';
+      }
+
         setTimeout(function(){ $('#overlay').hide(); }, 3000); 
         
           $('.panel-body').removeAttr( 'style' );
@@ -3738,6 +5676,29 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
         });
 
       },1);
+
+      setTimeout(function(){
+
+      $('.line2').each(function(i, obj) {
+
+      var linewidth = Math.abs($('#foo2').offset().left - $('#bar2').offset().left); 
+      
+      if(i == 4 || i == 5){
+
+             linewidth = 0;
+
+             $(obj).css('width',linewidth);
+             //$('.vertical-line').css('left',linewidth - 6);
+          }
+          else{
+
+             $(obj).css('width',linewidth);
+
+          
+          }
+      });
+
+    },1);
 
 
 
@@ -3912,6 +5873,12 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
 
         $scope.fileExtension = response.fileExtension;
 
+        $scope.omrStatus = response.omr_status_data[0];
+
+        $scope.omrDispatchStatus = response.omr_dispatch_data[0];
+
+        $scope.analysis_courier_details = response.analysis_courier_details[0];
+
         if($scope.finalBreakupFlag == 1){
           $scope.finalBreakupColor = 'rgb(34, 194, 34)';
         }
@@ -3969,6 +5936,80 @@ app.controller('SchoolOrderTrackingController', function($scope,$http,$ocLazyLoa
       }
       else{
         $scope.qbDeliveryColor = '#f1685e';
+      }
+
+      if(response.omr_status_data.length > 0){
+        if(response.omr_status_data[0]['status_flag'] != '1' && response.omr_status_data[0]['status_flag'] != ''){
+          $scope.omrReceiptColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrReceiptColor = '#f1685e';
+        }
+
+        if(response.omr_status_data[0]['scan_got_date'] != '0000-00-00' && response.omr_status_data[0]['scan_got_date'] != ''){
+          $scope.omrScannedColor = 'rgb(34, 194, 34)';
+        }
+        else{
+          $scope.omrScannedColor = '#f1685e';
+        }
+
+        if(response.omr_status_data[0]['namecheck_date'] != '0000-00-00' && response.omr_status_data[0]['namecheck_date'] != ''){
+          $scope.omrNameCheckColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrNameCheckColor = '#f1685e'; 
+        }
+
+        if(response.omr_status_data[0]['scoreing_date'] != '0000-00-00' && response.omr_status_data[0]['scoreing_date'] != ''){
+          $scope.omrScoreingColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrScoreingColor = '#f1685e'; 
+        }
+
+        if(response.omr_status_data[0]['school_reports_date'] != '0000-00-00' && response.omr_status_data[0]['school_reports_date'] != ''){
+          $scope.omrReportsGeneratedColor = 'rgb(34, 194, 34)';
+        }
+        else {
+         $scope.omrReportsGeneratedColor = '#f1685e'; 
+        }
+
+      }
+      else {
+        $scope.omrReceiptColor = '#f1685e';
+        $scope.omrScannedColor = '#f1685e';
+        $scope.omrNameCheckColor = '#f1685e';
+        $scope.omrScoreingColor = '#f1685e';
+        $scope.omrReportsGeneratedColor = '#f1685e';
+      }
+
+      if(response.omr_dispatch_data.length > 0){
+        if(response.omr_dispatch_data[0]['analysis_sentdate'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_sentdate'] != ''){
+          $scope.omrAnalysisSentColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisSentColor = '#f1685e';
+        }
+
+        if(response.omr_dispatch_data[0]['analysis_despatch_date'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_despatch_date'] != ''){
+          $scope.omrAnalysisDispatchColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisDispatchColor = '#f1685e';
+        }
+
+        if(response.omr_dispatch_data[0]['analysis_delivery_date'] != '0000-00-00' && response.omr_dispatch_data[0]['analysis_delivery_date'] != ''){
+          $scope.omrAnalysisDeliveryColor = 'rgb(34, 194, 34)';
+        }
+        else {
+          $scope.omrAnalysisDeliveryColor = '#f1685e';
+        }
+
+      }
+      else {
+        $scope.omrAnalysisSentColor = '#f1685e';
+        $scope.omrAnalysisDispatchColor = '#f1685e';
+        $scope.omrAnalysisDeliveryColor = '#f1685e';
       }
 
       setTimeout(function(){ $('#overlay').hide(); }, 3000); 
@@ -4298,6 +6339,8 @@ app.controller('VendorUploadOMRMISController', function($scope,$http,$routeParam
       
       event.stopImmediatePropagation();
 
+      $('.page-loading').show();
+
       $('#uploadomrreceiptmisbtn').attr('disabled','disabled');
       
       event.preventDefault();
@@ -4330,6 +6373,8 @@ app.controller('VendorUploadOMRMISController', function($scope,$http,$routeParam
 
                if(response.status == "success"){
 
+                  $('.page-loading').hide();
+
                   if($('#upload_csv_message_box').hasClass('alert-danger')){
                     $('#upload_csv_message_box').removeClass('alert-danger');
                   }
@@ -4344,6 +6389,8 @@ app.controller('VendorUploadOMRMISController', function($scope,$http,$routeParam
                 }
                 else {
 
+                  $('.page-loading').hide();
+
                   $('#uploadqbmisform')[0].reset();
                   $('#uploadqbanalysismisbtn').removeAttr('disabled');
                   
@@ -4356,7 +6403,7 @@ app.controller('VendorUploadOMRMISController', function($scope,$http,$routeParam
                   $('#upload_csv_message_box').append(response.message);
                   $('#upload_csv_message_box').removeClass('hide');
                   $(window).scrollTop($('#upload_csv_message_box').offset().top);
-
+  
                   setTimeout(function(){ $('#upload_csv_message_box').addClass('hide'); }, 4000);
                 }
 
@@ -4418,12 +6465,11 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
       var response = JSON.parse(JSON.stringify(returndata));
 
       if(response.status == "success"){
-        
+
         $scope.zones = response.zones;
         $scope.rounds = response.rounds;
         $scope.roundSelected = response.round_selected;
 
-        
         jQuery.each( response.omr_receipt_list, function( i, val ) {
 
           
@@ -4439,7 +6485,9 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
             schoolOMRReceivedDate: val.inward_date,
             schoolOMRScanningDate: val.scan_date,
             schoolOMRDifference: val.difference,
-            schoolOMRPercentage: val.percentage 
+            schoolOMRPercentage: val.percentage,
+            schoolOMRStatus: val.status_flag,
+            schoolOMRCountid: val.id 
 
           });
         });
@@ -4448,7 +6496,7 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
           
                   var el = $(nRow).find("td").eq(7);
                   
-                  if(aData.schoolOMRPercentage < 85){
+                  if(aData.schoolOMRPercentage < 85 && aData.schoolOMRStatus == 1){
                     $(el).addClass('red-alert');  
                   }
                   
@@ -4469,11 +6517,105 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
                 DTColumnBuilder.newColumn('schoolTotalPaperReceived').withTitle('No. Of OMR Received').withOption('title','No. Of OMR Received'),
                 DTColumnBuilder.newColumn('schoolOMRDifference').withTitle('OMR Pending').withOption('title','OMR Pending'),
                 DTColumnBuilder.newColumn('schoolOMRReceivedDate').withTitle('OMR Received Date').withOption('title','OMR Received Date'),
-                DTColumnBuilder.newColumn('schoolOMRScanningDate').withTitle('OMR Scanning Date').withOption('title','OMR Scanning Date'),];  
+                DTColumnBuilder.newColumn('schoolOMRScanningDate').withTitle('OMR Scanning Date').withOption('title','OMR Scanning Date'),
+                DTColumnBuilder.newColumn('null').withTitle('Approve Status').withOption('title','Approve Status').notSortable()
+                .renderWith(function (data, type, full, meta){
+                  if(full.schoolOMRStatus == 1){
+
+                    return '<img src="asset/img/accept.png" style="width: 25px;cursor: pointer;" class="approveOmrCount" analysisomr-id="'+full.schoolOMRCountid+'" status="0" />';
+                  
+                  }
+                  else {
+
+                   return '<button class="btn btn-raised btn-success" disabled="disabled"><div><span>Approved</span></div></button>'; 
+                  
+                  }
+                  
+                }).withClass("text-center")
+                ];  
+
                 
       }
       
     }
+  });
+
+  $(document).on('click','.approveOmrCount',function(event){ 
+
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+
+  var region = getCookie('loginuserregion');
+  var category = getCookie('loginusercategory');
+  var username = getCookie('loginuserlogname');
+
+    var omrcountid = $(this).attr('analysisomr-id');
+
+    var data = {omrcountid : omrcountid,region:region,category:category,username:username};
+    
+    data = JSON.stringify(data);
+    
+    $scope.newomr_receipt_list = [];
+
+      $.ajax({
+      url: './api/lotgeneration/approve_analysisomrcount',
+      type: 'POST',
+      data: data,
+      dataType : 'json', // data type
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (returndata) {
+        var response = JSON.parse(JSON.stringify(returndata));
+
+        if(response.status == "success"){
+
+          jQuery.each( response.omr_receipt_list, function( i, val ) {
+          
+          $scope.newomr_receipt_list.push({
+           schoolCode: val.school_code,
+            schoolName: val.schoolname,
+            schoolCity: val.city,
+            schoolRegion: val.region,
+            schoolTestDate: val.test_date,
+            schoolTotalPapers: val.totalPapers,
+            schoolTotalPaperReceived: val.sum,
+            schoolOMRReceivedDate: val.inward_date,
+            schoolOMRScanningDate: val.scan_date,
+            schoolOMRDifference: val.difference,
+            schoolOMRPercentage: val.percentage,
+            schoolOMRStatus: val.status_flag,
+            schoolOMRCountid: val.id
+          });
+
+        });
+
+          $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('data', $scope.newomr_receipt_list).withOption('fnRowCallback',function(nRow, aData, iDisplayIndex){
+            $("td:first", nRow).html(iDisplayIndex +1);
+            return nRow;
+          }).withOption('processing', true);
+
+          $scope.dtInstance.rerender();
+
+        }
+        
+      }
+    });
+
   });
 
   $scope.filteromrReceiptStatusList = function(e) {
@@ -4555,6 +6697,8 @@ app.controller('OmrReceiptStatusController', function($scope,$http,DTOptionsBuil
              });
   };
 
+
+
   
 });
 
@@ -4616,6 +6760,8 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
       
       event.stopImmediatePropagation();
 
+      $('.page-loading').show();
+
       $('#lotgenerationbtn').attr('disabled','disabled');
       
       event.preventDefault();
@@ -4656,6 +6802,8 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
 
                if(response.status == "success"){
 
+                  $('.page-loading').hide();
+
                   if($('#upload_analysisqc_html_message_box').hasClass('alert-danger')){
                     $('#upload_analysisqc_html_message_box').removeClass('alert-danger');
                   }
@@ -4669,7 +6817,7 @@ app.controller('LotGenerationController', function($scope,$http,$routeParams,$lo
 
                 }
                 else {
-
+                  $('.page-loading').hide();
                   $('#analysislotgenerationform')[0].reset();
                   $('#lotgenerationbtn').removeAttr('disabled');
                   

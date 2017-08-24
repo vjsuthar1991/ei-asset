@@ -15,7 +15,7 @@ class Analysis_mis_list_model extends CI_Model{
         $this->courierDispatchDetails = 'courier_dispatch_details';
         $this->salesAllotmentMasterTbl = 'sales_allotment_master';
         $this->analysisLotListTbl = 'analysis_lot_list';
-        
+        $this->omrReceiptStatusCount = 'omr_count_status';
     }
 
    
@@ -144,6 +144,12 @@ class Analysis_mis_list_model extends CI_Model{
         // echo $this->db->last_query();
         return $query->result_array(); 
 
+    }
+
+    public function updateAnalysisomrcount($id)
+    {
+        $this->db->where('id',$id);
+        $this->db->update($this->omrReceiptStatusCount,array('status_flag' => 0));            
     }
 
     

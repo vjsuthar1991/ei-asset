@@ -17,6 +17,7 @@ class Vendors extends CI_Model{
         $this->marketingTbl = 'marketing';
         $this->omrReceiptReports = 'omr_receipt_reports';
         $this->analysisLotListTbl = 'analysis_lot_list';
+        $this->omrReceiptStatusCount = 'omr_count_status';
 
     }
 
@@ -447,6 +448,7 @@ class Vendors extends CI_Model{
 
     function updateSchoolStatusOmrReceiptInfo($data,$round,$vendorId){
 
+
         $this->db->select('omr_received');
         $this->db->from($this->schoolstatusTbl);
         $this->db->where('school_code',$data['B']);
@@ -465,14 +467,13 @@ class Vendors extends CI_Model{
             $query = $this->db->get();
             $omrResult = $query->result_array();    
             
-            if($omrResult[0]['omr_received'] != NULL){
+            if($omrResult[0]['omr_received'] != NULL ){
                 $initialOMRCount = $omrResult[0]['omr_received'];
                 $totalOMRCount = $initialOMRCount + $data['J'];
             }
             else{
                 $totalOMRCount = $data['J'];
             }
-
 
             $this->db->where('school_code',$data['B']);
             $this->db->where('test_edition',$round);
@@ -481,6 +482,34 @@ class Vendors extends CI_Model{
             $update = $this->db->affected_rows();
 
             if($update > 0){
+
+                $totalPapers = $this->filterOMRReceiptClasses($round,$data['B']);
+
+                if(($totalOMRCount/$totalPapers) * 100 > 85){
+                    $omrReceiptStatusFlag = 0;
+                }
+                else {
+                    $omrReceiptStatusFlag = 1;   
+                }
+
+                $this->db->select('*');
+                $this->db->from($this->omrReceiptStatusCount);
+                $this->db->where('school_code',$data['B']);
+                $this->db->where('test_edition',$round);
+                $query = $this->db->get();
+                //echo $this->db->last_query();
+                $result = $query->result_array();   
+                
+                if(count($result) > 0){
+
+                    $this->db->where('school_code',$data['B']);
+                    $this->db->where('test_edition',$round);
+                    $this->db->update($this->omrReceiptStatusCount,array('status_flag' => $omrReceiptStatusFlag));
+                     
+                }
+                else {
+                    $insertIntoOMRReceiptStatusCount = $this->db->insert($this->omrReceiptStatusCount,array('school_code' => $data['B'],'test_edition' => $round,'status_flag' => $omrReceiptStatusFlag));    
+                }
 
                 $insertIntoOMRReceipt = $this->db->insert($this->omrReceiptReports,array('school_code' => $data['B'],'test_edition' => $round,'courier_details' => $data['C'],'total_packets' => $data['D'],'test_date' => date('Y-m-d',strtotime($data['E'])),'inward_date' => date('Y-m-d',strtotime($data['F'])),'scan_date' => date('Y-m-d',strtotime($data['G'])),'qc_done_date' => date('Y-m-d',strtotime($data['H'])),'data_to_ei_date' => date('Y-m-d',strtotime($data['I'])),'no_of_records' => $data['J'],'pod_no' => $data['K'],'remarks' => $data['L']));
                 
@@ -570,10 +599,12 @@ class Vendors extends CI_Model{
         $this->db->select("DATE_FORMAT(t1.inward_date,'%d-%m-%Y') as inward_date",FALSE);
         $this->db->select("DATE_FORMAT(t1.scan_date,'%d-%m-%Y') as scan_date",FALSE);
         $this->db->select("SUM(t1.no_of_records) as sum");
+        $this->db->select("t4.status_flag,t4.id");
 
         $this->db->from("$this->omrReceiptReports as t1");
         $this->db->join("$this->schoolsTbl as t2","t1.school_code = t2.schoolno","LEFT");
-        $this->db->join("$this->schoolstatusTbl as t3","t1.school_code = t3.school_code AND t3.test_edition = 'X'","LEFT");
+        $this->db->join("$this->schoolstatusTbl as t3","t1.school_code = t3.school_code AND t3.test_edition = '$round'","LEFT");
+        $this->db->join("$this->omrReceiptStatusCount as t4","t1.school_code = t4.school_code AND t4.test_edition = '$round'","LEFT");
 
         if($region != '' && $region != 'NULL'){
 
@@ -640,7 +671,7 @@ class Vendors extends CI_Model{
              if($result[0]['dynamic_class'] != "" && $result[0]['dynamic_class'] != NULL)
                  
                  {
-                     $classes = explode(",",$result['dynamic_class']);
+                     $classes = explode(",",$result[0]['dynamic_class']);
                      $pnpclasses = array_diff($classArray,$classes);
                       
                         if(count($pnpclasses) > 0){
@@ -820,5 +851,7 @@ class Vendors extends CI_Model{
         return $analysislotid;
     
     }
+
+   
 
 }

@@ -22,7 +22,8 @@
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/ei-asset/api/';
+$baseCustomPath = $_SERVER['SERVER_NAME'];
+$config['base_url'] = "http://$baseCustomPath/ei-asset/api/";
 
 /*
 |--------------------------------------------------------------------------

@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-error_reporting(0);
-class Vendor extends CI_Controller {
 
+class Vendor extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->model('vendors');
 		$this->load->model('schooltrackingmodel');
+		error_reporting(E_ALL);
 	}
 	
 	/*
@@ -456,9 +456,10 @@ class Vendor extends CI_Controller {
 							if(count($schoolKeyAccountRM) > 0){
 								
 								$keyaccountrmEmailID = $this->vendors->getSchoolkeyAccountRMEmailID($schoolKeyAccountRM[0]['keyAccount']);
-
-								array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
-									
+								
+								if(isset($keyaccountrmEmailID[0]['email'])){
+									array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
+								}			
 							}
 
 							$schoolBuddyAccountRM = $this->vendors->getSchoolBuddyAccountRM($value['B']);
@@ -466,8 +467,11 @@ class Vendor extends CI_Controller {
 							if(count($schoolBuddyAccountRM) > 0){
 								
 								$BuddyrmEmailID = $this->vendors->getSchoolBuddyRMEmailID($schoolBuddyAccountRM[0]['buddyAccount']);
-
-								array_push($ccEmail, $BuddyrmEmailID[0]['email']);
+								if(count($BuddyrmEmailID) > 0){
+									if(isset($BuddyrmEmailID[0]['email'])){
+										array_push($ccEmail, $BuddyrmEmailID[0]['email']);	
+									}
+								}
 									
 							}
 
@@ -707,8 +711,7 @@ class Vendor extends CI_Controller {
         {
         	
         	$email = $schoolEmailId;
-        	//$email = 'vijay.suthar@ei-india.com';
-			$subject = $subject;
+        	$subject = $subject;
 			$message = $message;
 			$this->sendEmail($email,$subject,$message,$file1,$ccEmail);
 		}
@@ -764,9 +767,9 @@ class Vendor extends CI_Controller {
     {
     	
     	$email = $schoolEmailId;
-		$subject = $subject;
+    	$subject = $subject;
 		$message = $message;
-		$this->sendEmail($email,$subject,$message,$ccEmail);
+		$this->sendOMRReceiptEmail($email,$subject,$message,$ccEmail);
 	}
 
 		
@@ -976,6 +979,7 @@ class Vendor extends CI_Controller {
     		//load the excel library
 			$this->load->library('excel');
 			//read file from path
+			
 			$objPHPExcel = PHPExcel_IOFactory::load('./MIS Reports/OMR Receipt/'.$file_name);
 			$worksheet = $objPHPExcel->getSheet(0);
 			$sheetData = $worksheet->toArray(null,true,true,true);
@@ -1021,11 +1025,16 @@ class Vendor extends CI_Controller {
 						if($value['B'] == '')
 						{
 							// echo $value['B'];
-							// echo $schoolCodeFlag = 1;
+							$schoolCodeFlag = 1;
 						}
 						else{
-							if($value['C'] != '' && $value['D'] != '' && $value['E'] != '' && $value['F'] != '' && $value['G'] != '' && $value['H'] != '' && $value['I'] != '' && $value['J'] != '' && $value['K'] != ''){
+							if($value['D'] != '' && $value['E'] != '' && $value['F'] != '' && $value['J'] != ''){
 							
+								// echo $value['C'];
+								// echo $value['D'];
+								// echo '<br>';
+								// echo $value['J'];
+								// echo '<br>';
 								//echo 'PackingSlips/'.$value['O'].'/'.$value['P'].'/'.$value['B'].'.tif';
 							
 							}
@@ -1036,11 +1045,46 @@ class Vendor extends CI_Controller {
 					}
 					
 				}
-
+				
 				if($schoolCodeFlag == 0 && $schoolRecordFlag == 0){
 					
 					foreach ($data['values'] as $key => $value) {
-						
+					
+					if($value['E'] != ''){
+						$value['E'] = str_replace('/', '-', $value['E']);
+					}
+					else {
+						$value['E'] = '0000-00-00';
+					}
+
+					if($value['F'] != ''){
+						$value['F'] = str_replace('/', '-', $value['F']);
+					}
+					else {
+						$value['F'] = '0000-00-00';
+					}
+
+					if($value['G'] != ''){
+						$value['G'] = str_replace('/', '-', $value['G']);
+					}
+					else {
+						$value['G'] = '0000-00-00';
+					}
+
+					if($value['H'] != ''){
+						$value['H'] = str_replace('/', '-', $value['H']);
+					}
+					else {
+						$value['H'] = '0000-00-00';
+					}
+
+					if($value['I'] != ''){
+						$value['I'] = str_replace('/', '-', $value['I']);
+					}
+					else {
+						$value['I'] = '0000-00-00';
+					}
+					
 					$mailFlag = $this->vendors->updateSchoolStatusOmrReceiptInfo($value,$round,$vendorId);
 					
 						if($mailFlag > 0) {
@@ -1152,8 +1196,10 @@ class Vendor extends CI_Controller {
 							if(count($schoolKeyAccountRM) > 0){
 								
 								$keyaccountrmEmailID = $this->vendors->getSchoolkeyAccountRMEmailID($schoolKeyAccountRM[0]['keyAccount']);
-
-								array_push($ccEmail, $keyaccountrmEmailID[0]['email']);
+								if(isset($keyaccountrmEmailID[0]['email'])){
+									array_push($ccEmail, $keyaccountrmEmailID[0]['email']);	
+								}
+								
 									
 							}
 
@@ -1162,9 +1208,9 @@ class Vendor extends CI_Controller {
 							if(count($schoolBuddyAccountRM) > 0){
 								
 								$BuddyrmEmailID = $this->vendors->getSchoolBuddyRMEmailID($schoolBuddyAccountRM[0]['buddyAccount']);
-
-								array_push($ccEmail, $BuddyrmEmailID[0]['email']);
-									
+								if(isset($BuddyrmEmailID[0]['email'])){
+									array_push($ccEmail, $BuddyrmEmailID[0]['email']);
+								}	
 							}
 
 							$schoolZMEmail = $this->vendors->getSchoolZMEmailID($schoolRegion[0]['region']);
@@ -1182,6 +1228,9 @@ class Vendor extends CI_Controller {
 					
 					}
 					echo json_encode(array('status' => 'success','message' => 'OMR Receipt Details Sent Successfully To Logistic..Thank You!!' ));
+				}
+				else {
+					echo json_encode(array('status' => 'error','message' => 'Few Records Are Missing. Please Check And Upload Again' ));
 				}
 				
 			}
@@ -1227,9 +1276,5 @@ class Vendor extends CI_Controller {
 		}
 
 	}
-
-	
-
-	
 
 }

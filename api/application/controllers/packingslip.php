@@ -27,26 +27,13 @@ class Packingslip extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y');
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y');
-
-			if(new DateTime($date1) > new DateTime($date2)){
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			else{
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			
-		}
+		$description = $roundDetails['description'];
 
 		$data['schools'] = $this->packingslips->getSchools($round);
 		$data['rounds'] = $this->packingslips->getRounds();
@@ -217,8 +204,6 @@ class Packingslip extends CI_Controller {
             fputcsv($handle1, array('Sr.No','School Code', 'School', 'City', 'Address', 'Phone Nos','Principal Name','State','Pincode','Co-ordinator1 Name','Co-ordinator1 Contact No.','Co-ordinator2 Name','Co-ordinator2 Contact No.'));
 
             $i = 1;
-
-
 
             foreach ($records1 as $data) {
             	

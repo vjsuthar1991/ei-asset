@@ -270,7 +270,7 @@ class Lotgeneration extends CI_Controller {
 	      $this->email->set_newline("\r\n");
 	      $this->email->from('jignasha.mistry@ei-india.com');
 	      $this->email->to($email);
-	      //$this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
+	      $this->email->cc('jignasha.mistry@ei-india.com,brahma.sharma@ei-india.com');
 	      $this->email->subject($subject);
 	      $this->email->message($message);
 	      $this->email->attach($file1);
@@ -342,30 +342,13 @@ class Lotgeneration extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		//get the latest round running in current session
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		//loop through the rounds selected
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y'); //date set to start winter round
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y'); //get current date
-
-			if(new DateTime($date1) > new DateTime($date2)){
-				//condition to select summer round
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			else{
-				//condition to select winter round
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			
-		}
+		$description = $roundDetails['description'];
 
 		//call model function to return all zones as per the user region
 		$data['zones'] = $this->qb_mis_list_model->getZones($inputRequest['region']);
@@ -432,30 +415,13 @@ class Lotgeneration extends CI_Controller {
 	{
 		$inputRequest = json_decode(file_get_contents("php://input"),true);
 
-		//get the latest round running in current session
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		//loop through the rounds selected
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y'); //date set to start winter round
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y'); //get current date
-
-			if(new DateTime($date1) > new DateTime($date2)){
-				//condition to select summer round
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			else{
-				//condition to select winter round
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			
-		}
+		$description = $roundDetails['description'];
 
 		//call model function to return all zones as per the user region
 		$data['zones'] = $this->qb_mis_list_model->getZones(NULL);
@@ -473,6 +439,28 @@ class Lotgeneration extends CI_Controller {
 
 		//output data in json array
 		echo json_encode(array('status' => 'success','zones' => $data['zones'],'rounds' => $data['rounds'],'lotnos' => $data['vendor_lotnos'],'analysis_mis_reports' => $data['analysis_mis_reports'],'round_selected' => $round));
+		die;
+	}
+
+	public  function approve_analysisomrcount()
+	{
+		$inputRequest = json_decode(file_get_contents("php://input"),true);
+
+		$update = $this->analysis_mis_list_model->updateAnalysisomrcount($inputRequest['omrcountid']);
+
+		$ci = get_instance();
+
+		$roundDetails = getLatestRoundDetails();
+
+		$round = $roundDetails['round'];
+
+		$description = $roundDetails['description'];
+
+		$data['omr_receipt_list'] = $this->vendors->getOmrReceiptStatusList($round,$inputRequest['region'],$inputRequest['category'],$inputRequest['username']);
+		
+		//output data in json array
+		echo json_encode(array('status' => 'success','omr_receipt_list' => $data['omr_receipt_list']));
+		
 		die;
 	}
 

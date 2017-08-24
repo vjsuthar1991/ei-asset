@@ -11,10 +11,17 @@
               
               <li class=""><a href="/main.php">Home</a></li>
               <li class="active"><a href="./">Dashboard</a></li>
-               
+              <li><a href="school-order-tracking">School Order Tracking</a></li> 
               <?php 
+              function checkUserAdminMenuAccess($username){
+
+                $adminMenuAccessUserList = array('jignasha.mistry','rahul','mitul.patel');
+                return in_array($username, $adminMenuAccessUserList);
+
+              }
                 session_start();
-                if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel' )
+                
+                if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
                 {
               ?>
               <li class="dropdown">
@@ -31,7 +38,7 @@
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PRE Test <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <?php 
-                if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
                 {
               ?>
                   <li><a href="generate_packing_slips">Generate Packing Slip</a></li>
@@ -40,10 +47,10 @@
                   <li role="separator" class="divider"></li>
                   <?php } ?>
                   <li><a href="qb_mis_list">Test Material Status</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="school-order-tracking">School Order Tracking</a></li>
+                  <!-- <li role="separator" class="divider"></li> -->
+                  <!-- <li><a href="school-order-tracking">School Order Tracking</a></li> -->
                   <?php 
-                  if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                  if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
                     {
                   ?>
                   <li role="separator" class="divider"></li>
@@ -56,10 +63,15 @@
                 <ul class="dropdown-menu">
                   <li><a href="omr-receipt-status">OMR Receipt Status</a></li>
                   <li role="separator" class="divider"></li>
+                  <?php
+                  if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
+                    {
+                  ?>
                   <li><a href="lot-generation">Lot Generation</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="analysis-lot-list">Analysis Lot List</a></li>
                   <li role="separator" class="divider"></li>
+                  <?php } ?> 
                   <li><a href="analysis-status-list">Analysis Status List</a></li>
                 </ul>
               </li>

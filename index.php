@@ -1,19 +1,25 @@
 <?php 
 $url = $_SERVER['REQUEST_URI'];
 $urlparts = explode('/',$url);
+error_reporting(0);
+function checkUserAdminMenuAccess($username){
+
+    $adminMenuAccessUserList = array('jignasha.mistry','rahul','mitul.patel');
+    return in_array($username, $adminMenuAccessUserList);
+
+}
 
 if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') && ($urlparts['2'] != 'testmaterial_mis') && ($urlparts['2'] != 'vendor-packingslip-list') && ($urlparts['2'] != 'vendor_qb_mis_list') && ($urlparts['2'] != 'vendor-omr-receipt-mis') && ($urlparts['2'] != "vendor-analysis-lot-list") && ($urlparts['2'] != "vendor-analysis-status-list")){
-  require_once('support_files/check.php');
+  require_once('../check.php');
 
   $loginUserName = $_SESSION['username'];
 
-  checkPermission('OPS');
+  checkPermission('ALS');
 
   if($urlparts['2'] == 'create_vendor' || $urlparts['2'] == 'vendor_list' || $urlparts['2'] == 'edit_vendor')
   {
 
-
-    if($_SESSION['username'] != 'jignasha.mistry' && $_SESSION['username'] != 'rahul'  || @$_SESSION['username'] != 'mitul.patel'){
+    if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1){
 
       echo "<script language='JavaScript'>window.location.href='http://".$_SERVER['SERVER_NAME']."/ei-asset/'</script>";
     
@@ -96,7 +102,7 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
         <div class="mimin-mobile-menu-list">
             <div class="col-md-12 sub-mimin-mobile-menu-list animated fadeInLeft">
                 <ul class="nav nav-list">
-                    <li class="active ripple">
+                    <li class="ripple">
                       <a href="/main.php" class="tree-toggle nav-header">
                         <span class="fa-home fa"></span>Home
                       </a>
@@ -106,8 +112,13 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
                         <span class="fa-tachometer fa"></span>Dashboard 
                       </a>
                     </li>
+                    <li class="ripple">
+                      <a href="school-order-tracking" class="tree-toggle nav-header">
+                        <span class="fa-tachometer fa"></span>School Order Tracking 
+                      </a>
+                    </li>
                     <?php 
-                      if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                      if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
                       {
                     ?>
                     <li class="ripple">
@@ -128,13 +139,32 @@ if(($urlparts['2'] != 'vendor-login') && ($urlparts['2'] != 'vendor-dashboard') 
                       </a>
                       <ul class="nav nav-list tree">
                         <?php 
-                      if(@$_SESSION['username'] == 'jignasha.mistry' || @$_SESSION['username'] == 'rahul' || @$_SESSION['username'] == 'mitul.patel')
+                      if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
                       {
                     ?>
                         <li><a href="generate_packing_slips">Generate Packing Slip</a></li>
                         <li><a href="packing_slips_list">Packing Slip List</a></li>
+                        <li><a href="pretest-escalation-log">Escalation Log</a></li>
                       <?php } ?>
-                        <li><a href="school-order-tracking">School Order Tracking</a></li>
+                      <li><a href="qb_mis_list">Test Material Status</a></li>
+                        <!-- <li><a href="school-order-tracking">School Order Tracking</a></li> -->
+                      </ul>
+                    </li>
+                    <li class="ripple">
+                      <a class="tree-toggle nav-header">
+                        <span class="fa-area-chart fa"></span>Post Test
+                        <span class="fa-angle-right fa right-arrow text-right"></span>
+                      </a>
+                      <ul class="nav nav-list tree">
+                        <li><a href="omr-receipt-status">OMR Receipt Status</a></li>
+                      <?php 
+                      if(checkUserAdminMenuAccess(@$_SESSION['username']) == 1)
+                      {
+                      ?>
+                        <li><a href="lot-generation">Lot Generation</a></li>
+                        <li><a href="analysis-lot-list">Analysis Lot List</a></li>
+                      <?php } ?>
+                        <li><a href="analysis-status-list">Analysis Status List</a></li>
                       </ul>
                     </li>
                   </ul>

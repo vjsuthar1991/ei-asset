@@ -5781,7 +5781,7 @@ ul li a:focus {
 .sub-mimin-mobile-menu-list {
   display: none;
   padding: 0;
-  /*height: 300px;*/
+  height: auto;
   font-weight: 100;
   overflow: auto;
   font-size: 2em;
@@ -5856,14 +5856,14 @@ ul li a:focus {
   background: rgb(33, 150, 243);
   /*display: none;*/
 }
-.sub-mimin-mobile-menu-list {
+/*.sub-mimin-mobile-menu-list {
   display: none;
   padding: 0;
-  /*height: 300px;*/
+  height: 300px;
   font-weight: 100;
   overflow: auto;
   font-size: 2em;
-}
+}*/
 
 .sub-mimin-mobile-menu-list .fa{margin-right: 10px;}
 

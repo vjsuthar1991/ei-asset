@@ -14,6 +14,7 @@ class Schooltrackingmodel extends CI_Model{
         $this->marketingTbl = 'marketing';
         $this->courierDispatchDetails = 'courier_dispatch_details';
         $this->salesAllotmentMasterTbl = 'sales_allotment_master';
+        $this->omrReceiptStatusCount = 'omr_count_status';
 
     }
 
@@ -88,6 +89,7 @@ class Schooltrackingmodel extends CI_Model{
         $this->db->from($this->courierDispatchDetails);
         $this->db->where('schoolCode',$data['school']);
         $this->db->where('test_edition',$data['round']);
+        $this->db->where('subCategory','QB Dispatch');
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -129,6 +131,40 @@ class Schooltrackingmodel extends CI_Model{
         $query = $this->db->get();
         return $query->result_array();
 
+    }
+
+    function getOMRStatusData($data){
+
+        $round = $data['round'];
+        $this->db->select('t1.answers_date,t1.omr_received,t1.scan_got_date,t1.namecheck_date,t1.scoreing_date,t1.school_reports_date,t1.reports_school_confirm_date,t2.status_flag');
+        $this->db->from("$this->schoolstatusTbl as t1");
+        $this->db->join("$this->omrReceiptStatusCount as t2", "t1.school_code = t2.school_code AND t2.test_edition = '$round'", 'LEFT');       
+        $this->db->where('t1.school_code',$data['school']);
+        $this->db->where('t1.test_edition',$data['round']);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getOMRDispatchData($data){
+
+        $this->db->select('analysis_sentdate,analysis_despatch_date,analysis_delivery_date,analysis_lotno,analysis_reciever_name,analysis_delivery_status');
+        $this->db->from($this->schoolProcessTracking);
+        $this->db->where('test_edition',$data['round']);
+        $this->db->where('school_code',$data['school']);
+        $query = $this->db->get();
+        return $query->result_array();
+
+    }
+
+    function getAnalysisCourierDetails($data){
+
+        $this->db->select('*');
+        $this->db->from($this->courierDispatchDetails);
+        $this->db->where('schoolCode',$data['school']);
+        $this->db->where('test_edition',$data['round']);
+        $this->db->where('subCategory','Analysis Dispatch');
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     

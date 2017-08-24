@@ -31,30 +31,13 @@ class Escalationlog extends CI_Controller {
 	public function pretest_escalation_log_list()
 	{
 		
-		//get the latest round running in current session
-		$data['round_latest'] = $this->packingslips->getLatestRound();
+		$ci = get_instance();
 
-		//loop through the rounds selected
-		foreach ($data['round_latest'] as $key => $value) {
+		$roundDetails = getLatestRoundDetails();
 
-			$date1 = '01-10-'.date('Y'); //date set to start winter round
+		$round = $roundDetails['round'];
 
-			$date2 = date('d-m-Y'); //get current date
-
-			if(new DateTime($date1) > new DateTime($date2)){
-				//condition to select summer round
-				if($value->description == 'Summer '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			else{
-				//condition to select winter round
-				if($value->description == 'Winter '.date('Y')){
-					$round = $value->test_edition;
-				}
-			}
-			
-		}
+		$description = $roundDetails['description'];
 
 		
 		//call model function to get list of all the schools whose pack label date is set with dispatch and delivery status
